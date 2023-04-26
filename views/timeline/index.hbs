@@ -1,0 +1,153 @@
+<br>
+
+            {{!-- <button type="button" id="sortTitleAtlandingPage" sort=false  style="height:40px; margin:5px 0 0 20px;" class="btn btn-outline-info w-100">
+                          Title [a-z]
+                        </button>
+
+
+            <button type="button"  style="height:40px; margin:5px 0 0 20px;" class="btn btn-outline-info w-100">
+                          Date and Time
+                        </button> --}}
+
+<form>
+<header class="navbar-expand-md">
+  <div class="collapse navbar-collapse" id="navbar-menu">
+    <div class="navbar navbar-light">
+      <div class="container-xl">
+        <ul class="navbar-nav">
+          {{!-- active --}}
+       
+<li class="nav-item dropdown">
+<select name="whichPosts" id="whichPosts">
+  <option value="all">All</option>
+  <option value="mine">Mine</option>
+  <option value="others">Others</option>
+</select>
+              </li>
+<li style="margin-left: 20px;" class="nav-item ">
+          <div  class="input-icon">
+                    <span class="input-icon-addon">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg>
+                    </span>
+                    <input style="margin-right: 100px;" name="aboutPosts" type="text" id="aboutPosts" class="form-control" placeholder="Search…" >
+                  </div>
+</li>
+<button type="button" id="filterBtn" style="height:40px; margin:5px 0 0 20px;" class="btn btn-outline-success w-100">
+                          Search
+                        </button>
+        </ul>
+
+
+
+</header>
+</form>
+<br>
+{{!-- -----pagination start below div---- --}}
+<div id="index-pagination">
+<ul class="pagination ">
+                      <li class="page-item active"><button page="1" type="button" class="page-link click-page" >1</button></li>
+                      <li class="page-item"><button page="2" type="button" class="page-link click-page" >2</button></li>
+                      <li class="page-item"><button page="3" type="button" class="page-link click-page" >3</button></li>
+                      <li class="page-item"><button page="4" type="button" class="page-link click-page" >4</button></li>
+                      <li class="page-item"><button page="5" type="button" class="page-link click-page" >5</button></li>
+                      <li class="page-item"><button page="6" type="button" class="page-link click-page" >6</button></li>
+
+                      <li style="margin-left: 400px;" class="page-item"><button page="5" type="button" disabled class="page-link" >Sort : </button></li>
+                      <li style="margin-left: 20px;" class="page-item"><button order="descending" type="button" id="sortByTitle" class="page-link" >Title</button></li>
+                      <li  style="margin-left: 50px;" class="page-item"><button order="descending" type="button"  id="sortByDateTime" class="page-link" >Date and Time</button></li>
+                    </ul>
+<br>
+<div style="align-items: center;">
+  <div id="renderHere" class="card-body">
+    <div id="postsInside">
+
+      {{#each posts}}
+      {{!-- -------------------------------------------------------------- --}}
+
+
+      <div id="post" class="col-md-6 col-lg-3">
+        <div class="card postBox">
+          <!-- Photo -->
+          <div class="img-responsive img-responsive-21x9 card-img-top  ">
+            {{!-- ------------ --}}
+              <div class="navbar-nav flex-row order-md-last">
+    
+    
+
+                  <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+            <img class="avatar avatar-sm"  src="{{this.user.profileImagePath}}" alt="no profile">
+                    <div class="d-none d-xl-block ps-2">
+                      <div><h3>{{this.user.firstName}} {{this.user.lastName}}</h3></div>
+                    </div>
+                  </a>
+                  
+                
+              </div>
+            {{!-- ------------ --}}
+
+            {{!-- <h2 class="card-title">{{this.user.firstName}} {{this.user.lastName}}</h2> --}}
+
+            <img class="postImage" src="{{this.imagePath}}">
+
+          </div>
+          <h3 class="text-muted">{{this.postTitle}}</h3>
+          <div class="card-body">
+            <p class="text-muted">{{this.postDescription}}</p>
+          </div>
+          <div style="display: flexbox;">
+                              {{#compare  this.user._id '!=' ../user._id }}
+
+
+             <button style="margin-right: 30px;" id="{{this._id}}" data="{{../user._id}}" class="btn btn-outline-success  col-6 col-sm-4 col-md-3 col-xl py-3 savePost" isSaved='false' type="submit">Save</button>
+                               {{/compare}}
+
+                  {{#compare  this.user._id '==' ../user._id }}
+            <button id="{{this._id}}" type="button"  class=" editPost btn btn-outline-danger callAjaxforModal  col-6 col-sm-4 col-md-3 col-xl py-3 " data-bs-toggle="modal" data-bs-target="#modal-scrollable">
+                    Edit
+            </button>
+            <button style="margin-left: 30px;" id="{{this._id}}" data="{{../user._id}}" class="btn btn-outline-info  col-6 col-sm-4 col-md-3 col-xl py-3 archivePost" isSaved='false' type="submit">Archive</button>
+                  {{/compare}}
+
+            {{!-- Scrollable --}}
+
+
+            
+            {{!-- Scrollable --}}
+            {{!-- <button id="{{this._id}}" style="margin-left: 10px;" data="{{this.user._id}}"
+              class="btn btn-outline-danger  col-6 col-sm-4 col-md-5 col-xl py-3 savePost" type="submit">Edit</button> --}}
+           
+            
+          </div>
+
+        </div>
+      </div>
+      {{!-- -------------------------------------------------------------- --}}
+      {{/each}}
+
+    </div>
+  </div>
+
+</div>
+                  {{!-- modal load here --}}
+      <div class="modal modal-blur fade" id="modal-scrollable" tabindex="-1" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Post</t5>
+            <button type="button"  class="btn-close "  data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            {{!-- ----------form----- --}}
+        
+        </div>
+      </div>
+    </div> 
+    {{!-- ----------- pagination end below div        --}}
+    </div>
+
+<script>
+  $(document).ready(function () {
+    userEvents()
+  })
+</script>

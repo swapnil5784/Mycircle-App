@@ -1,0 +1,119 @@
+<br>
+
+{{!-- ---------------------------------------users --}}
+<h4 class="text-muted"> Users Data </h4>
+<div class="col-12">
+                <div class="card">
+                  <div class="table-responsive">
+                    <table class="table table-vcenter card-table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Gender</th>
+                          <th>Posts created</th>
+                          <th>Posts saved</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+{{#each users}}
+                        <tr>
+                          <td><img class="avatar me-2" src="{{this.profileImagePath}}" alt="">{{this.firstName}} {{this.lastName}}</td>
+                          <td class="text-muted">
+                            {{this.userEmail}}
+                          </td>
+                          <td>{{this.gender}}</td>
+                          <td class="text-muted">
+                            {{this.posts}}
+                          </td>
+                          <td class="text-muted">
+                            {{this.savedPosts}}
+                          </td>
+                          
+                        </tr>
+{{/each}}
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <br>
+<h4 class="text-muted"> Posts Data </h4>
+
+{{!-- -----------------------------------------------------posts --}}
+              <div class="col-12">
+                <div class="card">
+                  <div class="table-responsive">
+                    <table class="table table-vcenter card-table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Image</th>
+                          <th>Title</th>
+                          <th>Description</th>
+                          <th>Posted By</th>
+                          <th>Created On</th>
+                          <th>Updated On</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+{{#each posts}}
+                        <tr>
+                        <th><img class="avatar me-2" src="{{this.imagePath}}" alt=""></th>
+                          <td>{{this.postTitle}}</td>
+                          <td class="text-muted">
+                            {{this.postDescription}}
+                          </td>
+                          <td class="text-muted"><img class="avatar me-2" src="{{this.user.profileImagePath}}" alt=""> {{this.user.firstName}} {{this.user.lastName}}</td>
+                          <td class="text-muted">
+                            {{this.createdOn}}
+                          </td>
+                          <td class="text-muted">
+                            {{this.updatedOn}}
+                          </td>
+                          
+                        </tr>
+                        
+{{/each}}         
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+{{!-- -------------------------------------------saved by --}}
+                            <div class="col-12">
+                <div class="card">
+                  <div class="table-responsive">
+                    <table class="table table-vcenter card-table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Title</th>
+                          <th>Email</th>
+                          <th>Role</th>
+                          <th class="w-1"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+
+                        <tr>
+                          <td>Maryjo Lebarree</td>
+                          <td class="text-muted">
+                            Civil Engineer, Product Management
+                          </td>
+                          <td class="text-muted"><a href="#" class="text-reset">mlebarree5@unc.edu</a></td>
+                          <td class="text-muted">
+                            User
+                          </td>
+                          
+                        </tr>
+                        
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>

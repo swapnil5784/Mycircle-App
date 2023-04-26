@@ -1,0 +1,28 @@
+         <form id="editPostForm" action="/timeline/edit/post/{{post._id}}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label class="form-label">Title</label>
+              <input type="text" class="form-control" value="{{post.postTitle}}" name="postTitle" placeholder="Your report name">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              {{!-- <input type="textarea" class="form-control" value="{{post.postDescription}}"  name="postDescription" placeholder="Your report name"> --}}
+              <textarea class="form-control"  name="postDescription" rows="6" placeholder="Enter description....">{{post.postDescription}}</textarea>
+            </div>
+            <div class="mb-3">
+              <img src="{{post.imagePath}}" alt="">
+              <label class="form-label">Change Post Image</label>
+              <input type="file" class="form-control" value="" name="imageName" placeholder="Your report name">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+            <button type="submit" data="{{post._id}}" id="editPostBtn"  class="btn btn-success fireEdit">Edit</button>
+          </div>
+        </form>
+
+
+<script>
+  $(document).ready(function () {
+    new userEvents();
+  })
+</script>

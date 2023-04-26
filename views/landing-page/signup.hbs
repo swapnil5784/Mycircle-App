@@ -1,0 +1,56 @@
+
+  <body  class=" d-flex flex-column">
+    <div class="page page-center">
+      <div class="container container-tight py-4">
+        <div class="text-center mb-4">
+          <a href="." class="navbar-brand navbar-brand-autodark"></a>
+        </div>
+        <form id="signupForm" class="card card-md">
+          <div class="card-body">
+            <h2 class="card-title text-center mb-4">Create new account</h2>
+            <div class="mb-3">
+              <label class="form-label">First Name</label>
+              <input type="text" name="firstName" id="firstName" class="form-control" placeholder="Enter first name">
+            </div>
+             <div class="mb-3">
+              <label class="form-label">Last Name</label>
+              <input type="text"  name="lastName"  id="lastName" class="form-control" placeholder="Enter last name">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email address</label>
+              <input type="email" name="userEmail" id="userEmail"  class="form-control" placeholder="Enter email">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Gender</label>
+              <span>Male</span><input type="radio" checked value="male" name="gender">
+              <span>Female</span><input type="radio" value="female" name="gender">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <div class="input-group input-group-flat">
+                <input type="password" name="password" id="password"  class="form-control"  placeholder="Enter Password" >
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Confirm Password</label>
+              <div class="input-group input-group-flat">
+                <input type="password" name="confirmPassword" class="form-control"  placeholder="Re-enter Password">
+              </div>
+            </div>
+            <div class="form-footer">
+              <button type="submit" id="submitSingin" class="btn btn-primary w-100">Sign in</button>
+            </div>
+          </div>
+        </form>
+        <div class="text-center text-muted mt-3">
+          Already have account? <a href="/login" >Log in</a>
+        </div>
+      </div>
+    </div>
+    <script>
+      $(document).ready(function(){
+        userEvents();
+      })
+    </script>
+
+

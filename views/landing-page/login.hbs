@@ -1,0 +1,44 @@
+
+
+    <div class="page page-center">
+      <div class="container container-tight py-4">
+        <div class="text-center mb-4">
+        </div>
+        <div class="card card-md">
+          <div class="card-body">
+            <h2 class="h2 text-center mb-4">Login</h2>
+            <form action="/login" id="loginForm" method="post">
+              <div class="mb-3">
+                <label class="form-label">Email address</label>
+                <input type="email" name="userEmail" class="form-control" placeholder="your@email.com" >
+              </div>
+              <div class="mb-2">
+                <label class="form-label">
+                  Password
+                  
+                </label>
+                <div class="input-group input-group-flat">
+                  <input type="password" class="form-control" name="password"  placeholder="Your password"  >
+                  
+                </div>
+              </div>
+              
+              <div class="form-footer">
+                <input type="submit" id="login-validate-btn" class="btn btn-primary w-100" value="Log in">
+              </div>
+            </form>
+          </div>
+          
+          
+        </div>
+        <div class="text-center text-muted mt-3">
+          Don't have account yet? <a href="/signup" tabindex="-1">Sign up</a>
+        </div>
+      </div>
+    </div>
+
+<script>
+  $(document).ready(function () {
+    userEvents()
+  })
+</script>

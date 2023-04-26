@@ -1,0 +1,51 @@
+<div class="page-body">
+  <div class="container-xl">
+
+    <div class="col-lg-9">
+      <div class="card card-lg">
+
+        <div id="renderHere" class="card-body">
+          {{!-- --------------------------------------------- --}}
+
+          <div class="col-md-6">
+            <form class="card" action="/post/" id="createPostForm" method="post" enctype="multipart/form-data">
+              {{!-- <div class="card-header">
+                <h3 class="card-title">Create Post</h3>
+              </div> --}}
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label required">Title</label>
+                  <div>
+                    <input type="text" name="postTitle" class="form-control" placeholder="Enter Post Title">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label required">Description </label>
+                  <textarea class="form-control" name="postDescription" rows="6"
+                    placeholder="Enter description...."></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label required">Photo </label>
+                  <input type="file" name="postImage" class="form-control" aria-describedby="emailHelp">
+
+                </div>
+                <div class="card-footer text-end">
+                  <button type="submit" id="createPost" class="btn btn-primary">post</button>
+                </div>
+            </form>
+          </div>
+
+
+
+          {{!-- --------------------------------------------- --}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    userEvents()
+  })
+</script>

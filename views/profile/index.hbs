@@ -1,0 +1,162 @@
+<div class="page-body">
+  <div class="container-xl">
+
+    <div class="col-lg-9">
+      <div class="card card-lg">
+
+        <div id="renderHere" class="card-body">
+          {{!-- --------------------------------------------- --}}
+
+          <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#modal-scrollable">
+            Edit Profile
+          </a>
+          <div class="modal modal-blur fade" id="modal-scrollable" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Edit Profile</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="updateForm" action="/profile/update" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control" value="{{user.firstName}}" name="firstName"
+                      placeholder="Your report name">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="form-control" value="{{user.lastName}}" name="lastName"
+                      placeholder="Your report name">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="text" disabled class="form-control" value="{{user.userEmail}}" name="userEmail"
+                      placeholder="Your report name">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Gender</label>
+                    {{#compare user.gender "==" "male"}}
+                    <span>Male</span><input checked type="radio"  value="male" name="gender">
+                    <span>Female</span><input  type="radio" value="female" name="gender">
+                    {{/compare}}
+                      {{#compare user.gender "==" "female"}}
+                    <span>Male</span><input type="radio"  value="male" name="gender">
+                    <span>Female</span><input checked type="radio" value="female" name="gender">
+                    {{/compare}}
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label class="form-label">Profile Picture</label>
+                    <div class="input-group input-group-flat">
+                      <input type="file" name="profilePicture" class="form-control">
+                    </div>
+                  </div>
+                  <div class="form-footer">
+                    <input  type="submit" id="updateBtn" class="btn btn-primary w-100"
+                      value="Update" >
+
+                  </div>
+
+                  </form>
+                  <label class="form-label"></label>
+                  <div class="form-selectgroup-boxes row mb-3">
+                    <div class="col-lg-6">
+
+                    </div>
+                    <div class="col-lg-6">
+
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+
+
+          <div class="page page-center">
+            <div class="container container-tight py-4">
+              <div class="text-center mb-4">
+                <a href="." class="navbar-brand navbar-brand-autodark"></a>
+              </div>
+              <form id="signupForm" class="card card-md">
+                <div class="card-body">
+                  <img id="profileImage" style="border-radius: 10%; border:2px solid rgb(156, 156, 156)"
+                    src="{{user.profileImagePath}}" alt="profile">
+                  {{!-- --------------------- --}}
+                  {{!-- <div class="col-6 col-sm-4 col-md-12 col-xl py-3">
+                    <input class="btn btn-ghost-secondary w-100" type="file" name="uploadProfilePicture" id="">
+                    <button id="uploadButton" type="button" class="btn btn-ghost-secondary w-100">
+                      Upload Profile Picture
+                    </button>
+                  </div> --}}
+                  {{!-- --------------------- --}}
+                  <h2  class="card-title text-center mb-4">Profile </h2>
+                  <div class="mb-3" style="display: flex;">
+                    <label style="width:100px; margin-top:8px" class="form-label">Name:</label>
+                    <label style="margin-top: 8px;"   disabled name="firstName" id="firstName" 
+                       placeholder="Enter first name">{{user.firstName}} {{user.lastName}}</label>
+                  </div>
+                  <div class="mb-3" style="display: flex;">
+                    <label style="width:100px; margin-top:8px" class="form-label">Email:</label>
+                    <label style="margin-top: 8px;"   disabled name="firstName" id="firstName" 
+                       placeholder="Enter first name">{{user.userEmail}}</label>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Gender</label>
+                    {{#compare user.gender "==" "male"}}
+                    <span>Male</span><input checked type="radio" disabled  value="male" name="gender">
+                    <span>Female</span><input  type="radio" disabled value="female" name="gender">
+                    {{/compare}}
+                      {{#compare user.gender "==" "female"}}
+                    <span>Male</span><input type="radio" disabled  value="male" name="gender">
+                    <span>Female</span><input checked disabled type="radio" value="female" name="gender">
+                    {{/compare}}
+                  </div>
+                  {{!-- <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="input-group input-group-flat">
+                      <input type="password" disabled name="password" value="{{user.password}}" id="password"
+                        class="form-control" placeholder="Enter Password">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Confirm Password</label>
+                    <div class="input-group input-group-flat">
+                      <input type="password" disabled name="confirmPassword" class="form-control"
+                        value="{{user.password}}" placeholder="Re-enter Password">
+                    </div>
+                  </div> --}}
+                  <div class="form-footer">
+                    {{!-- <input name="{{user._id}}" disabled type="button" id="updateBtn" class="btn btn-primary w-100"
+                      value="Update"> --}}
+
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+
+
+
+
+          {{!-- --------------------------------------------- --}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+  $(document).ready(function () {
+    userEvents();
+  })
+</script>
