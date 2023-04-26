@@ -49,7 +49,14 @@
           </div>
         </div>
       </header>
-
+      <br>
+      <div id="renderSearch">
+<ul class="pagination ">
+  {{#each pagination}}
+                      <li class="page-item "><button page="{{this}}" type="button" class="page-link click-page" >{{this}}</button></li>
+{{/each}}
+                      
+                    </ul>
   <div id="renderHere" class="card-body">
     {{!-- <h1>hello {{user.firstName}} to index page</h1> --}}
     <div id="postsInside">
@@ -110,10 +117,11 @@
         </div>
       </div>
     </div>        
-
+</div>
 <script>
   $(document).ready(function () {
-    userEvents()
+    userEvents();
+    landingPageEvents();
   })
 </script>
                      </div>

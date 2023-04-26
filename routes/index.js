@@ -103,48 +103,80 @@ router.get("/edit/:postId", async function (req, res, next) {
 // get route to render the landing page for not-logged in users
 router.get("/", async function (req, res, next) {
   try {
-    let allPostsWithUsername = await postsModel.aggregate([
-      {
-        $lookup: {
-          from: "users",
-          let: { posts: "$_user" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ["$_id", "$$posts"],
-                },
+    let totalPosts = await postsModel.find({})
+    let postPerPagination = 4 ;
+    let pipeline =[]
+    let lookup = {
+      $lookup: {
+        from: "users",
+        let: { posts: "$_user" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$_id", "$$posts"],
               },
             },
-            {
-              $project: {
-                firstName: 1,
-                lastName: 1,
-              },
+          },
+          {
+            $project: {
+              firstName: 1,
+              lastName: 1,
             },
-          ],
-          as: "user",
-        },
+          },
+        ],
+        as: "user",
       },
-      {
-        $project: {
-          postTitle: 1,
-          postDescription: 1,
-          imageName: 1,
-          imagePath: 1,
-          createdOn: 1,
-          user: { $arrayElemAt: ["$user", 0] },
-        },
+    }
+    let project = {
+      $project: {
+        postTitle: 1,
+        postDescription: 1,
+        imageName: 1,
+        imagePath: 1,
+        createdOn: 1,
+        user: { $arrayElemAt: ["$user", 0] },
       },
-      {
-        $sort: {
-          createdOn: -1,
-        },
+    }
+    let sort = {
+      $sort: {
+        createdOn: -1,
       },
-    ]);
+    }
+    let limit ={
+      $limit:4
+    }
+    let skip ={
+      $skip:0
+    }
+    // for pagination
+    let page = parseInt(req.query.page)
+    if(req.query.page){
+      skip ={
+        $skip:postPerPagination*(page-1)
+      }
+      limit ={
+        $limit:postPerPagination*page
+      }
+    }
+
+    
+
+    pipeline.push(limit,skip,sort,lookup,project)
+    console.log(JSON.stringify(pipeline,null,3))
+    let allPostsWithUsername = await postsModel.aggregate(pipeline);
+    let noOfPosts = totalPosts.length;
+
+    let needPagination = noOfPosts/4;
+    console.log(Math.floor(needPagination))
+    let pageArray = []
+    for (let i = 1; i <= Math.floor(needPagination); i++) {
+      pageArray.push(i)
+    }
     res.render("landing-page/index", {
       title: "My circle",
       posts: allPostsWithUsername,
+      pagination:pageArray
     });
   } catch (error) {
     console.log(error);
@@ -303,10 +335,18 @@ router.get("/search", async function (req, res, next) {
     console.log(JSON.stringify(pipeline));
     // console.log(pipeline)
     let allPostsWithUsername = await postsModel.aggregate(pipeline);
-    console.log(allPostsWithUsername);
+    let noOfPosts = allPostsWithUsername.length;
+    let needPagination = noOfPosts/4;
+    let pageArray = []
+    for (let i = 1; i <= Math.floor(needPagination); i++) {
+      pageArray.push(i)
+    }
+    console.log(pageArray)
+    // console.log(allPostsWithUsername);
     res.render("landing-page/index", {
       title: "My circle",
       posts: allPostsWithUsername,
+      pagination:pageArray
     });
   } catch (error) {
     console.log(error);
