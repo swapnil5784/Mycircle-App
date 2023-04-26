@@ -3,7 +3,6 @@ const userEvents =function(){
     //3. initialize event function
     this.init = function(){
         // _this.updatePostValidation();
-        _this.searchPostsAtIndexpage()
         _this.signupValidate();
         _this.postUserDetails();
         _this.loginValidate();
@@ -39,16 +38,23 @@ const userEvents =function(){
           order.push('desc')
         }
         console.log(order)
-        $.ajax({
-          method:'get',
-          url:`/timeline?sortDateTime=${order[0]}`,
-          success:function(res){
-            // console.log(res)
-            $("#renderHere").load(`/timeline?sortDateTime=${order[0]} div#renderHere`,function(){
-              
-            })
-          }
-        })
+        if(window.location.search == ''){
+          $("#renderHere").load(`/timeline?sortDateTime=${order[0]} div#renderHere`)
+          window.history.pushState(null,null,`/timeline?sortDateTime=${order[0]}`)
+        }
+        else{
+          $("#renderHere").load(`/timeline${window.location.search}&sortDateTime=${order[0]} div#renderHere`)
+          window.history.pushState(null,null,`/timeline${window.location.search}&sortDateTime=${order[0]}`)
+
+        }
+        // $.ajax({
+        //   method:'get',
+        //   url:`/timeline?sortDateTime=${order[0]}`,
+        //   success:function(res){
+        //     // console.log(res)
+            
+        //   }
+        // })
         if($(_this).attr('order') == 'descending'){
           return $(_this).attr('order' ,'ascending') 
         }
@@ -61,7 +67,7 @@ const userEvents =function(){
 
     this.sortByTitle = function(){
       $("#sortByTitle").on('click',function(){
-        alert('sort by title clicked')
+        // alert('sort by title clicked')
         console.log(window.location.search.split("&").map(p =>p.split("=")));
         let order=[]
         const _this =this;
@@ -72,9 +78,17 @@ const userEvents =function(){
           order.push('desc')
         }
         console.log(order)
-        $("#renderHere").load(`/timeline${window.location.search}&sortTitle=${order[0]} div#renderHere`,function(){ 
+        if(window.location.search == ''){
+          $("#renderHere").load(`/timeline?sortTitle=${order[0]} div#renderHere`)
+          window.history.pushState(null,null,`/timeline?sortTitle=${order[0]}`)
+
+        }
+        else{
+          $("#renderHere").load(`/timeline${window.location.search}&sortTitle=${order[0]} div#renderHere`,function(){}) 
           window.history.pushState(null,null,`/timeline${window.location.search}&sortTitle=${order[0]}`)
-        })
+ 
+        }
+        
         // ajax and load method wordks same for get route call
         // $.ajax({
         //   method:'get',
@@ -191,23 +205,7 @@ const userEvents =function(){
       // })
   }
 
-  // index page searching
-  this.searchPostsAtIndexpage = function(){
-    $("#searchAtIndex").on('keyup',function(){
-      console.log($("#searchAtIndex").val())
-      $.ajax({
-        method:'get',
-        url:`/search?aboutPost=${$("#searchAtIndex").val()}`,
-        success:function(res){
-          console.log(res)
-          $("#renderHere").load(`/search?aboutPost=${$("#searchAtIndex").val()} div#renderHere`)
-        },
-        error:function(err){
-          console.log(err)
-        }
-      })
-    })
-  }
+
 
 
 
