@@ -5,85 +5,115 @@ const postsModel = require("../models/posts");
 const moment = require('moment');
 moment().format();
 // get route for resndering all users in application
-router.get("/", async function (req, res, next) {
-  try {
-    const loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
+// router.get("/", async function (req, res, next) {
+//   try {
+//     const loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
 
-    if(req.query.user){
-      console.log(req.query.user)
-      let usersMatched = await usersModel.aggregate([
-        {
-          $match:{
-            $or:[
-              {
-                firstName:{$regex:`${req.query.user}` , $options:'i'}
-              },
-              {
-                lastName:{$regex:`${req.query.user}` , $options:'i'}
-              },
-              {
-                userEmail:{$regex:`${req.query.user}` , $options:'i'}
-              }
-              
-            ]
-          }
-        },
-        {
-          $lookup: {
-            from: "posts",
-            let: { userPost: "$_id" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ["$_user", "$$userPost"],
-                  },
-                },
-              },
-            ],
-            as: "posts",
-          },
-        },
-        {
-          $lookup: {
-            from: "savedposts",
-            let: { userPostSaved: "$_id" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ["$savedBy", "$$userPostSaved"],
-                  },
-                },
-              },
-            ],
-            as: "savedPosts",
-          },
-        },
-        {
-          $project:{
-              posts:{$size:'$posts'},
-              savedPosts:{$size:'$savedPosts'},
-              firstName:1,
-              lastName:1,
-              userEmail:1,
-              gender:1,
-              profileImagePath:1,
-              createdOn:1
-          }
-      },
-      ])
-      // console.log(usersMatched)
-      return res.render("all-users/index", {
-        title: "users",
-        layout: "for-user",
-        users:usersMatched,
-        userLogged:loginUser
+//     if(req.query.user){
+//       console.log(req.query.user)
+//       let usersMatched = await usersModel.aggregate([
+//         ,
+//         ,
+//         ,
+//         {
+//           $project:{
+//               posts:{$size:'$posts'},
+//               savedPosts:{$size:'$savedPosts'},
+//               firstName:1,
+//               lastName:1,
+//               userEmail:1,
+//               gender:1,
+//               profileImagePath:1,
+//               createdOn:1
+//           }
+//       },
+//       ])
+//       // console.log(usersMatched)
+//       return res.render("all-users/index", {
+//         title: "users",
+//         layout: "for-user",
+//         users:usersMatched,
+//         userLogged:loginUser
 
-      });
-    }
-    let userPostCount = await usersModel.aggregate([
-      {
+//       });
+//     }
+//     let userPostCount = await usersModel.aggregate([
+//       {
+//         $lookup: {
+//           from: "posts",
+//           let: { userPost: "$_id" },
+//           pipeline: [
+//             {
+//               $match: {
+//                 $expr: {
+//                   $eq: ["$_user", "$$userPost"],
+//                 },
+//               },
+//             },
+//           ],
+//           as: "posts",
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: "savedposts",
+//           let: { userPostSaved: "$_id" },
+//           pipeline: [
+//             {
+//               $match: {
+//                 $expr: {
+//                   $eq: ["$savedBy", "$$userPostSaved"],
+//                 },
+//               },
+//             },
+//           ],
+//           as: "savedPosts",
+//         },
+//       },
+//       ,
+//     ]);
+//     console.log("---------------------------------->>",moment().week())
+//     console.log(userPostCount);
+//     res.render("all-users/index", {
+//       title: "users",
+//       layout: "for-user",
+//       users:userPostCount,
+//       userLogged:loginUser
+
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.render("error", {
+//       message: "error in redndering all-users of application",
+//       status: 404,
+//     });
+//   }
+// });
+
+// updated route frender user accorrifing to paginations
+
+router.get('/',async function(req,res,next){
+  try{
+    let loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
+    let pipeline =[]
+    console.log('--------------------------inside new all users route ----------------------')
+      let match = {
+        $match:{
+          $or:[
+            {
+              firstName:{$regex:`${req.query.user}` , $options:'i'}
+            },
+            {
+              lastName:{$regex:`${req.query.user}` , $options:'i'}
+            },
+            {
+              userEmail:{$regex:`${req.query.user}` , $options:'i'}
+            }
+            
+          ]
+        }
+      }
+      let firstLookup = {
         $lookup: {
           from: "posts",
           let: { userPost: "$_id" },
@@ -98,8 +128,8 @@ router.get("/", async function (req, res, next) {
           ],
           as: "posts",
         },
-      },
-      {
+      }
+      let secondLookup= {
         $lookup: {
           from: "savedposts",
           let: { userPostSaved: "$_id" },
@@ -114,8 +144,8 @@ router.get("/", async function (req, res, next) {
           ],
           as: "savedPosts",
         },
-      },
-      {
+      }
+      let project = {
         $project:{
             posts:{$size:'$posts'},
             savedPosts:{$size:'$savedPosts'},
@@ -126,25 +156,35 @@ router.get("/", async function (req, res, next) {
             profileImagePath:1,
             createdOn:1
         }
-    },
-    ]);
-    console.log("---------------------------------->>",moment().week())
-    console.log(userPostCount);
+    }
+    if(req.query.user){
+      console.log("--------------------------search ---------------------",req.query.user)
+      pipeline.push(match,firstLookup,secondLookup,project)
+    }
+    else{
+      pipeline.push(firstLookup,secondLookup,project)
+    }
+    // for all users
+    let userPostCount = await usersModel.aggregate(pipeline);
+    let noOfUsers = userPostCount.length;
+    let usersPerPage = 2 ;
+    let arrUsers = []
+    for (let i = 1; i <= Math.ceil(noOfUsers/usersPerPage); i++) {
+      arrUsers.push(i)
+    } 
+    console.log(arrUsers);
     res.render("all-users/index", {
       title: "users",
       layout: "for-user",
       users:userPostCount,
-      userLogged:loginUser
-
-    });
-  } catch (error) {
-    console.log(error);
-    res.render("error", {
-      message: "error in redndering all-users of application",
-      status: 404,
+      userLogged:loginUser,
+      usersPerPage: arrUsers
     });
   }
-});
+  catch(error){
+    res.render('error',{message:error,status:404})
+  }
+})
 
 // router.get("/validate/email", async function () {
 //   try {

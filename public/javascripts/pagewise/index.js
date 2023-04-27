@@ -16,7 +16,6 @@ const userEvents =function(){
         _this.archivePosts();
         _this.unarchivePosts();
         _this.filterpostsAtTimeline();
-        _this.searchUsersFromAllUsers()
         _this.sortPostOnTitle();
         _this.paginationBtnClick();
         _this.sortByTitle();
@@ -131,21 +130,7 @@ const userEvents =function(){
       })
     }
 
-    //search users usign search input
 
-    this.searchUsersFromAllUsers = function(){
-      $("#searchUsers").on('keyup',function(){
-        console.log($("#searchUsers").val())
-        $.ajax({
-          method:'get',
-          url:`/users?user=${$("#searchUsers").val()}`,
-          success:function(res){
-            console.log(res)
-            $("#renderHere").load(`/users?user=${$("#searchUsers").val()} div#renderHere`)
-          }
-        })
-      })
-    }
 
 
     // sort post by title

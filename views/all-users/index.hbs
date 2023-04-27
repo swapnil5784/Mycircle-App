@@ -36,7 +36,13 @@
         </ul>
 </header>
 <br>
-
+<div id="renderWithPagination">
+<ul class="pagination ">
+  {{#each usersPerPage}}
+                      <li class="page-item "><button page="{{this}}" type="button" class="page-link click-page" >{{this}}</button></li>
+  {{/each}}                    
+                    </ul>
+<br>
 {{!-- new --}}
 <div id="renderHere">
 <div class="row row-cards">
@@ -72,13 +78,14 @@
 {{/if}}
   </div>
 </div>
-
+</div>
 
 
 {{!-- new --}}
 
 <script>
   $(document).ready(function () {
-    userEvents()
+    // userEvents();
+    allUsersEvents();
   })
 </script>

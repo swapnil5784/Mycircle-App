@@ -11,7 +11,7 @@ var helperHandlebar = require("handlebars-helpers")();
 // import mongoose and connect express with mongodb
 try{
   const mongoose = require('mongoose');
-  mongoose.connect(process.env.MONGO_URL);
+  mongoose.connect(process.env.MONGO_URL_HOME);
   const db = mongoose.connection;
   console.log(process.env.MONGO_URL)
   
