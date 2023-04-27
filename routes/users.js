@@ -4,7 +4,7 @@ const usersModel = require("../models/users");
 const postsModel = require("../models/posts");
 const moment = require('moment');
 moment().format();
-// get route for resndering all users in application
+// get route for rendering all users in application
 // router.get("/", async function (req, res, next) {
 //   try {
 //     const loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
@@ -95,23 +95,19 @@ moment().format();
 router.get('/',async function(req,res,next){
   try{
     let loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
+    let usersPerPageOfPagination = 2;
     let pipeline =[]
     console.log('--------------------------inside new all users route ----------------------')
       let match = {
         $match:{
-          $or:[
-            {
-              firstName:{$regex:`${req.query.user}` , $options:'i'}
-            },
-            {
-              lastName:{$regex:`${req.query.user}` , $options:'i'}
-            },
-            {
-              userEmail:{$regex:`${req.query.user}` , $options:'i'}
-            }
-            
-          ]
+          
         }
+      }
+      let skip ={
+        $skip:0
+      }
+      let limit ={
+        $limit:2
       }
       let firstLookup = {
         $lookup: {
@@ -157,22 +153,51 @@ router.get('/',async function(req,res,next){
             createdOn:1
         }
     }
+    
+    if(req.query.page){
+      let page = parseInt(req.query.page)
+       limit = {
+        $limit:usersPerPageOfPagination*page
+      }
+       skip = {
+        $skip:usersPerPageOfPagination*(page-1)
+      }
+      console.log(limit,skip)
+    }
+    
     if(req.query.user){
-      console.log("--------------------------search ---------------------",req.query.user)
-      pipeline.push(match,firstLookup,secondLookup,project)
-    }
-    else{
-      pipeline.push(firstLookup,secondLookup,project)
-    }
-    // for all users
+        console.log("--------------------------search ---------------------",req.query.user)
+        match = {
+          $match:{
+            $or:[
+              {
+                firstName:{$regex:`${req.query.user}` , $options:'i'}
+              },
+              {
+                lastName:{$regex:`${req.query.user}` , $options:'i'}
+              },
+              {
+                userEmail:{$regex:`${req.query.user}` , $options:'i'}
+              }
+              
+            ]
+          }
+        }
+      }
+      
+      // for all users
+    pipeline.push(match,limit,skip,firstLookup,secondLookup,project)
     let userPostCount = await usersModel.aggregate(pipeline);
-    let noOfUsers = userPostCount.length;
+    
+    let allUsers = await usersModel.aggregate([match])
+    let noOfUsers = allUsers.length
     let usersPerPage = 2 ;
     let arrUsers = []
     for (let i = 1; i <= Math.ceil(noOfUsers/usersPerPage); i++) {
       arrUsers.push(i)
     } 
-    console.log(arrUsers);
+
+    console.log("usersssssssssssssssssssssssssssssssssssss",arrUsers);
     res.render("all-users/index", {
       title: "users",
       layout: "for-user",

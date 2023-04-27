@@ -21,6 +21,10 @@ const savedPosts = new mongoose.Schema({
         type:Boolean,
         required:true,
         default:true
+    },
+    postBy:{
+        type:ObjectId,
+        required:true,
     }
 
 

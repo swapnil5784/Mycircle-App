@@ -1,5 +1,84 @@
 // query for saved post
 
+// query for cron
+
+
+db.getCollection('users').aggregate([
+{
+    $match:{
+            _id:ObjectId("644616f18d4bc12602582d07"),
+
+        }
+    },
+    {
+    $lookup:{
+        from:'posts',
+        let:{'userId':'$_id'},
+        pipeline:[
+            {
+                $match:{
+                    $expr:[ '$_user','$$userId' ],
+                    '_user':ObjectId("644616f18d4bc12602582d07"),
+                    
+                    }
+                }
+        ],
+        as:'createdPosts'        
+        }
+ },
+ {
+     $lookup:{
+        from:'savedposts',
+        let:{'savedPostId':'$_id'},
+        pipeline:[
+            {
+                $match:{
+                    $expr:[ '$savedBy','$$savedPostId' ],
+                    'savedBy':ObjectId("644616f18d4bc12602582d07"),
+
+                    }
+                }
+        ],
+        as:'savedPosts'        
+        }
+  },
+  {
+    $lookup:{
+        from:'savedposts',
+        let:{'id':'$_id'},
+        pipeline:[
+        {
+            $match:{
+                $expr:{
+                    $eq:['$postBy','$$id']
+                    }
+                
+                }
+            }
+        ],
+        as:'savedByothers'
+        }
+    },
+
+  
+  {
+      $project:{
+          _id:1,
+          createdPosts:{ $size : '$createdPosts' },
+          savedPosts:{ $size : '$savedPosts' },
+          savedByothers:{ $size : '$savedByothers' }
+          }
+      }
+
+
+
+])
+
+
+
+//----------------------------------------------------------------------------
+
+
 
 
 db.getCollection("savedposts").aggregate([

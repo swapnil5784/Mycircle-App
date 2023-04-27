@@ -102,7 +102,7 @@ router.get("/", async function (req, res, next) {
 router.post("/save", async function (req, res, next) {
   try {
     console.log(req.user._id);
-    console.log(req.body)
+    console.log("-------------->>>>>>",req.body)
     await SavedPostsModel.create(req.body);
     res.send("ok");
   } catch (error) {

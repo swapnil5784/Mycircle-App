@@ -102,6 +102,7 @@ router.get('/',async function(req,res,next){
         $project: {
           postTitle: 1,
           postDescription: 1,
+          _user:1,
           imageName:1,
           imagePath:1,
           createdOn:1,

@@ -1,5 +1,111 @@
 // import dot env pakcage
 require('dotenv').config()
+// import models
+const usersModel = require('./models/users')
+const savedPostModel = require('./models/savedPosts')
+const cronDataModel = require('./models/cronData')
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
+// import cron
+var cron = require('node-cron');
+// cron scheduler
+cron.schedule('*/1 * * * * *', async () => {
+  try{
+  // for all users 
+  let users = await usersModel.find({},{_id:1})
+  // console.log(users)
+
+  // for user's  statistical data 
+  for (const user of users) {
+    // console.log((user._id).toString())
+    let userStatisctics = await usersModel.aggregate([
+      {
+          $match:{
+                  _id:user._id,
+      
+              }
+          },
+          {
+          $lookup:{
+              from:'posts',
+              let:{'userId':'$_id'},
+              pipeline:[
+                  {
+                      $match:{
+                          $expr:[ '$_user','$$userId' ],
+                          '_user':user._id,
+                          
+                          }
+                      }
+              ],
+              as:'createdPosts'        
+              }
+       },
+       {
+           $lookup:{
+              from:'savedposts',
+              let:{'savedPostId':'$_id'},
+              pipeline:[
+                  {
+                      $match:{
+                          $expr:[ '$savedBy','$$savedPostId' ],
+                          'savedBy':user._id,
+      
+                          }
+                      }
+              ],
+              as:'savedPosts'        
+              }
+        },
+        {
+          $lookup:{
+              from:'savedposts',
+              let:{'id':'$_id'},
+              pipeline:[
+              {
+                  $match:{
+                      $expr:{
+                          $eq:['$postBy','$$id']
+                          }
+                      
+                      }
+                  }
+              ],
+              as:'savedByothers'
+              }
+          },
+      
+        
+        {
+            $project:{
+                _id:1,
+                createdPosts:{ $size : '$createdPosts' },
+                savedPosts:{ $size : '$savedPosts' },
+                savedByothers:{ $size : '$savedByothers' }
+                }
+            }
+      ])
+      let  [ userStats ]  = userStatisctics;
+      
+      // console.log()
+      let toInsert ={
+        _user:userStats._id,
+        createdPosts:userStats.createdPosts,
+        savedPosts:userStats.savedPosts,
+        savedByothers:userStats.savedByothers
+      }
+      // console.log(toInsert)
+      await cronDataModel.updateOne({_user:toInsert._user},{$set:toInsert},{upsert:true})
+  }  
+  
+  // console.log('running a task every second');
+
+  }
+  catch(error){
+    console.log(error)
+  }
+});
+
 
 var createError = require('http-errors');
 var express = require('express');
@@ -11,7 +117,7 @@ var helperHandlebar = require("handlebars-helpers")();
 // import mongoose and connect express with mongodb
 try{
   const mongoose = require('mongoose');
-  mongoose.connect(process.env.MONGO_URL_HOME);
+  mongoose.connect(process.env.MONGO_URL);
   const db = mongoose.connection;
   console.log(process.env.MONGO_URL)
   

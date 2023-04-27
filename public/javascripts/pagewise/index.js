@@ -39,11 +39,11 @@ const userEvents =function(){
         console.log(order)
         if(window.location.search == ''){
           $("#renderHere").load(`/timeline?sortDateTime=${order[0]} div#renderHere`)
-          window.history.pushState(null,null,`/timeline?sortDateTime=${order[0]}`)
+          // window.history.pushState(null,null,`/timeline?sortDateTime=${order[0]}`)
         }
         else{
           $("#renderHere").load(`/timeline${window.location.search}&sortDateTime=${order[0]} div#renderHere`)
-          window.history.pushState(null,null,`/timeline${window.location.search}&sortDateTime=${order[0]}`)
+          // window.history.pushState(null,null,`/timeline${window.location.search}&sortDateTime=${order[0]}`)
 
         }
         // $.ajax({
@@ -79,12 +79,12 @@ const userEvents =function(){
         console.log(order)
         if(window.location.search == ''){
           $("#renderHere").load(`/timeline?sortTitle=${order[0]} div#renderHere`)
-          window.history.pushState(null,null,`/timeline?sortTitle=${order[0]}`)
+          // window.history.pushState(null,null,`/timeline?sortTitle=${order[0]}`)
 
         }
         else{
           $("#renderHere").load(`/timeline${window.location.search}&sortTitle=${order[0]} div#renderHere`,function(){}) 
-          window.history.pushState(null,null,`/timeline${window.location.search}&sortTitle=${order[0]}`)
+          // window.history.pushState(null,null,`/timeline${window.location.search}&sortTitle=${order[0]}`)
  
         }
         
@@ -338,18 +338,19 @@ const userEvents =function(){
           alert('Saved')
           $(this).attr('isSaved','true')
           $(this).html('Saved')
+          $.ajax({
+            method:'post',
+            url:'/saved-posts/save',
+            data:{
+              savedBy:$(this).attr('data'),
+              _post:$(this).attr('id'),
+              postBy:$(this).attr('postOwner')
+            },
+            success:function(res){
+              console.log('saved ajax called successfully')
+            }
+          });
         }     
-        $.ajax({
-          method:'post',
-          url:'/saved-posts/save',
-          data:{
-            savedBy:$(this).attr('data'),
-            _post:$(this).attr('id')
-          },
-          success:function(res){
-            console.log('saved ajax called successfully')
-          }
-        })
       })
     }
 

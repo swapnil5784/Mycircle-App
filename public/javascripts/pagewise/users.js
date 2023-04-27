@@ -3,8 +3,16 @@ const allUsersEvents = function(){
     // 2.declare init function
     this.init=function(){
         _this.searchUsersFromAllUsers()
+        _this.allusersPagination()
     }
     // 4.write functions
+
+    // pagination for all users
+      this.allusersPagination = function(){
+        $(".click-page").on('click',function(){
+          $("#renderHere").load(`/users?page=${$(this).attr('page')} div#renderHere`)
+        })
+      }
 
     // for search users from all users
         this.searchUsersFromAllUsers = function(){

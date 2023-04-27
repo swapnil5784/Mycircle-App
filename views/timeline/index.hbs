@@ -98,7 +98,7 @@
                               {{#compare  this.user._id '!=' ../user._id }}
 
 
-             <button style="margin-right: 30px;" id="{{this._id}}" data="{{../user._id}}" class="btn btn-outline-success  col-6 col-sm-4 col-md-3 col-xl py-3 savePost" isSaved='false' type="submit">Save</button>
+             <button style="margin-right: 30px;" postOwner="{{this._user}}" id="{{this._id}}" data="{{../user._id}}" class="btn btn-outline-success  col-6 col-sm-4 col-md-3 col-xl py-3 savePost" isSaved='false' type="submit">Save</button>
                                {{/compare}}
 
                   {{#compare  this.user._id '==' ../user._id }}

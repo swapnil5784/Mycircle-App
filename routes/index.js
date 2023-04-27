@@ -336,6 +336,13 @@ router.get("/search", async function (req, res, next) {
     // console.log(pipeline)
     let allPostsWithUsername = await postsModel.aggregate(pipeline);
     let noOfPosts = allPostsWithUsername.length;
+    if(!noOfPosts){
+      console.log('--------------0 posts-----------------------------')  
+      res.render("noPost", {
+        title: "My circle",
+        
+      });  
+    }
     let needPagination = noOfPosts/4;
     let pageArray = []
     for (let i = 1; i <= Math.floor(needPagination); i++) {
