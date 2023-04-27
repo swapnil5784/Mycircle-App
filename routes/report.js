@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const usersModel = require('../models/users');
 const postsModel = require('../models/posts')
-
+const cronDataModel = require('../models/cronData')
 // get route to rednder the report page
 router.get('/',async function(req,res,next){
     try{
@@ -88,11 +88,81 @@ router.get('/',async function(req,res,next){
                   imagePath:1,
                   updatedOn:1
               }
+          },
+          {
+            $sort:{
+              createdOn:-1
+            }
           }
            
         ]);
+        // ------------------------------------for cron Data-------------------------------------------
       // console.log(allPosts);
-      res.render('report/index',{title:'report' , layout:'users-layout' , users:users, posts:allPosts , userLogged:loginUser})
+        let lookup ={
+          $lookup:{
+            from:'users',
+            let:{'userId':'$_user'},
+            pipeline:[
+              {
+                $match:{
+                  $expr:{
+                    $eq:['$_id','$$userId']
+                  }
+                }
+              }
+            ],
+            as:'user'
+          }
+        }
+        let project = {
+          $project:{
+            user:{$arrayElemAt:['$user',0]},
+            createdPosts:1,
+            savedPosts:1,
+            savedByothers:1
+          }
+        }
+        let addFields ={
+          $addFields:{'fullname':{$concat:['$user.firstName',' ','$user.lastName']},'email':'$user.userEmail'}
+        }
+        let sort = {
+          $sort:{
+            createdOn:-1
+          }
+        }
+
+        // doubt here 
+        if(req.query.sort){
+          let toSort = req.query.sort
+          console.log(req.query)
+          // console.log(toSort)
+          if(req.query.order == 'desc'){
+            console.log('under desc-----------------------')
+            sort={
+              $sort:{
+                toSort : 1
+              }
+            }
+          }
+          else{
+            console.log('under asc-----------------------')
+            sort={
+              $sort:{
+                toSort : -1
+              }
+            }
+          }
+          
+        }
+        console.log(sort)
+      let pipeline =[]
+      pipeline.push(lookup,project,addFields,sort)
+      console.log(JSON.stringify(pipeline,null,3))
+      let cronUserData =  await cronDataModel.aggregate(pipeline)
+      // console.log(cronUserData)
+
+      // console.log("--------------------------",cronUserData)
+      res.render('report/index',{title:'report' , layout:'users-layout' ,userReport:cronUserData, users:users, posts:allPosts , userLogged:loginUser})
     }
     catch(error){
       console.log(error);

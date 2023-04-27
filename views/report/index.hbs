@@ -1,7 +1,49 @@
 <br>
 
 {{!-- ---------------------------------------users --}}
-<h4 class="text-muted"> Report Page </h4>
+<h3 class="text-muted"> Report Page </h3>
+<h4 class="text-muted">Data by Cron</h4>
+
+<div class="col-12">
+                <div class="card">
+                  <div class="table-responsive">
+                    <table class="table table-vcenter card-table table-striped ">
+                      <thead>
+                        <tr>
+                          <th><input type="button" order="desc" class="cron-titles" id="fullname" value="Name"></th>
+                          <th><input type="button" order="desc" class="cron-titles" id="email" value="Email"></th>
+                          <th><input type="button" order="desc" class="cron-titles" id="savedByothers" value="SavedByOthers"></th>
+                          <th><input type="button" order="desc" class="cron-titles" id="createdPosts" value="Posts created"></th>
+                          <th><input type="button" order="desc" class="cron-titles" id="savedPosts" value="Posts saved"></th>
+                        </tr>
+                      </thead>
+                      <tbody class="cronsort">
+
+{{#each userReport}}
+                        <tr>
+                          <td>{{this.user.firstName}} {{this.user.lastName}}</td>
+                          <td>{{this.user.userEmail}}</td>
+                          <td>{{this.savedByothers}}</td>
+                          <td class="text-muted">
+                            {{this.createdPosts}}
+                          </td>
+                          <td class="text-muted">
+                            {{this.savedPosts}}
+                          </td>
+                          
+                        </tr>
+{{/each}}
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <br>
+<h4 class="text-muted"> Posts Data </h4>
+
+
+{{!-- ----------------------------------------------------aggregate queru data  --}}
 <div class="col-12">
                 <div class="card">
                   <div class="table-responsive">
@@ -117,3 +159,8 @@
                   </div>
                 </div>
               </div>
+<script >
+  $(document).ready(function(){
+  reportEvents()
+  })
+</script>
