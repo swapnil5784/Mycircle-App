@@ -10,7 +10,7 @@ const timelineEvents = function(){
         console.log('------------->d ready to filter post by dropdown')
         $("#filterBtn").on('click',function(){
             alert(`${$("#whichPosts").val()} and ${$("#aboutPosts").val()}`)
-            $()
+            $("#renderHere").load(`/timeline?post=${$("#whichPosts").val()}&aboutpost=${$("#aboutPosts").val()} #render`)
         })
     }
 

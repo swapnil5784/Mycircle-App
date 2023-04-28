@@ -61,7 +61,7 @@ router.get('/',async function(req,res,next){
       let pipeline=[]
       let match={
         $match:{
-          isArchived:false
+          isArchived:false,
         }
       }
       let sort ={
@@ -109,7 +109,16 @@ router.get('/',async function(req,res,next){
           user: { $arrayElemAt: ["$user", 0] },
         },
       }
-      // if(req.query.)
+      if(req.query.post | req.query.aboutpost){
+        console.log(req.query)
+        // match.$match.$or = [
+        //   {postTitle : req.query.post},
+        //   {postDescription : req.query.aboutpost},
+        // ]
+        // match.$match.postTitle = req.query.post;
+        // match.$match.postDescription = req.query.aboutpost
+        console.log(match)
+      }
       if(req.query.page){
         let postLimit = 4;
         let paginationPage = parseInt(req.query.page)
