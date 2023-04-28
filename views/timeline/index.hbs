@@ -53,12 +53,9 @@
 {{!-- -----pagination start below div---- --}}
 <div id="index-pagination">
   <ul class="pagination ">
-    <li class="page-item "><button page="1" type="button" class="page-link click-page">1</button></li>
-    <li class="page-item"><button page="2" type="button" class="page-link click-page">2</button></li>
-    <li class="page-item"><button page="3" type="button" class="page-link click-page">3</button></li>
-    <li class="page-item"><button page="4" type="button" class="page-link click-page">4</button></li>
-    <li class="page-item"><button page="5" type="button" class="page-link click-page">5</button></li>
-    <li class="page-item"><button page="6" type="button" class="page-link click-page">6</button></li>
+{{#each pageArray}}
+    <li class="page-item "><button page="{{this}}" type="button" class="page-link click-page">{{this}}</button></li>
+{{/each}}
 
     <li style="margin-left: 400px;" class="page-item"><button type="button" disabled class="page-link">Sort : </button>
     </li>

@@ -109,55 +109,13 @@ router.get('/',async function(req,res,next){
           user: { $arrayElemAt: ["$user", 0] },
         },
       }
-      // if for pagination page in url
-      if(req.query.page){
-        let postLimit = 4;
-        let paginationPage = parseInt(req.query.page)
-        limit = {
-          $limit:postLimit*paginationPage
-        }
-        skip = {
-          $skip:postLimit*(paginationPage-1)
-        }
-      }
 
-      // if sortByTitle in url
-      if(req.query.sortByTitle){
-        if(req.query.sortByTitle == 'asc'){
-          sort = {
-            $sort:{postTitle:1}
-          }  
-        }
-        else{
-            sort = {
-            $sort:{postTitle:-1}
-          }
-        }
-      }
-
-      // if sortByDateTime in url
-      if(req.query.sortByDateTime){
-        if(req.query.sortByDateTime == 'desc'){
-          sort ={
-            $sort:{
-              createdOn:1
-            }
-          }
-        }
-        else{
-          sort ={
-            $sort:{
-              createdOn:-1
-            }
-          }
-        }
-      }
 
       //filtering posts if post(postType) in url and for aboutPst 
       if(req.query.post){
         console.log('-------------------------->>inside filter post if condition');
         console.log('req.query.post----------------------->',req.query.post)
-        match={$match: {
+        pipeline.push({$match: {
           isArchived:false,
           $or:[
             {
@@ -168,11 +126,11 @@ router.get('/',async function(req,res,next){
             }
           ]
         }
-      }
+      })
       switch(req.query.post) {
         case 'mine':
           console.log('-------------------------->>inside switch mine condition')
-          match= {$match:{
+          pipeline.push({$match:{
             isArchived:false,
             $or:[
               {
@@ -186,14 +144,14 @@ router.get('/',async function(req,res,next){
               $eq:['$_user',new ObjectId(req.user._id)]
             }
           }
-        }
+        })
           // match.$match.$expr = {
           //     $eq:['$_user',ObjectId(`${req.user._id}`)]
           // }
           break;
         case 'others':
           console.log('-------------------------->>inside others mine condition')
-          match={$match:{
+          pipeline.push({$match:{
             isArchived:false,
             $or:[
               {
@@ -207,7 +165,7 @@ router.get('/',async function(req,res,next){
               $ne:['$_user',new ObjectId(req.user._id)]
             }
           }
-        }
+        })
           // match.$match.$expr = {
           //   $ne:['$_user',ObjectId(`${req.user._id}`)]
           //   }
@@ -217,17 +175,72 @@ router.get('/',async function(req,res,next){
           break;
       }
       }
+      console.log()
+      let forPagination = await postsModel.aggregate(pipeline);
+      let pagerequired = forPagination.length 
+            // if for pagination page in url
+            if(req.query.page){
+              let postLimit = 4;
+              let paginationPage = parseInt(req.query.page)
+              pipeline.push({
+                $limit:postLimit*paginationPage
+              })
+              pipeline.push({
+                $skip:postLimit*(paginationPage-1)
+              })
+            }
+      
+            // if sortByTitle in url
+            if(req.query.sortByTitle){
+              if(req.query.sortByTitle == 'asc'){
+                pipeline.push({
+                  $sort:{postTitle:1}
+                })  
+              }
+              else{
+                pipeline.push({
+                  $sort:{postTitle:-1}
+                })
+              }
+            }
+      
+            // if sortByDateTime in url
+            if(req.query.sortByDateTime){
+              if(req.query.sortByDateTime == 'desc'){
+                pipeline.push({
+                  $sort:{
+                    createdOn:1
+                  }
+                })
+              }
+              else{
+                pipeline.push({
+                  $sort:{
+                    createdOn:-1
+                  }
+                })
+              }
+            }
       
       // prepare pipeline
-      pipeline.push(match,sort,limit,skip,lookup,project)
+      // pipeline.push(match,sort,limit,skip,lookup,project)
       let allPostsWithUsername = await postsModel.aggregate(pipeline)
+      let totalPosts = pagerequired
+      // let totalPosts = await postsModel.count({})
+      let postsperPage = 4;
+      let postArray = []
+      for (let i = 1; i <= Math.ceil(totalPosts/postsperPage); i++) {
+        postArray.push(i)
+      } 
+      console.log(totalPosts,postArray)
       console.log(JSON.stringify(pipeline,null,3))
       // console.log(allPostsWithUsername)
       res.render("timeline/index", {
       title: "user-home",
       layout: "users-layout",
       posts:allPostsWithUsername,
-      userLogged:loginUser
+      userLogged:loginUser,
+      pageArray:postArray
     });
   }
   catch(error){
@@ -250,7 +263,7 @@ router.get('/',async function(req,res,next){
 //     isArchived:false
 //   }
 // }
-
+//
 // let lookup={
 //   $lookup: {
 //     from: "users",
@@ -319,7 +332,7 @@ router.get('/',async function(req,res,next){
 //         posts:postsSortedOnTitle,
 //         userLogged:loginUser
 //       });
-      
+//     
 //     }
 //     // post list pagination after login
 //     if(req.query.page && req.query.page != "undefined"){
@@ -385,10 +398,10 @@ router.get('/',async function(req,res,next){
 //         layout: "users-layout",
 //         posts:paginationPosts,
 //         userLogged:loginUser
-
+//
 //       });
 //     }
-
+//
 // // --------------------------------------------------------
 //     if(req.query.whichPosts || req.query.aboutPosts){
 //       let aboutPosts = `${req.query.aboutPosts}`;
@@ -416,12 +429,12 @@ router.get('/',async function(req,res,next){
 //                   console.log('for all no match')
 //                   matchObject={
 //                     $match:{
-                     
+//                     
 //                     }
 //                   }
 //             break;
 //         }
-        
+//        
 //       let lookup = {
 //         $lookup: {
 //           from: "users",
@@ -522,7 +535,7 @@ router.get('/',async function(req,res,next){
 //           user: { $arrayElemAt: ["$user", 0] },
 //         },
 //       },
-      
+//      
 //     ])
 //     // console.log(req.query,'-----in timeline---- default');
 //     res.render("timeline/index", {
