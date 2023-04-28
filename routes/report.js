@@ -141,7 +141,9 @@ router.get('/',async function(req,res,next){
           console.log('---------------------------->> search fr user',req.query.user)
           match={
             $match:{
-              fullname:{$regex:`${req.query.user}` , $options:'i'}
+              $or:[
+              {fullname:{$regex:`${req.query.user}` , $options:'i'}},
+              {email:{$regex:`${req.query.user}` , $options:'i'}}]
             }
           }
         }
@@ -236,19 +238,27 @@ router.get('/',async function(req,res,next){
             }
           }
           
-
-        
-          
-        
         console.log(sort)
       let pipeline =[]
-      pipeline.push(match,lookup,project,addFields,sort)
+      pipeline.push(lookup,project,addFields,match,sort)
       console.log(JSON.stringify(pipeline,null,3))
       let cronUserData =  await cronDataModel.aggregate(pipeline)
-      console.log(cronUserData)
+      let totalData ={
+        savedByothers:0,
+        createdPosts:0,
+        savedPosts:0
+      }
+      for (const user of cronUserData) {
+        totalData.savedByothers+=user.savedByothers;
+        totalData.createdPosts+=user.createdPosts;
+        totalData.savedPosts+=user.savedPosts;
+      }
+      totalData.users = (await usersModel.find({})).length
+      console.log(totalData)
+      // console.log(cronUserData)
 
       // console.log("--------------------------",cronUserData)
-      res.render('report/index',{title:'report' , layout:'users-layout' ,userReport:cronUserData, users:users, posts:allPosts , userLogged:loginUser})
+      res.render('report/index',{title:'report' , layout:'users-layout',total:totalData ,userReport:cronUserData, users:users, posts:allPosts , userLogged:loginUser})
     }
     catch(error){
       console.log(error);

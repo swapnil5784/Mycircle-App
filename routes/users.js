@@ -153,6 +153,11 @@ router.get('/',async function(req,res,next){
             createdOn:1
         }
     }
+    let sort ={
+      $sort:{
+        created:-1
+      }
+    }
     
     if(req.query.page){
       let page = parseInt(req.query.page)
@@ -184,10 +189,31 @@ router.get('/',async function(req,res,next){
           }
         }
       }
+      if(req.query.sortUsers){
+        if(req.query.sortUsers == 'desc'){
+          console.log('------------------->under desc')
+          sort ={
+            $sort:{
+              createdOn:1
+            }
+        }
+        }
+        else{
+          console.log('------------------->under asc')
+          sort ={
+            $sort:{
+              createdOn:-1
+            }
+        } 
+        }
+        
+      }
       
       // for all users
-    pipeline.push(match,limit,skip,firstLookup,secondLookup,project)
+    pipeline.push(firstLookup,secondLookup,project,sort)
+    // console.log('pipeline -->',pipeline);
     let userPostCount = await usersModel.aggregate(pipeline);
+    // console.log('users list ----------->',userPostCount)
     
     let allUsers = await usersModel.aggregate([match])
     let noOfUsers = allUsers.length
@@ -197,7 +223,7 @@ router.get('/',async function(req,res,next){
       arrUsers.push(i)
     } 
 
-    console.log(arrUsers);
+    // console.log(arrUsers);
     res.render("all-users/index", {
       title: "users",
       layout: "for-user",

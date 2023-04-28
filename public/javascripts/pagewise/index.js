@@ -12,10 +12,9 @@ const userEvents =function(){
         _this.createPostValidation();
         _this.ajaxCallforModal();
         _this.editPostValidation();
-        _this.sortUsers();
         _this.archivePosts();
         _this.unarchivePosts();
-        _this.filterpostsAtTimeline();
+        // _this.filterpostsAtTimeline();
         _this.sortPostOnTitle();
         _this.paginationBtnClick();
         _this.sortByTitle();
@@ -193,26 +192,26 @@ const userEvents =function(){
 
 
 
-
+// --------------------------------------moved to timeline.js in public/javascripts/timeline.js----------
   // filter posts at timeline page
-  this.filterpostsAtTimeline = function(){
-    $("#filterBtn").on('click',function(){
-      alert('clicked')
-      let postDetailsToSearch={
-        whichPosts:$("#whichPosts").val(),
-        aboutPosts:$("#aboutPosts").val()
-      }
-      console.log(postDetailsToSearch)
-      $.ajax({
-        method:'get',
-        url:`/timeline?whichPosts=${$("#whichPosts").val()}&aboutPosts=${$("#aboutPosts").val()}`,
-        success:function(res){
-          $("#renderHere").load(`/timeline?whichPosts=${$("#whichPosts").val()}&aboutPosts=${$("#aboutPosts").val()} div#renderHere`)
-        }
-      })
-    })
-  }
-
+  // this.filterpostsAtTimeline = function(){
+  //   $("#filterBtn").on('click',function(){
+  //     alert('clicked')
+  //     let postDetailsToSearch={
+  //       whichPosts:$("#whichPosts").val(),
+  //       aboutPosts:$("#aboutPosts").val()
+  //     }
+  //     console.log(postDetailsToSearch)
+  //     $.ajax({
+  //       method:'get',
+  //       url:`/timeline?whichPosts=${$("#whichPosts").val()}&aboutPosts=${$("#aboutPosts").val()}`,
+  //       success:function(res){
+  //         $("#renderHere").load(`/timeline?whichPosts=${$("#whichPosts").val()}&aboutPosts=${$("#aboutPosts").val()} div#renderHere`)
+  //       }
+  //     })
+  //   })
+  // }
+// -----------------------------------------------------------------------------------------------------------
 
   // unarchive posts
 
@@ -245,28 +244,7 @@ const userEvents =function(){
       })
     }
 
-   // sort users
-   this.sortUsers = function(){
-    $("#sortUsers").on('click',function(){
-      //alert($(this).attr('data'))
-      $.ajax({
-        method:'get',
-        url:`/users/sort/${$(this).attr('data')}`,
-        success:function(res){
-          console.log(res)
-          $("#torender").html(res)
-        },
-        error:function(error){
-          console.log(error);
-        }
-      })
-      if($(this).attr('data') == 'ascending'){
-        return $(this).attr('data','descending');
-      }
-      return $(this).attr('data','ascending'); 
- 
-    })
-   }
+
 
     //ajax Call for edit-post modal
     this.ajaxCallforModal =  function(){

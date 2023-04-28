@@ -17,6 +17,13 @@
                     <table class="filteredUsers table table-vcenter card-table table-striped ">
                       <thead>
                         <tr>
+                          <th>Total:</th>
+                          <th>Users:{{total.users}}</th>
+                          <th>SavedByOthers:{{total.savedByothers}}</th>
+                          <th>createdPosts:{{total.createdPosts}}</th>
+                          <th>savedPosts:{{total.savedPosts}}</th>
+                        </tr>
+                        <tr>
                           <th><input type="button" order="asc" class="cron-titles" id="fullname" value="Name"></th>
                           <th><input type="button" order="asc" class="cron-titles" id="email" value="Email"></th>
                           <th><input type="button" order="asc" class="cron-titles" id="savedByothers" value="SavedByOthers"></th>
@@ -24,10 +31,10 @@
                           <th><input type="button" order="asc" class="cron-titles" id="savedPosts" value="Posts saved"></th>
                         </tr>
                       </thead>
-                      <tbody class="fire">
+                      <tbody class="sortedUsers">
 
 {{#each userReport}}
-                        <tr>
+                        <tr class="loadData">
                           <td>{{this.user.firstName}} {{this.user.lastName}}</td>
                           <td>{{this.user.userEmail}}</td>
                           <td>{{this.savedByothers}}</td>

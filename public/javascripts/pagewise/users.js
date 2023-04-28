@@ -4,8 +4,23 @@ const allUsersEvents = function(){
     this.init=function(){
         _this.searchUsersFromAllUsers()
         _this.allusersPagination()
+        _this.sortUsers();
     }
     // 4.write functions
+
+
+    // sort users at all user page
+    this.sortUsers = function(){
+      $("#sortUsers").on('click',function(){
+        $("#renderHere").load(`/users?sortUsers=${$(this).attr('order')} div#renderHere`)
+        if($(this).attr('order') == 'asc'){
+          $(this).attr('order','desc')
+        }
+        else{
+          $(this).attr('order','asc')
+        }
+      })
+    }
 
     // pagination for all users
       this.allusersPagination = function(){
@@ -16,18 +31,10 @@ const allUsersEvents = function(){
 
     // for search users from all users
         this.searchUsersFromAllUsers = function(){
-            console.log('ready for search at all users')
+            // console.log('ready for search at all users')
             $("#searchUsers").on('keyup',function(){
               console.log($("#searchUsers").val())
               $("#renderWithPagination").load(`/users?user=${$("#searchUsers").val()} div#renderWithPagination`)
-            //   $.ajax({
-            //     method:'get',
-            //     url:`/users?user=${$("#searchUsers").val()}`,
-            //     success:function(res){
-            //     //   console.log(res)
-                 
-            //     }
-            //   })
             })
           }
 

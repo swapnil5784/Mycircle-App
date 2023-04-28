@@ -109,6 +109,7 @@ router.get('/',async function(req,res,next){
           user: { $arrayElemAt: ["$user", 0] },
         },
       }
+      // if(req.query.)
       if(req.query.page){
         let postLimit = 4;
         let paginationPage = parseInt(req.query.page)

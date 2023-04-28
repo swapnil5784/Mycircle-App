@@ -8,7 +8,7 @@
         <ul class="navbar-nav">
           {{!-- active --}}
           <li class="nav-item ">
-            <button id="sortUsers" data="ascending" class="btn btn-outline-success w-100" >
+            <button id="sortUsers" order="desc" class="btn btn-outline-success w-100" >
               <span
                 class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
@@ -48,7 +48,7 @@
 <div class="row row-cards">
     {{#if users}}
   {{#each users}}
-              <div class="col-md-6 col-lg-3">
+              <div class="arrangedUsers col-md-6 col-lg-3">
                 <div class="card">
                   <div class="card-body p-4 text-center">
                     {{#compare this._id "==" ../user._id}}
