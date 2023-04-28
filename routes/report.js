@@ -130,36 +130,122 @@ router.get('/',async function(req,res,next){
             createdOn:-1
           }
         }
+        let match ={
+          $match:{
+
+          }
+        }
+
+        // filter user by search
+        if(req.query.user){
+          console.log('---------------------------->> search fr user',req.query.user)
+          match={
+            $match:{
+              fullname:{$regex:`${req.query.user}` , $options:'i'}
+            }
+          }
+        }
 
         // doubt here 
-        if(req.query.sort){
-          let toSort = req.query.sort
+    
           console.log(req.query)
-          // console.log(toSort)
-          if(req.query.order == 'desc'){
-            console.log('under desc-----------------------')
-            sort={
-              $sort:{
-                toSort : 1
+          // for fullname sorting
+          if(req.query.sort == 'fullname'){
+            if(req.query.order == 'desc'){
+              console.log('inside desc---------------------->>')
+              sort = {
+                $sort:{
+                  fullname:-1
+                }
+              }
+            }
+            else{
+              console.log('inside asc---------------------->>')
+              sort = {
+                $sort:{
+                  fullname:1
+                }
               }
             }
           }
-          else{
-            console.log('under asc-----------------------')
-            sort={
-              $sort:{
-                toSort : -1
+          // for email sorting
+          if(req.query.sort == 'email'){
+            if(req.query.order == 'desc'){
+              sort = {
+                $sort:{
+                  email:-1
+                }
+              }
+            }
+            else{
+              sort = {
+                $sort:{
+                  email:1
+                }
+              }
+            }
+          }
+          if(req.query.sort == 'savedPosts'){
+            if(req.query.order == 'desc'){
+              sort = {
+                $sort:{
+                  savedPosts:-1
+                }
+              }
+            }
+            else{
+              sort = {
+                $sort:{
+                  savedPosts:1
+                }
+              }
+            }
+          }
+
+          if(req.query.sort == 'createdPosts'){
+            if(req.query.order == 'desc'){
+              sort = {
+                $sort:{
+                  createdPosts:-1
+                }
+              }
+            }
+            else{
+              sort = {
+                $sort:{
+                  createdPosts:1
+                }
+              }
+            }
+          }
+
+          if(req.query.sort == 'savedByothers'){
+            if(req.query.order == 'desc'){
+              sort = {
+                $sort:{
+                  savedByothers:-1
+                }
+              }
+            }
+            else{
+              sort = {
+                $sort:{
+                  savedByothers:1
+                }
               }
             }
           }
           
-        }
+
+        
+          
+        
         console.log(sort)
       let pipeline =[]
-      pipeline.push(lookup,project,addFields,sort)
+      pipeline.push(match,lookup,project,addFields,sort)
       console.log(JSON.stringify(pipeline,null,3))
       let cronUserData =  await cronDataModel.aggregate(pipeline)
-      // console.log(cronUserData)
+      console.log(cronUserData)
 
       // console.log("--------------------------",cronUserData)
       res.render('report/index',{title:'report' , layout:'users-layout' ,userReport:cronUserData, users:users, posts:allPosts , userLogged:loginUser})

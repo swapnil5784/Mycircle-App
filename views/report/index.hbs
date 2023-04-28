@@ -1,23 +1,30 @@
 <br>
 
+
 {{!-- ---------------------------------------users --}}
 <h3 class="text-muted"> Report Page </h3>
 <h4 class="text-muted">Data by Cron</h4>
-
+<div  class="input-icon">
+                    <span class="input-icon-addon">
+                      <!-- Download SVG icon from http://tabler-icons.io/i/search -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg>
+                    </span>
+                    <input type="text" id="searchUsersAtCronData" value="" class="form-control" placeholder="Search…" >
+                  </div>
 <div class="col-12">
                 <div class="card">
                   <div class="table-responsive">
-                    <table class="table table-vcenter card-table table-striped ">
+                    <table class="filteredUsers table table-vcenter card-table table-striped ">
                       <thead>
                         <tr>
-                          <th><input type="button" order="desc" class="cron-titles" id="fullname" value="Name"></th>
-                          <th><input type="button" order="desc" class="cron-titles" id="email" value="Email"></th>
-                          <th><input type="button" order="desc" class="cron-titles" id="savedByothers" value="SavedByOthers"></th>
-                          <th><input type="button" order="desc" class="cron-titles" id="createdPosts" value="Posts created"></th>
-                          <th><input type="button" order="desc" class="cron-titles" id="savedPosts" value="Posts saved"></th>
+                          <th><input type="button" order="asc" class="cron-titles" id="fullname" value="Name"></th>
+                          <th><input type="button" order="asc" class="cron-titles" id="email" value="Email"></th>
+                          <th><input type="button" order="asc" class="cron-titles" id="savedByothers" value="SavedByOthers"></th>
+                          <th><input type="button" order="asc" class="cron-titles" id="createdPosts" value="Posts created"></th>
+                          <th><input type="button" order="asc" class="cron-titles" id="savedPosts" value="Posts saved"></th>
                         </tr>
                       </thead>
-                      <tbody class="cronsort">
+                      <tbody class="fire">
 
 {{#each userReport}}
                         <tr>

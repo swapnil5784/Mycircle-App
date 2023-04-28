@@ -197,7 +197,7 @@ router.get('/',async function(req,res,next){
       arrUsers.push(i)
     } 
 
-    console.log("usersssssssssssssssssssssssssssssssssssss",arrUsers);
+    console.log(arrUsers);
     res.render("all-users/index", {
       title: "users",
       layout: "for-user",
