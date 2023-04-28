@@ -119,8 +119,8 @@ router.get('/',async function(req,res,next){
           $skip:postLimit*(paginationPage-1)
         }
       }
-      if(req.query.sortTitle){
-        if(req.query.sortTitle == 'asc'){
+      if(req.query.sortByTitle){
+        if(req.query.sortByTitle == 'asc'){
           sort = {
             $sort:{postTitle:1}
           }  
@@ -131,8 +131,8 @@ router.get('/',async function(req,res,next){
           }
         }
       }
-      if(req.query.sortDateTime){
-        if(req.query.sortDateTime == 'asc'){
+      if(req.query.sortByDateTime){
+        if(req.query.sortByDateTime == 'desc'){
           sort ={
             $sort:{
               createdOn:1
@@ -147,8 +147,76 @@ router.get('/',async function(req,res,next){
           }
         }
       }
-      pipeline.push(match,sort,limit,skip,lookup,project)
+      if(req.query.post){
+        console.log('-------------------------->>inside filter post if condition');
+        console.log('req.query.post----------------------->',req.query.post)
+        match={$match: {
+          isArchived:false,
+          $or:[
+            {
+              postTitle:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+            },
+            {
+              postDescription:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+            }
+          ]
+        }
+      }
+      switch(req.query.post) {
+        case 'mine':
+          console.log('-------------------------->>inside switch mine condition')
+          match= {$match:{
+            isArchived:false,
+            $or:[
+              {
+                postTitle:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+              },
+              {
+                postDescription:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+              }
+            ],
+            $expr:{
+              $eq:['$_user',new ObjectId(req.user._id)]
+            }
+          }
+        }
+          // match.$match.$expr = {
+          //     $eq:['$_user',ObjectId(`${req.user._id}`)]
+          // }
+          break;
+        case 'others':
+          console.log('-------------------------->>inside others mine condition')
+          match={$match:{
+            isArchived:false,
+            $or:[
+              {
+                postTitle:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+              },
+              {
+                postDescription:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+              }
+            ],
+            $expr:{
+              $ne:['$_user',new ObjectId(req.user._id)]
+            }
+          }
+        }
+          // match.$match.$expr = {
+          //   $ne:['$_user',ObjectId(`${req.user._id}`)]
+          //   }
+          break;
+        default:
+         console.log('in default post for all')
+          break;
+      }
+      }
+      
+      
+      pipeline.push(match,sort,lookup,project)
       let allPostsWithUsername = await postsModel.aggregate(pipeline)
+      console.log(JSON.stringify(pipeline,null,3))
+      // console.log(allPostsWithUsername)
+      
       res.render("timeline/index", {
       title: "user-home",
       layout: "users-layout",
@@ -171,45 +239,45 @@ router.get('/',async function(req,res,next){
 //     // sort posts on title
 //     if(req.query.sortTitle || req.query.sortDateTime ){
 //       let pipeline = [];
-      // let match = {
-      //   $match:{
-      //     isArchived:false
-      //   }
-      // }
-      
-      // let lookup={
-      //   $lookup: {
-      //     from: "users",
-      //     let: { posts: "$_user" },
-      //     pipeline: [
-      //       {
-      //         $match: {
-      //           $expr: {
-      //             $eq: ["$_id", "$$posts"],
-      //           },
-      //         },
-      //       },
-      //       {
-      //         $project: {
-      //           firstName: 1,
-      //           lastName: 1,
-      //           profileImagePath:1
-      //         },
-      //       },
-      //     ],
-      //     as: "user",
-      //   },
-      // }
-      // let project = {
-      //   $project: {
-      //     postTitle: 1,
-      //     postDescription: 1,
-      //     imageName:1,
-      //     imagePath:1,
-      //     createdOn:1,
-      //     user: { $arrayElemAt: ["$user", 0] },
-      //   },
-      // }
+// let match = {
+//   $match:{
+//     isArchived:false
+//   }
+// }
+
+// let lookup={
+//   $lookup: {
+//     from: "users",
+//     let: { posts: "$_user" },
+//     pipeline: [
+//       {
+//         $match: {
+//           $expr: {
+//             $eq: ["$_id", "$$posts"],
+//           },
+//         },
+//       },
+//       {
+//         $project: {
+//           firstName: 1,
+//           lastName: 1,
+//           profileImagePath:1
+//         },
+//       },
+//     ],
+//     as: "user",
+//   },
+// }
+// let project = {
+//   $project: {
+//     postTitle: 1,
+//     postDescription: 1,
+//     imageName:1,
+//     imagePath:1,
+//     createdOn:1,
+//     user: { $arrayElemAt: ["$user", 0] },
+//   },
+// }
 //       let sort ={ }
 //       if(req.query.sortTitle){
 //         if(req.query.sortTitle == 'asc'){

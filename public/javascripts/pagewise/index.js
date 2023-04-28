@@ -15,78 +15,78 @@ const userEvents =function(){
         _this.sortUsers();
         _this.archivePosts();
         _this.unarchivePosts();
-        _this.filterpostsAtTimeline();
-        _this.sortPostOnTitle();
+        // _this.filterpostsAtTimeline();
+        // _this.sortPostOnTitle();
         _this.paginationBtnClick();
-        _this.sortByTitle();
-        _this.sortByDateTime();
+        // _this.sortByTitle();
+        // _this.sortByDateTime();
     }
     //4. declare event function
 
     // sort posts By DateTime
 
-    this.sortByDateTime = function(){
-      $("#sortByDateTime").on('click',function(){
-        // alert('sort by title clicked')
-        let order=[]
-        const _this =this;
-        if($(this).attr('order') == 'descending' ){
-          order.push('asc') 
-        }
-        else{
-          order.push('desc')
-        }
-        console.log(order)
-        if(window.location.search == ''){
-          $("#renderHere").load(`/timeline?sortDateTime=${order[0]} div#renderHere`)
-          // window.history.pushState(null,null,`/timeline?sortDateTime=${order[0]}`)
-        }
-        else{
-          $("#renderHere").load(`/timeline${window.location.search}&sortDateTime=${order[0]} div#renderHere`)
-          // window.history.pushState(null,null,`/timeline${window.location.search}&sortDateTime=${order[0]}`)
+    // this.sortByDateTime = function(){
+    //   $("#sortByDateTime").on('click',function(){
+    //     // alert('sort by title clicked')
+    //     let order=[]
+    //     const _this =this;
+    //     if($(this).attr('order') == 'descending' ){
+    //       order.push('asc') 
+    //     }
+    //     else{
+    //       order.push('desc')
+    //     }
+    //     console.log(order)
+    //     if(window.location.search == ''){
+    //       $("#renderHere").load(`/timeline?sortDateTime=${order[0]} div#renderHere`)
+    //       // window.history.pushState(null,null,`/timeline?sortDateTime=${order[0]}`)
+    //     }
+    //     else{
+    //       $("#renderHere").load(`/timeline${window.location.search}&sortDateTime=${order[0]} div#renderHere`)
+    //       // window.history.pushState(null,null,`/timeline${window.location.search}&sortDateTime=${order[0]}`)
 
-        }
-        // $.ajax({
-        //   method:'get',
-        //   url:`/timeline?sortDateTime=${order[0]}`,
-        //   success:function(res){
-        //     // console.log(res)
+    //     }
+    //     // $.ajax({
+    //     //   method:'get',
+    //     //   url:`/timeline?sortDateTime=${order[0]}`,
+    //     //   success:function(res){
+    //     //     // console.log(res)
             
-        //   }
-        // })
-        if($(_this).attr('order') == 'descending'){
-          return $(_this).attr('order' ,'ascending') 
-        }
-        return $(_this).attr('order' ,'descending')
-      })
-    }
+    //     //   }
+    //     // })
+    //     if($(_this).attr('order') == 'descending'){
+    //       return $(_this).attr('order' ,'ascending') 
+    //     }
+    //     return $(_this).attr('order' ,'descending')
+    //   })
+    // }
 
 
-    // sort posts By Title
+    // // sort posts By Title
 
-    this.sortByTitle = function(){
-      $("#sortByTitle").on('click',function(){
-        // alert('sort by title clicked')
-        console.log(window.location.search.split("&").map(p =>p.split("=")));
-        let order=[]
-        const _this =this;
-        if($(this).attr('order') == 'descending' ){
-          order.push('asc') 
-        }
-        else{
-          order.push('desc')
-        }
-        console.log(order)
-        if(window.location.search == ''){
-          $("#renderHere").load(`/timeline?sortTitle=${order[0]} div#renderHere`)
-          // window.history.pushState(null,null,`/timeline?sortTitle=${order[0]}`)
+    // this.sortByTitle = function(){
+    //   $("#sortByTitle").on('click',function(){
+    //     // alert('sort by title clicked')
+    //     console.log(window.location.search.split("&").map(p =>p.split("=")));
+    //     let order=[]
+    //     const _this =this;
+    //     if($(this).attr('order') == 'descending' ){
+    //       order.push('asc') 
+    //     }
+    //     else{
+    //       order.push('desc')
+    //     }
+    //     console.log(order)
+    //     if(window.location.search == ''){
+    //       $("#renderHere").load(`/timeline?sortTitle=${order[0]} div#renderHere`)
+    //       // window.history.pushState(null,null,`/timeline?sortTitle=${order[0]}`)
 
-        }
-        else{
-          $("#renderHere").load(`/timeline${window.location.search}&sortTitle=${order[0]} div#renderHere`,function(){}) 
-          // window.history.pushState(null,null,`/timeline${window.location.search}&sortTitle=${order[0]}`)
+    //     }
+    //     else{
+    //       $("#renderHere").load(`/timeline${window.location.search}&sortTitle=${order[0]} div#renderHere`,function(){}) 
+    //       // window.history.pushState(null,null,`/timeline${window.location.search}&sortTitle=${order[0]}`)
  
-        }
+    //     }
         
         // ajax and load method wordks same for get route call
         // $.ajax({
@@ -99,12 +99,12 @@ const userEvents =function(){
         //     window.history.pushState(null,null,`/timeline${window.location.search}&sortTitle=${order[0]}`)
       //   //   }
       //   })
-        if($(_this).attr('order') == 'descending'){
-          return $(_this).attr('order' ,'ascending') 
-        }
-        return $(_this).attr('order' ,'descending')
-      })
-      }
+      //   if($(_this).attr('order') == 'descending'){
+      //     return $(_this).attr('order' ,'ascending') 
+      //   }
+      //   return $(_this).attr('order' ,'descending')
+      // })
+      // }
 
 
 
@@ -133,30 +133,30 @@ const userEvents =function(){
 
 
 
-    // sort post by title
-    this.sortPostOnTitle = function(){
-      // console.log("ready to sort post on title")
-      $("#sortTitleAtlandingPage").on('click',function(){
-        if($(this).attr('sort')){
-          $(this).html('Title [a-z]')
-          $(this).attr('sort','false')
-        }else{
-          $(this).html('Title [z-a]')
-        return $(this).attr('sort','true')
-        }
-        alert($(this).attr("sort"))
-         $.ajax({
-          method:'get',
-          url:`/timeline?sortOnTitle=${$(this).attr('sort')}`,
-          success:function(res){
-            // console.log(res)
-            $("#renderHere").load(`/timeline?sortOnTitle=${$(this).attr('sort')} div#renderHere`)
-          }
-         })
+    // // sort post by title
+    // this.sortPostOnTitle = function(){
+    //   // console.log("ready to sort post on title")
+    //   $("#sortTitleAtlandingPage").on('click',function(){
+    //     if($(this).attr('sort')){
+    //       $(this).html('Title [a-z]')
+    //       $(this).attr('sort','false')
+    //     }else{
+    //       $(this).html('Title [z-a]')
+    //     return $(this).attr('sort','true')
+    //     }
+    //     alert($(this).attr("sort"))
+    //      $.ajax({
+    //       method:'get',
+    //       url:`/timeline?sortOnTitle=${$(this).attr('sort')}`,
+    //       success:function(res){
+    //         // console.log(res)
+    //         $("#renderHere").load(`/timeline?sortOnTitle=${$(this).attr('sort')} div#renderHere`)
+    //       }
+    //      })
 
         
-      })
-    }
+    //   })
+    // }
 
     // validation for edit post
     this.editPostValidation = function(){
@@ -192,27 +192,28 @@ const userEvents =function(){
 
 
 
+// -------------------------------moved to tileline-----------------------------------------------
 
+  // // filter posts at timeline page
+  // this.filterpostsAtTimeline = function(){
+  //   $("#filterBtn").on('click',function(){
+  //     alert('clicked')
+  //     let postDetailsToSearch={
+  //       whichPosts:$("#whichPosts").val(),
+  //       aboutPosts:$("#aboutPosts").val()
+  //     }
+  //     console.log(postDetailsToSearch)
+  //     $.ajax({
+  //       method:'get',
+  //       url:`/timeline?whichPosts=${$("#whichPosts").val()}&aboutPosts=${$("#aboutPosts").val()}`,
+  //       success:function(res){
+  //         $("#renderHere").load(`/timeline?whichPosts=${$("#whichPosts").val()}&aboutPosts=${$("#aboutPosts").val()} div#renderHere`)
+  //       }
+  //     })
+  //   })
+  // }
 
-  // filter posts at timeline page
-  this.filterpostsAtTimeline = function(){
-    $("#filterBtn").on('click',function(){
-      alert('clicked')
-      let postDetailsToSearch={
-        whichPosts:$("#whichPosts").val(),
-        aboutPosts:$("#aboutPosts").val()
-      }
-      console.log(postDetailsToSearch)
-      $.ajax({
-        method:'get',
-        url:`/timeline?whichPosts=${$("#whichPosts").val()}&aboutPosts=${$("#aboutPosts").val()}`,
-        success:function(res){
-          $("#renderHere").load(`/timeline?whichPosts=${$("#whichPosts").val()}&aboutPosts=${$("#aboutPosts").val()} div#renderHere`)
-        }
-      })
-    })
-  }
-
+// --------------------------------------------------------------------------------------------------------
 
   // unarchive posts
 
