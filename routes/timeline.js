@@ -109,6 +109,7 @@ router.get('/',async function(req,res,next){
           user: { $arrayElemAt: ["$user", 0] },
         },
       }
+      // if for pagination page in url
       if(req.query.page){
         let postLimit = 4;
         let paginationPage = parseInt(req.query.page)
@@ -119,6 +120,8 @@ router.get('/',async function(req,res,next){
           $skip:postLimit*(paginationPage-1)
         }
       }
+
+      // if sortByTitle in url
       if(req.query.sortByTitle){
         if(req.query.sortByTitle == 'asc'){
           sort = {
@@ -131,6 +134,8 @@ router.get('/',async function(req,res,next){
           }
         }
       }
+
+      // if sortByDateTime in url
       if(req.query.sortByDateTime){
         if(req.query.sortByDateTime == 'desc'){
           sort ={
@@ -147,6 +152,8 @@ router.get('/',async function(req,res,next){
           }
         }
       }
+
+      //filtering posts if post(postType) in url and for aboutPst 
       if(req.query.post){
         console.log('-------------------------->>inside filter post if condition');
         console.log('req.query.post----------------------->',req.query.post)
@@ -211,12 +218,11 @@ router.get('/',async function(req,res,next){
       }
       }
       
-      
-      pipeline.push(match,sort,lookup,project)
+      // prepare pipeline
+      pipeline.push(match,sort,limit,skip,lookup,project)
       let allPostsWithUsername = await postsModel.aggregate(pipeline)
       console.log(JSON.stringify(pipeline,null,3))
       // console.log(allPostsWithUsername)
-      
       res.render("timeline/index", {
       title: "user-home",
       layout: "users-layout",

@@ -17,7 +17,7 @@ const userEvents =function(){
         _this.unarchivePosts();
         // _this.filterpostsAtTimeline();
         // _this.sortPostOnTitle();
-        _this.paginationBtnClick();
+        // _this.paginationBtnClick();
         // _this.sortByTitle();
         // _this.sortByDateTime();
     }
@@ -110,13 +110,13 @@ const userEvents =function(){
 
     // pagination 
 
-    this.paginationBtnClick =  function(){
-      $(document).off('click',".click-page").on('click',".click-page",function(){
-        // alert($(this).attr("page"))
-        const page =  $(this).attr("page")
-        $("#index-pagination").load(`/timeline?page=${page} div#index-pagination`,function(){
-          window.history.pushState(null,null,`/timeline?page=${page}`)
-        })
+    // this.paginationBtnClick =  function(){
+    //   $(document).off('click',".click-page").on('click',".click-page",function(){
+    //     // alert($(this).attr("page"))
+    //     const page =  $(this).attr("page")
+    //     $("#index-pagination").load(`/timeline?page=${page} div#index-pagination`,function(){
+    //       window.history.pushState(null,null,`/timeline?page=${page}`)
+    //     })
         // ajax and load methos works same calls route and without reload
         // $.ajax({
         //   method:'get',
@@ -127,8 +127,8 @@ const userEvents =function(){
         //     window.history.pushState(null,null,`/timeline?page=${page}`)
         //   }
         // })
-      })
-    }
+    //   })
+    // }
 
 
 

@@ -3,7 +3,22 @@ const timelineEvents = function(){
         _this.filterPosts();
         _this.sortPostOnTitle();
         _this.sortPostOnDateandTime();
+        _this.paginationBtnClick();
     }
+
+    // event function for pagination on button-click
+    
+    this.paginationBtnClick =  function(){
+        $(document).off('click',".click-page").on('click',".click-page",function(){
+          // alert($(this).attr("page"))
+          const page =  $(this).attr("page")
+          $("#index-pagination").load(`/timeline?page=${page} div#index-pagination`,function(){
+            // window.history.pushState(null,null,`/timeline?page=${page}`)
+          })
+        })
+    }
+
+
     // filter post by search on post's title and dedcription and post type of all,mine and others
     this.filterPosts = function(){
         $("#filterBtn").on('click',function(){
