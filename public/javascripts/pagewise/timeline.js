@@ -4,23 +4,69 @@ const timelineEvents = function(){
         _this.sortPostOnTitle();
         _this.sortPostOnDateandTime();
         _this.paginationBtnClick();
+        _this.savePost();
     }
+
+    this.savePost =  function(){
+        $(".savePost").on('click',function(){
+          if($(this).attr("isSaved") == 'true'){
+            return alert('already saved !')
+            // $(this).attr('isSaved','true')
+            // $(this).html('Saved')
+          } 
+          if($(this).attr("isSaved") == 'false'){
+            alert('Saved')
+            $(this).attr('isSaved','true')
+            $(this).html('Saved')
+            $.ajax({
+              method:'post',
+              url:'/saved-posts/save',
+              data:{
+                savedBy:$(this).attr('data'),
+                _post:$(this).attr('id'),
+                postBy:$(this).attr('postOwner')
+              },
+              success:function(res){
+                console.log('saved ajax called successfully')
+              }
+            });
+          }     
+        })
+      }
+  
 
     // event function for pagination on button-click
     
+    function queryToObj(queryString) {
+        const pairs = queryString.substring(1).split('&');
+
+        var array = pairs.map((el) => {
+            const parts = el.split('=');
+            return parts;
+        });
+
+        return Object.fromEntries(array);
+    }
+
     this.paginationBtnClick =  function(){
         $(document).off('click',".click-page").on('click',".click-page",function(){
           // alert($(this).attr("page"))
           const page =  $(this).attr("page")
           let url = `/timeline?page=${page}`
-          if(window.location.search){
-            url = `/timeline${window.location.search}&page=${page}`
-        }
-          window.history.pushState('',null,`${url}`)
-          $("#index-pagination").load(`${url} div#index-pagination`,function(){
-            // window.history.pushState(null,null,`/timeline?page=${page}`)
-          })
+            if(window.location.search){
 
+                let queryObject = queryToObj(window.location.search);
+      
+                queryObject.page = page;
+                console.log(window.location.search);
+                url = `/timeline?${new URLSearchParams(queryObject).toString()}`
+                console.log(url);
+            }
+
+          window.history.pushState('',null,`${url}`)
+          $("#index-pagination").load(`${url} div#index-pagination`)
+
+          _this.savePost();
         })
     }
 
@@ -29,12 +75,12 @@ const timelineEvents = function(){
     this.filterPosts = function(){
         $("#filterBtn").on('click',function(){
             console.log($("#aboutPosts").val(),$("#whichPosts").val())
+            console.log(window.location.search)
             let url = `/timeline?post=${$("#whichPosts").val()}&aboutPost=${$("#aboutPosts").val()}`
-            if(window.location.search){
-                url = `/timeline${window.location.search}&post=${$("#whichPosts").val()}&aboutPost=${$("#aboutPosts").val()}`
-            }
+
+            //push url variable into browsers url
             window.history.pushState('',null,`${url}`)
-            $('#renderHere').load(`${url} div#renderHere`)
+            $('#index-pagination').load(`${url} div#index-pagination`)
 
         _this.paginationBtnClick();
         })
@@ -42,12 +88,18 @@ const timelineEvents = function(){
 
     // sort posts on postTitle
     this.sortPostOnTitle = function (){
-        $("#sortByTitle").on('click',function(){
-            // alert('sort on title',$(this).attr('order'))
+        $(document).on('click',"#sortByTitle",function(){
+
+            alert('sort on title',$(this).attr('order'))
             let url = `/timeline?sortByTitle=${$(this).attr('order')}`
             if(window.location.search){
-                url = `/timeline${window.location.search}&sortByTitle=${$(this).attr('order')}`
+                let queryObject = queryToObj(window.location.search);
+
+            queryObject.sortByTitle = $(this).attr('order');
+            url = `/timeline?${new URLSearchParams(queryObject).toString()}`
+            console.log(url);
             }
+        
             window.history.pushState('',null,`${url}`)
             $("#renderHere").load(`${url} div#renderHere`)
             if($(this).attr('order') == 'desc'){
@@ -57,6 +109,7 @@ const timelineEvents = function(){
             {
                 $(this).attr('order','desc')
             }
+            _this.paginationBtnClick();
 
         })
     }
@@ -66,9 +119,9 @@ const timelineEvents = function(){
         $("#sortByDateTime").on('click',function(){
             // alert('sort on Date and Time')
             let url = `/timeline?sortByDateTime=${$(this).attr('order')}`
-            if(window.location.search){
-                url = `/timeline${window.location.search}&sortByDateTime=${$(this).attr('order')}`
-            }
+            // if(window.location.search){
+            //     url = `/timeline${window.location.search}&sortByDateTime=${$(this).attr('order')}`
+            // }
             window.history.pushState('',null,`${url}`)
             $("#renderHere").load(`${url} div#renderHere`)
             if($(this).attr('order') == 'desc'){
@@ -87,3 +140,5 @@ const timelineEvents = function(){
     const _this=this;
     _this.init();
 }
+
+

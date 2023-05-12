@@ -24,7 +24,7 @@ const storage =  multer.diskStorage({
   },
   filename:function(req,file,cb){
     console.log("-----------------------------in finename---------------------")
-    // console.log("file is here in storage=====>",file)
+    // console.log("file is here in storage =====> ",file)
     const fileExtension = path.extname(file.originalname)
     const fileNameArray = file.originalname.split(".")
     const fileName = fileNameArray[0];
@@ -33,8 +33,6 @@ const storage =  multer.diskStorage({
 })
 
 const upload = multer({storage:storage})
-
-
 
 // post route to update user's post details
 
@@ -59,23 +57,78 @@ router.get('/',async function(req,res,next){
   try{
       let loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
       let pipeline=[]
-      let match={
-        $match:{
+      let match={ 
           isArchived:false
-        }
       }
       let sort ={
-        $sort:{
           createdOn:-1
-        }
       }
-      let limit = {
-        $limit:4
+      let limit = 4;
+      let skip = 0 ;
+      
+      // first stage in aggregation
+      pipeline.push({$match:match})
+
+      //filtering posts if post(postType) in url and for aboutPst 
+      if(req.query.post){
+        console.log('-------------------------->>inside filter post if condition');
+        // console.log('req.query.post----------------------->',req.query.post)
+          match["$or"]= [
+            {
+              postTitle:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+            },
+            {
+              postDescription:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+            }
+          ]
+
+          // console.log('match----------------------->',match)
+      
+      switch(req.query.post) {
+        case 'mine':
+          console.log('-------------------------->>inside switch mine condition')
+          match["$or"]= [
+            {
+              postTitle:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+            },
+            {
+              postDescription:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+            }
+          ]
+          match['_user'] = new ObjectId(req.user._id)
+          break;
+        case 'others':
+          console.log('-------------------------->>inside others mine condition')
+          match["$or"]= [
+            {
+              postTitle:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+            },
+            {
+              postDescription:{$regex:`${req.query.aboutPost}` ,$options:'i'}
+            }
+          ]
+          match['_user'] = {$ne:new ObjectId(req.user._id)}
+          break;
+        default:
+         console.log('in default post for all')
+          break;
       }
-      let skip = {
-        $skip:0
       }
-      let lookup={
+            // if for pagination page in url
+            if(req.query.page){
+              let postLimit = 4;
+              let paginationPage = parseInt(req.query.page)
+              limit=postLimit*paginationPage
+              skip=postLimit*(paginationPage-1)
+            }
+            
+            console.log('--------------------------------------pipeline before skip limit---------------------')
+            console.log(pipeline);
+            let postsInQuery = await  postsModel.aggregate(pipeline);
+            let totalPosts= postsInQuery.length
+
+      
+      pipeline.push({
         $lookup: {
           from: "users",
           let: { posts: "$_user" },
@@ -97,8 +150,8 @@ router.get('/',async function(req,res,next){
           ],
           as: "user",
         },
-      }
-      let project = {
+      })
+      pipeline.push({
         $project: {
           postTitle: 1,
           postDescription: 1,
@@ -108,133 +161,40 @@ router.get('/',async function(req,res,next){
           createdOn:1,
           user: { $arrayElemAt: ["$user", 0] },
         },
-      }
-
-
-      //filtering posts if post(postType) in url and for aboutPst 
-      if(req.query.post){
-        console.log('-------------------------->>inside filter post if condition');
-        console.log('req.query.post----------------------->',req.query.post)
-        pipeline.push({$match: {
-          isArchived:false,
-          $or:[
-            {
-              postTitle:{$regex:`${req.query.aboutPost}` ,$options:'i'}
-            },
-            {
-              postDescription:{$regex:`${req.query.aboutPost}` ,$options:'i'}
-            }
-          ]
-        }
       })
-      switch(req.query.post) {
-        case 'mine':
-          console.log('-------------------------->>inside switch mine condition')
-          pipeline.push({$match:{
-            isArchived:false,
-            $or:[
-              {
-                postTitle:{$regex:`${req.query.aboutPost}` ,$options:'i'}
-              },
-              {
-                postDescription:{$regex:`${req.query.aboutPost}` ,$options:'i'}
-              }
-            ],
-            $expr:{
-              $eq:['$_user',new ObjectId(req.user._id)]
-            }
-          }
-        })
-          // match.$match.$expr = {
-          //     $eq:['$_user',ObjectId(`${req.user._id}`)]
-          // }
-          break;
-        case 'others':
-          console.log('-------------------------->>inside others mine condition')
-          pipeline.push({$match:{
-            isArchived:false,
-            $or:[
-              {
-                postTitle:{$regex:`${req.query.aboutPost}` ,$options:'i'}
-              },
-              {
-                postDescription:{$regex:`${req.query.aboutPost}` ,$options:'i'}
-              }
-            ],
-            $expr:{
-              $ne:['$_user',new ObjectId(req.user._id)]
-            }
-          }
-        })
-          // match.$match.$expr = {
-          //   $ne:['$_user',ObjectId(`${req.user._id}`)]
-          //   }
-          break;
-        default:
-         console.log('in default post for all')
-          break;
+      pipeline.push({$limit:limit})
+            pipeline.push({$skip:skip})
+
+      // if sortByTitle in url
+      if(req.query.sortByTitle){
+        if(req.query.sortByTitle == 'asc'){
+          sort = {postTitle:1} 
+        }
+        else{
+          console.log('---------------------------- in sortByTitle ---------------------')
+          sort = {postTitle:-1}
+          
+        }
       }
+
+      // if sortByDateTime in url
+      if(req.query.sortByDateTime){
+        if(req.query.sortByDateTime == 'desc'){
+            sort['createdOn']=1;  
+        }
+        else{
+          sort['createdOn']=-1;
+        }
       }
-      console.log()
-      let forPagination = await postsModel.aggregate(pipeline);
-      let pagerequired = forPagination.length 
-            // if for pagination page in url
-            if(req.query.page){
-              let postLimit = 4;
-              let paginationPage = parseInt(req.query.page)
-              pipeline.push({
-                $limit:postLimit*paginationPage
-              })
-              pipeline.push({
-                $skip:postLimit*(paginationPage-1)
-              })
-            }
-      
-            // if sortByTitle in url
-            if(req.query.sortByTitle){
-              if(req.query.sortByTitle == 'asc'){
-                pipeline.push({
-                  $sort:{postTitle:1}
-                })  
-              }
-              else{
-                pipeline.push({
-                  $sort:{postTitle:-1}
-                })
-              }
-            }
-      
-            // if sortByDateTime in url
-            if(req.query.sortByDateTime){
-              if(req.query.sortByDateTime == 'desc'){
-                pipeline.push({
-                  $sort:{
-                    createdOn:1
-                  }
-                })
-              }
-              else{
-                pipeline.push({
-                  $sort:{
-                    createdOn:-1
-                  }
-                })
-              }
-            }
-      
-      // prepare pipeline
-      // pipeline.push(match,sort,limit,skip,lookup,project)
-      let allPostsWithUsername = await postsModel.aggregate(pipeline)
-      let totalPosts = pagerequired
-      // let totalPosts = await postsModel.count({})
-      let postsperPage = 4;
-      let postArray = []
-      for (let i = 1; i <= Math.ceil(totalPosts/postsperPage); i++) {
-        postArray.push(i)
-      } 
-      console.log(totalPosts,postArray)
+      pipeline.push({$sort:sort})
       console.log(JSON.stringify(pipeline,null,3))
-      // console.log(allPostsWithUsername)
+      let allPostsWithUsername = await postsModel.aggregate(pipeline)
+      let postArray = [];
+      console.log('-----------------------------> totalPosts',totalPosts)
+      for (let i = 1; i <= Math.ceil(totalPosts/4); i++) {
+        postArray.push(i) 
+      }
+
       res.render("timeline/index", {
       title: "user-home",
       layout: "users-layout",
@@ -247,312 +207,6 @@ router.get('/',async function(req,res,next){
     res.render('error',{message:error, status:404})
   }
 })
-
-// get route to render the landing page after login
-// router.get("/", async function (req, res, next) {
-//   try {
-//     let loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
-//     console.log(loginUser)
-//     let userId = req.user._id;
-// // --------------------------------------------------------
-//     // sort posts on title
-//     if(req.query.sortTitle || req.query.sortDateTime ){
-//       let pipeline = [];
-// let match = {
-//   $match:{
-//     isArchived:false
-//   }
-// }
-//
-// let lookup={
-//   $lookup: {
-//     from: "users",
-//     let: { posts: "$_user" },
-//     pipeline: [
-//       {
-//         $match: {
-//           $expr: {
-//             $eq: ["$_id", "$$posts"],
-//           },
-//         },
-//       },
-//       {
-//         $project: {
-//           firstName: 1,
-//           lastName: 1,
-//           profileImagePath:1
-//         },
-//       },
-//     ],
-//     as: "user",
-//   },
-// }
-// let project = {
-//   $project: {
-//     postTitle: 1,
-//     postDescription: 1,
-//     imageName:1,
-//     imagePath:1,
-//     createdOn:1,
-//     user: { $arrayElemAt: ["$user", 0] },
-//   },
-// }
-//       let sort ={ }
-//       if(req.query.sortTitle){
-//         if(req.query.sortTitle == 'asc'){
-//           sort.$sort = {
-//             postTitle:1
-//             }
-//         }
-//         else{
-//           sort.$sort = {
-//             postTitle:-1
-//             }
-//         }
-//       }
-//       if(req.query.sortDateTime){
-//         if(req.query.sortDateTime == 'asc'){
-//           sort.$sort = {
-//             createdOn:1
-//             }
-//         }
-//         else{
-//           sort.$sort = {
-//             createdOn:-1
-//             }
-//         }
-//       }
-//       // console.log(sort)
-//       pipeline.push(match,lookup,project,sort)
-//       let postsSortedOnTitle = await postsModel.aggregate(pipeline)
-//       // console.log(postsSortedOnTitle)
-//       res.render("timeline/index", {
-//         title: "user-home",
-//         layout: "users-layout",
-//         posts:postsSortedOnTitle,
-//         userLogged:loginUser
-//       });
-//     
-//     }
-//     // post list pagination after login
-//     if(req.query.page && req.query.page != "undefined"){
-//       console.log(req.query)
-//       let postsForPagination = 4;
-//       let postLimit = postsForPagination*parseInt(req.query.page);
-//       let postSkip = postsForPagination*(parseInt(req.query.page)-1);
-//       console.log(`limit is ${postLimit} and  skip is ${postSkip}`)
-//       let paginationPosts = await postsModel.aggregate([
-//         {
-//           $sort:{
-//               createdOn:-1
-//               }
-//           },
-//           {
-//           $limit:postLimit
-//         },
-//         {
-//           $skip:postSkip
-//         },
-//         {
-//           $match:{
-//             isArchived:false
-//           }
-//         },
-//         {
-//           $lookup: {
-//             from: "users",
-//             let: { posts: "$_user" },
-//             pipeline: [
-//               {
-//                 $match: {
-//                   $expr: {
-//                     $eq: ["$_id", "$$posts"],
-//                   },
-//                 },
-//               },
-//               {
-//                 $project: {
-//                   firstName: 1,
-//                   lastName: 1,
-//                   profileImagePath:1
-//                 },
-//               },
-//             ],
-//             as: "user",
-//           },
-//         },
-//         {
-//           $project: {
-//             postTitle: 1,
-//             postDescription: 1,
-//             imageName:1,
-//             imagePath:1,
-//             createdOn:1,
-//             user: { $arrayElemAt: ["$user", 0] },
-//           },
-//         }
-//       ])
-//       console.log(paginationPosts)
-//       return res.render("timeline/index", {
-//         title: "user-home",
-//         layout: "users-layout",
-//         posts:paginationPosts,
-//         userLogged:loginUser
-//
-//       });
-//     }
-//
-// // --------------------------------------------------------
-//     if(req.query.whichPosts || req.query.aboutPosts){
-//       let aboutPosts = `${req.query.aboutPosts}`;
-//       let pipeline = [];
-//       let matchObject={};
-//       if(req.query.whichPosts){
-//         switch (req.query.whichPosts) {
-//             case 'mine':
-//                   matchObject={
-//                     $match:{
-//                          '_user':req.query.whichPosts
-//                     }
-//                 } 
-//             break;
-//             case 'others':
-//                   matchObject={
-//                       $match:{
-//                           $expr:{
-//                             $ne:[ '$_user', req.query.whichPosts ]
-//                           }     
-//                       }
-//                   }
-//             break;
-//           default:
-//                   console.log('for all no match')
-//                   matchObject={
-//                     $match:{
-//                     
-//                     }
-//                   }
-//             break;
-//         }
-//        
-//       let lookup = {
-//         $lookup: {
-//           from: "users",
-//           let: { posts: "$_user" },
-//           pipeline: [
-//             {
-//               $match: {
-//                 $expr: {
-//                   $eq: ["$_id", "$$posts"],
-//                 },
-//               },
-//             },
-//             {
-//               $project: {
-//                 firstName: 1,
-//                 lastName: 1,
-//                 profileImagePath:1
-//               },
-//             },
-//           ],
-//           as: "user",
-//         },
-//       }
-//       let project={
-//         $project: {
-//           postTitle: 1,
-//           postDescription: 1,
-//           imageName:1,
-//           imagePath:1,
-//           createdOn:1,
-//           user: { $arrayElemAt: ["$user", 0] },
-//         },
-//       }
-//       if(aboutPosts){
-//         matchObject.$match.postTitle = { $regex: aboutPosts }; 
-//         // matchObject.$match.postDescription = { $regex: aboutPosts };
-//         pipeline.push(matchObject)
-//       }
-//       pipeline.push(lookup,project)
-//     }
-//       console.log(`postModel.aggregate(${JSON.stringify(pipeline,null,3)})`)
-//       let filteredPosts = await postsModel.aggregate(pipeline)
-//       console.log(filteredPosts)
-//       console.log("inside search and filter")
-//       return res.render("timeline/index", {
-//       title: "user-home",
-//       layout: "users-layout",
-//       posts:filteredPosts,
-//       userLogged:loginUser
-//     });
-//     }
-//     console.log("inside render landing page normally")
-//     console.log('req.user',req.user)
-//     let allPostsWithUsername = await postsModel.aggregate([
-//       {
-//       $sort:{
-//           createdOn:-1
-//           }
-//       },
-//       {
-//         $limit:4
-//       },
-//       {
-//         $match:{
-//           isArchived:false
-//         }
-//       },
-//       {
-//         $lookup: {
-//           from: "users",
-//           let: { posts: "$_user" },
-//           pipeline: [
-//             {
-//               $match: {
-//                 $expr: {
-//                   $eq: ["$_id", "$$posts"],
-//                 },
-//               },
-//             },
-//             {
-//               $project: {
-//                 firstName: 1,
-//                 lastName: 1,
-//                 profileImagePath:1
-//               },
-//             },
-//           ],
-//           as: "user",
-//         },
-//       },
-//       {
-//         $project: {
-//           postTitle: 1,
-//           postDescription: 1,
-//           imageName:1,
-//           imagePath:1,
-//           createdOn:1,
-//           user: { $arrayElemAt: ["$user", 0] },
-//         },
-//       },
-//      
-//     ])
-//     // console.log(req.query,'-----in timeline---- default');
-//     res.render("timeline/index", {
-//       title: "user-home",
-//       layout: "users-layout",
-//       posts:allPostsWithUsername,
-//       userLogged:loginUser
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.render("error", {
-//       message: "error in landing after login",
-//       status: 404,
-//     });
-//   }
-// });
-
 
 
 module.exports = router;

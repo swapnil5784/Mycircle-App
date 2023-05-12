@@ -1,3 +1,51 @@
+
+
+
+--------------------------------------------------------------------------
+db.getCollection('posts').aggregate([
+    {
+        $match:{
+            isArchived:false
+        }
+    },
+    {
+        $lookup: {
+          from: "users",
+          let: { posts: "$_user" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$posts"],
+                },
+              },
+            },
+            {
+              $project: {
+                firstName: 1,
+                lastName: 1,
+                profileImagePath:1
+              },
+            },
+          ],
+          as: "user",
+        }
+    },
+    {
+        $project: {
+          postTitle: 1,
+          postDescription: 1,
+          _user:1,
+          imageName:1,
+          imagePath:1,
+          createdOn:1,
+          user: { $arrayElemAt: ["$user", 0] },
+        },
+      }
+])
+
+
+----------------------------------------------
 // query for saved post
 
 // query for cron

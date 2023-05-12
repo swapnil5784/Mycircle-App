@@ -18,14 +18,24 @@ div.postBox{
   margin: 10px 10px;
 }
 img.postImage{
-  width:500px;
+  width:350px;
   height:325px
 }
 img.userProfile{
   height:200px;
   width:200px;
   border-radius: 40%;
-  
-
 }
-
+.postPartial{
+  margin:10px 10px;
+}
+.postTitle{
+  margin:0 0 0 0;
+}
+.postDescription{
+  margin:0 0 0 0;
+}
+hr{
+  margin:0px 0px;
+  padding: 0 0 0 0;
+}

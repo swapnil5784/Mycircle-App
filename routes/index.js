@@ -79,6 +79,10 @@ passport.deserializeUser(function (user, done) {
     Console.log(err);
   }
 });
+// post partial
+router.get('/postPartial',function(req,res,next){
+  res.render('partials/postPartial')
+})
 
 // get route to send partial for post modal in ajax
 

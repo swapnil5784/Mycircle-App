@@ -43,6 +43,10 @@
               class="btn btn-outline-success w-100">
               Search
             </button>
+            <button type="reset"  style="height:40px; margin:5px 0 0 20px;"
+              class="btn btn-outline-info w-100">
+              Reset
+            </button>
           </ul>
 
 
@@ -69,6 +73,12 @@
     <div id="renderHere" class="card-body">
       <div id="postsInside">
 
+
+                          {{!-- {{#each posts}}
+                          {{> postPartial}}
+                          {{/each}} --}}
+
+        
         {{#each posts}}
         {{!-- -------------------------------------------------------------- --}}
 
@@ -167,5 +177,6 @@
   <script>
     $(document).ready(function () {
       timelineEvents();
+      userEvents();
     })
   </script>

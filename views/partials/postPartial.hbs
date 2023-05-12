@@ -1,0 +1,38 @@
+<div class="card postPartial">
+                  <div class="card-header">
+                    <div>
+                      <div class="row align-items-center">
+                        <div class="col-auto">
+                          <img class="avatar" src="{{this.user.profileImagePath}}" alt="no profile">
+                        </div>
+                        <div class="col">
+                          <div class="card-title">{{this.user.firstName}} {{this.user.lastName}}</div>
+                          <div class="card-subtitle"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-actions">
+                      <div class="dropdown">
+                        <a href="#" class="btn-action dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><!-- Download SVG icon from http://tabler-icons.io/i/dots-vertical -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path><path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path><path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path></svg>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end" style="">
+                          {{#compare this.user._id '!=' ../user._id }}
+                          <a class="dropdown-item" href="#">Save</a>
+                          {{/compare}}
+                          <a class="dropdown-item" href="#">Edit</a>
+                          <a class="dropdown-item text-danger" href="#">Archive</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body p-0">
+                                  {{!-- <img class="postImage" src=""> --}}
+                    <img src="{{this.imagePath}}" class="postImage" alt="">
+                    {{!-- <svg xmlns="http://www.w3.org/2000/svg" class="w-100" preserveAspectRatio="none" width="360" height="200" viewBox="0 0 360 200" fill="transparent" stroke="var(--tblr-border-color, #b8cef1)">
+                    </svg> --}}
+                    <hr>
+                    <p class="postTitle">Title: {{this.postTitle}}</p>
+                    <p class="postDescription">Description: {{this.postDescription}}</p>
+                  </div>
+                </div>
