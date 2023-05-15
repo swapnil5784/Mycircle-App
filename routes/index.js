@@ -4,7 +4,16 @@ const usersModel = require("../models/users");
 const postsModel = require("../models/posts");
 const passport = require("passport");
 const LocalStratagy = require("passport-local").Strategy;
-
+// 1.import node mailer
+var nodemailer = require('nodemailer');
+// 2.define transporter
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'youremail@gmail.com',
+    pass: 'yourpassword'
+  }
+});
 /* GET home page. */
 
 // passport local stratagy function function

@@ -2,6 +2,9 @@
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Schema.Types.ObjectId
 const commentsModel = require('../models/users')
+const usersModel = require('../models/users')
+const postsModel = require('../models/posts')
+
 const options = {
     timestamps:{
         createdAt:'createdOn',
@@ -14,13 +17,16 @@ const posts = new mongoose.Schema({
         type:String,
         required:true
     },
-    _user:{
+    _commentBy:{
         type:ObjectId,
-        required:true
+        required:true,
+        ref:usersModel
+
     },
     _post:{
         type:ObjectId,
-        required:true
+        required:true,
+        ref:postsModel
     },
 
 },options)

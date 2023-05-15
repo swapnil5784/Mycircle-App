@@ -1,3 +1,5 @@
+
+
 const timelineEvents = function(){
     this.init = function(){
         _this.filterPosts();
@@ -6,11 +8,45 @@ const timelineEvents = function(){
         _this.paginationBtnClick();
         _this.savePost();
         _this.viewPost();
+        _this.addComment();
     }
 
+    //add comment
+    this.addComment = function(){
+      $(document).on('click','.addComment',function(){
+        if($("#comment").val() == ''){
+          alert('Enter comment first !')
+        }
+        else{
+          $("#commentList").load(`/timeline/add-comment?_post=${$(this).attr('id')}&_commentBy=${$(this).attr('data')}&comment=${$("#comment").val()} div#commentList`)
+          // $.ajax({
+          //   method:'post',
+          //   url:`/timeline/add-comment?postId=${$(this).attr('id')}&commentBy=${$(this).attr('data')}&comment=${$("#comment").val()}`,
+          //   data:{
+          //     postId:$(this).attr('id'),
+          //     CommentBy:$(this).attr('data'),
+          //     comment:$("#comment").val()
+          //   },
+          //   success:function(res){
+          //     console.log(res)
+          //     console.log('success in ajax for add comment')
+          //   },
+          //   error:function(error){
+          //     console.log('error in ajax for add comment',error)
+          //   }
+          // })
+          console.log($('#comment').val())
+
+
+        }
+      })
+    
+    }
+
+    // view post on view click at post
     this.viewPost = function(){
-      $(".viewPost").on("click", function(){
-        alert($(this).attr('id'))
+      $(document).on("click",".viewPost",function(){
+        // alert($(this).attr('id'))
         $(".renderPostView").load(`/timeline/view-post/${$(this).attr('id')} div.postView`)
         // $.ajax({
         //   method:'get',
@@ -32,7 +68,7 @@ const timelineEvents = function(){
             // $(this).attr('isSaved','true')
             // $(this).html('Saved')
           } 
-          if($(this).attr("isSaved") == 'false'){
+          else{
             alert('Saved')
             $(this).attr('isSaved','true')
             $(this).html('Saved')

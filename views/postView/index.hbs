@@ -1,5 +1,77 @@
-<div class="postView">
-<h3>{{post.postTitle}} hi</h3>
-<h4>{{post.postDescription}}</h4>
-<img src={{imagePath}} alt="">
+<div id="commentList" class="postView">
+    <a href="/timeline/" class="btn btn-success">
+        Back
+    </a>
+    <img class="imageSizeAtViewPost" class="img-responsive img-responsive-21x9 card-img-top" src="{{post.imagePath}}"
+        alt="">
+    <div class="row row-cards">
+        <div class="mb-3 col-sm-4 col-md-2">
+            <label class="form-label">Post By:</label>
+        </div>
+        <div class="mb-3 col-sm-8 col-md-10">
+            <input disabled name="url" type="text" class="form-control"
+                value="{{post.postOwner.firstName}} {{post.postOwner.lastName}}">
+        </div>
+    </div>
+    <div class="row row-cards">
+        <div class="mb-3 col-sm-4 col-md-2">
+            <label class="form-label">Post Title:</label>
+        </div>
+        <div class="mb-3 col-sm-8 col-md-10">
+            <input disabled name="url" type="text" class="form-control" value="{{post.postTitle}}">
+        </div>
+    </div>
+    <div class="row row-cards">
+        <div class="mb-3 col-sm-4 col-md-2">
+            <label class="form-label">Post Description:</label>
+        </div>
+        <div class="mb-3 col-sm-8 col-md-10">
+            <input disabled name="url" type="text" class="form-control" value="{{post.postDescription}}">
+        </div>
+    </div>  
+{{!-- {{#each post.savedDetails}} --}}
+{{#log savedByOwner}}{{/log}}
+{{#log isOwner }}{{/log}}
+{{!-- '||' this.savedBy '==' ../user._id   --}}
+{{#or isOwner savedByOwner}}
+    <form id="addCommentForm">
+        <div class="row row-cards">
+            <div class="mb-3 col-sm-4 col-md-2">
+                <label class="form-label">Comment:</label>
+            </div>
+            <div class="mb-3 col-sm-8 col-md-10">
+                <textarea class="form-control" name="commentBox" id="comment" cols="30" rows="10"></textarea>
+            </div>
+        </div>
+        <div class="row row-cards">
+            <div class="mb-3 col-sm-4 col-md-2">
+            </div>
+            <div class="mb-3 col-sm-8 col-md-10">
+                <input data='{{userLogged._id}}' id="{{post._id}}" class="btn btn-ghost-primary active addComment"
+                    type="button" value="Add comment">
+            </div>
+        </div>
+    </form>
+    {{/or}}
+{{!-- {{/each}} --}}
+
+
+    <div  class="row row-cards">
+        <div class="mb-3 col-sm-4 col-md-2">
+            <label class="form-label">Comments:</label>
+        </div>
+        <div class="mb-3 col-sm-8 col-md-10">
+            {{#each post.comments}}
+              <div  class="nav-link d-flex lh-1 text-reset p-0 commentEach">
+                <span class="avatar avatar-sm" style="background-image: url({{this.commentByDetails.profileImagePath}})"></span>
+                <label  class="form-label">{{this.commentByDetails.firstName}} {{this.commentByDetails.lastName}}</label>
+              </div>
+            
+            <input disabled name="url" type="text" class="form-control" value="{{this.comment}}">
+            {{/each}}
+        </div>
+    </div>
+
+
+
 </div>

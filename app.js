@@ -117,7 +117,7 @@ var helperHandlebar = require("handlebars-helpers")();
 // import mongoose and connect express with mongodb
 try{
   const mongoose = require('mongoose');
-  mongoose.connect(process.env.MONGO_URL_HOME);
+  mongoose.connect(process.env.MONGO_URL);
   const db = mongoose.connection;
   console.log(process.env.MONGO_URL)
   
@@ -183,7 +183,6 @@ app.use(session({
   maxAge: 24 * 60 * 60 * 1000, // 24 hours
   cookie: { secure: true }
 }));
-
 
 app.use(logger('dev'));
 app.use(express.json());

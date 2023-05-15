@@ -39,3 +39,12 @@ hr{
   margin:0px 0px;
   padding: 0 0 0 0;
 }
+.imageSizeAtViewPost{
+  margin:0 0 50px 650px;
+  border-radius: 20px;
+  height: 250px;
+  width:250px;
+}
+.commentEach{
+  margin: 20px 0;
+}

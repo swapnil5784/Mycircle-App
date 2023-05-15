@@ -336,7 +336,8 @@ const userEvents =function(){
           // $(this).html('Saved')
         } 
         if($(this).attr("isSaved") == 'false'){
-          alert('Saved')
+          // alert('Saved')
+          toastr.success('post saved')
           $(this).attr('isSaved','true')
           $(this).html('Saved')
           $.ajax({

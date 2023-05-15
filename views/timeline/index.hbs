@@ -89,7 +89,7 @@
           <div class="card postBox">
             <!-- Photo -->
             <div class="img-responsive img-responsive-21x9 card-img-top  ">
-              {{!-- ------------ --}}
+              {{!----------------}}
               <div class="navbar-nav flex-row order-md-last">
 
 
@@ -118,6 +118,7 @@
               <p class="text-muted">{{this.postDescription}}</p>
             </div>
             <div style="display: flexbox;">
+
               {{#compare this.user._id '!=' ../user._id }}
 
 
@@ -138,7 +139,7 @@
               {{/compare}}
               <button style="margin-left: 30px;" id="{{this._id}}" data="{{../user._id}}"
                 class="btn btn-outline-success  col-6 col-sm-4 col-md-3 col-xl py-3 viewPost" 
-                type="submit">View</button>
+                type="submit">View </button>
               {{!-- <a href="#" class="btn" >
                     Modal with simple form
                   </a> --}}
@@ -154,7 +155,7 @@
 
 
             </div>
-
+            <h2>Commments:{{this.comments}}</h2>
           </div>
         </div>
         {{!-- -------------------------------------------------------------- --}}
