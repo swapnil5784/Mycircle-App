@@ -9,7 +9,9 @@
 <button type="button" style="height:40px; margin:5px 0 0 20px;" class="btn btn-outline-info w-100">
   Date and Time
 </button> --}}
+<div class="renderPostView">
 
+  
 <form>
   <header class="navbar-expand-md">
     <div class="collapse navbar-collapse" id="navbar-menu">
@@ -134,6 +136,12 @@
                 class="btn btn-outline-info  col-6 col-sm-4 col-md-3 col-xl py-3 archivePost" isSaved='false'
                 type="submit">Archive</button>
               {{/compare}}
+              <button style="margin-left: 30px;" id="{{this._id}}" data="{{../user._id}}"
+                class="btn btn-outline-success  col-6 col-sm-4 col-md-3 col-xl py-3 viewPost" 
+                type="submit">View</button>
+              {{!-- <a href="#" class="btn" >
+                    Modal with simple form
+                  </a> --}}
 
               {{!-- Scrollable --}}
 
@@ -156,6 +164,8 @@
     </div>
 
   </div>
+{{!-- postview div ends below --}}
+  </div>
   {{!-- modal load here --}}
   <div class="modal modal-blur fade" id="modal-scrollable" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
@@ -173,6 +183,8 @@
     </div>
     {{!-- ----------- pagination end below div --}}
   </div>
+
+
 
   <script>
     $(document).ready(function () {

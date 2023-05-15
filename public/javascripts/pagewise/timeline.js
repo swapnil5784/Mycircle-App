@@ -5,6 +5,24 @@ const timelineEvents = function(){
         _this.sortPostOnDateandTime();
         _this.paginationBtnClick();
         _this.savePost();
+        _this.viewPost();
+    }
+
+    this.viewPost = function(){
+      $(".viewPost").on("click", function(){
+        alert($(this).attr('id'))
+        $(".renderPostView").load(`/timeline/view-post/${$(this).attr('id')} div.postView`)
+        // $.ajax({
+        //   method:'get',
+        //   url:`/timeline/view-post/${$(this).attr('id')}`,
+        //   success:function(res){
+        //     console.log('success')
+        //   },
+        //   error:function(error){
+        //     console.log('error')
+        //   }
+        // })
+      })
     }
 
     this.savePost =  function(){

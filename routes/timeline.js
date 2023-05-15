@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const usersModel = require("../models/users");
 const postsModel = require("../models/posts");
+const commentsModel = require("../models/comments");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const fs = require('fs');
@@ -49,6 +50,52 @@ router.post('/edit/post/:postId',upload.single('imageName'),async function(req,r
   catch(error){
     console.log(error);
     res.render('error',{message:'error in post route for edit post details',status:404})
+  }
+})
+
+// get route for view post details
+router.get('/view-post/:postId',async function(req,res,next){
+  try{
+    console.log(req.params.postId)
+    let postDetails = await postsModel.aggregate([
+      {
+          $match:{
+                  "_id" : new ObjectId(req.params.postId) ,
+          }
+      },
+      {
+          $lookup:{
+              from:'users',
+              let:{'user':'$_user'},
+              pipeline:[{
+                  $match:{
+                      $expr:{
+                          $eq:['$_id','$$user']
+                      }
+                  }
+              }],
+              as:'postOwner'
+          }
+      },
+      {
+          $project:{
+              postDescription:1,
+              postTitle:1,
+              imagePath:1,
+              createdOn:1,
+              updatedOn:1,
+              postOwner:{$arrayElemAt:['$postOwner',0]}
+          }
+      }
+      ])
+      
+    console.log(postDetails[0])
+    res.render('postView/index',{post:postDetails[0]})
+
+  }
+  catch(error){
+    console.log(error)
+    res.render('error',{message:error, status:404})
   }
 })
 
