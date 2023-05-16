@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 const customHandlebarHelper = {
     genderCheck:function(option,value){
         if(value == 'male'){
@@ -10,7 +12,11 @@ const customHandlebarHelper = {
     },
     typeof: function(data){
         console.log('typeof of data ==>',typeof data)
-    } 
+    } ,
+    // moment helper for time format
+    moment: function(data){
+        return moment(data).fromNow()
+    }
 
 };
 module.exports=customHandlebarHelper;

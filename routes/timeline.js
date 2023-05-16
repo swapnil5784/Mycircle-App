@@ -42,7 +42,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // post route to update user's post details
-
 router.post(
   "/edit/post/:postId",
   upload.single("imageName"),
@@ -67,18 +66,24 @@ router.post(
     }
   }
 );
-// get route to add commtent on post
+// get route to add comment on post
 router.get("/add-comment", async function (req, res, next) {
   try {
-    console.log(req.query);
-    let dataFromAjax = req.body;
-    await commentsModel.create(req.query);
-    res.redirect(`/timeline/view-post/${req.query._post}`);
+    if(req.query.removeComment){
+      console.log('<---------------------------------> remove comments',req.query.commentId)
+      await commentsModel.updateOne({_id:new ObjectId(req.query.commentId)},{$set:{isDeleted:true}});
+      res.redirect(`/timeline/view-post/${req.query.postId}`);
+    }else{
+      console.log(req.query);
+      await commentsModel.create(req.query);
+      res.redirect(`/timeline/view-post/${req.query._post}`);
+    }
   } catch (error) {
     console.log("error at post router to add comment on post", error);
     res.render("error", { message: error, status: 404 });
   }
 });
+
 // get route for view post details
 router.get("/view-post/:postId", async function (req, res, next) {
   try {
@@ -122,6 +127,7 @@ router.get("/view-post/:postId", async function (req, res, next) {
                 $expr: {
                   $eq: ["$_post", "$$comment"],
                 },
+                isDeleted:false
               },
             },
             {
@@ -137,31 +143,29 @@ router.get("/view-post/:postId", async function (req, res, next) {
                     },
                   },
                   {
-                    $project:{
-                      firstName:1,
-                      lastName:1,
-                      profileImagePath:1
-                    }
-                  }
+                    $project: {
+                      firstName: 1,
+                      lastName: 1,
+                      profileImagePath: 1,
+                    },
+                  },
                 ],
                 as: "commentByDetails",
               },
             },
             {
-              $sort:{
-                createdOn:-1,
-              }
+              $sort: {
+                createdOn: -1,
+              },
             },
             {
               $project: {
-                commentByDetails:{ $arrayElemAt: ["$commentByDetails", 0] },
+                commentByDetails: { $arrayElemAt: ["$commentByDetails", 0] },
                 comment: 1,
-                createdOn:1,
-                timeAgo:moment('$createdOn').fromNow(),
+                createdOn: 1,
                 _commentBy: 1,
               },
             },
-            
           ],
           as: "comments",
         },
@@ -179,10 +183,10 @@ router.get("/view-post/:postId", async function (req, res, next) {
               },
             },
             {
-              $project:{
-                savedBy:1,
-              }
-            }
+              $project: {
+                savedBy: 1,
+              },
+            },
           ],
           as: "savedDetails",
         },
@@ -201,41 +205,45 @@ router.get("/view-post/:postId", async function (req, res, next) {
         },
       },
     ]);
-    let isOwner = false;
+    console.log(JSON.stringify(postDetails[0], null, 3));
+
+    //------------------------------ for helpers
+    let postOwner = false;
     let savedByOwner = false;
-    if((postDetails[0]._user) == req.user._id){
-      isOwner  =  true
+    let commentOwner = false;
+    // to check postOwener is logged in user
+    if (postDetails[0]._user == req.user._id) {
+      postOwner = true;
     }
-    console.log(postDetails[0].savedDetails)
-    let postSavedUsersArray = postDetails[0].savedDetails 
+    // to check the post saved by logged in user
+    let postSavedUsersArray = postDetails[0].savedDetails;
     for (let i = 0; i < postSavedUsersArray.length; i++) {
-      if(postSavedUsersArray[i].savedBy == req.user._id)
-      {
-        savedByOwner  =  true
+      if (postSavedUsersArray[i].savedBy == req.user._id) {
+        savedByOwner = true;
       }
     }
-    console.log(isOwner,savedByOwner)
+
+    console.log(
+      "postOwner==>",
+      postOwner,
+      "savedByOwner==>",
+      savedByOwner,
+
+    );
     // console.log('==>>>',JSON.stringify(postDetails[0], null, 3));
-    console.log(postDetails[0].comments)
-    let commentTimeArray = []
-    for (let i = 0; i < postDetails[0].comments.length; i++) {
-      commentTimeArray.push(moment(postDetails[0].comments[i].createdOn).fromNow())
-      console.log(moment(postDetails[0].comments[i].createdOn).fromNow())
-    }
-    console.log(commentTimeArray)
     res.render("postView/index", {
       post: postDetails[0],
       userLogged: loginUser,
-      isOwner:isOwner,
-      savedByOwner:savedByOwner,
-      commentTime:commentTimeArray
-
-    });
+      postOwner: postOwner,
+      savedByOwner: savedByOwner,
+  });
   } catch (error) {
     console.log(error);
     res.render("error", { message: error, status: 404 });
   }
 });
+
+// remove comment
 
 // timeline rendering after login to My-circle
 router.get("/", async function (req, res, next) {
@@ -351,22 +359,22 @@ router.get("/", async function (req, res, next) {
     });
 
     pipeline.push({
-      $lookup:{
-          from:'comments',
-          let:{'comment':'$_id'},
-          pipeline:[
+      $lookup: {
+        from: "comments",
+        let: { comment: "$_id" },
+        pipeline: [
           {
-              $match:{
-                  $expr:{
-                      $eq:['$_post','$$comment']
-                      }
-                  
-                  }
-              }
-          ],
-          as:'comments'
-          }
-      })
+            $match: {
+              $expr: {
+                $eq: ["$_post", "$$comment"],
+              },
+              isDeleted:false,
+            },
+          },
+        ],
+        as: "comments",
+      },
+    });
 
     pipeline.push({
       $project: {
@@ -376,7 +384,7 @@ router.get("/", async function (req, res, next) {
         imageName: 1,
         imagePath: 1,
         createdOn: 1,
-        comments:{$size:'$comments'},
+        comments: { $size: "$comments" },
         user: { $arrayElemAt: ["$user", 0] },
       },
     });

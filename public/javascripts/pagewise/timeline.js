@@ -1,14 +1,27 @@
 
 
 const timelineEvents = function(){
-    this.init = function(){
-        _this.filterPosts();
-        _this.sortPostOnTitle();
-        _this.sortPostOnDateandTime();
-        _this.paginationBtnClick();
-        _this.savePost();
-        _this.viewPost();
-        _this.addComment();
+  this.init = function(){
+    _this.filterPosts();
+    _this.sortPostOnTitle();
+    _this.sortPostOnDateandTime();
+    _this.paginationBtnClick();
+    _this.savePost();
+    _this.viewPost();
+    _this.addComment();
+    _this.removeComment();
+    _this.archivePosts();
+    _this.unarchivePosts();
+  }
+
+  
+  // remove comment
+  this.removeComment = function(){
+    $(document).on('click',".deleteComment",function(){
+        console.log('---------> script to delete comment')
+        alert('delete comment',$(this).attr('id'))
+        $("#commentList").load(`/timeline/add-comment?removeComment=true&commentId=${$(this).attr('id')}&postId=${$(this).attr('data')} div#commentList`)
+      })
     }
 
     //add comment
@@ -18,7 +31,7 @@ const timelineEvents = function(){
           alert('Enter comment first !')
         }
         else{
-          $("#commentList").load(`/timeline/add-comment?_post=${$(this).attr('id')}&_commentBy=${$(this).attr('data')}&comment=${$("#comment").val()} div#commentList`)
+          $("#commentList").load(`/timeline/add-comment?_post=${$(this).attr('id')}&_commentBy=${$(this).attr('data')}&comment=${encodeURIComponent($("#comment").val())} div#commentList`)
           // $.ajax({
           //   method:'post',
           //   url:`/timeline/add-comment?postId=${$(this).attr('id')}&commentBy=${$(this).attr('data')}&comment=${$("#comment").val()}`,
@@ -47,7 +60,13 @@ const timelineEvents = function(){
     this.viewPost = function(){
       $(document).on("click",".viewPost",function(){
         // alert($(this).attr('id'))
-        $(".renderPostView").load(`/timeline/view-post/${$(this).attr('id')} div.postView`)
+        let url = `/timeline/view-post/${$(this).attr('id')}`
+        if(!window.location.search){
+          // alert(typeof window.location.search)
+          window.history.pushState('',null,`${url}`)
+        }
+        $(".renderPostView").load(`${url} div.postView`)
+
         // $.ajax({
         //   method:'get',
         //   url:`/timeline/view-post/${$(this).attr('id')}`,
@@ -61,6 +80,38 @@ const timelineEvents = function(){
       })
     }
 
+      // unarchive posts
+
+  this.unarchivePosts = function(){
+    $(".unarchivePost").on('click',function(){
+      // alert('unarchoved called');
+      $.ajax({
+        method:'get',
+        url:`/post?_id=${$(this).attr('id')}&_user=${$(this).attr('data')}`,
+        success:function(res){
+          console.log('success in ajax call for unarchive posts')
+          window.location.href = '/post/archived-posts'
+        }
+      })
+    })
+  }
+
+  // archive posts
+    this.archivePosts = function(){
+      $(".archivePost").on('click',function(){
+        // alert($(this).attr('id'))
+        $.ajax({
+          method:'get',
+          url:`/post/archive/${$(this).attr('id')}`,
+          success:function(res){
+            console.log('archive ajax successfully called !')
+            window.location.href = "/timeline/"
+          }
+        })
+      })
+    }
+
+    // save post event 
     this.savePost =  function(){
         $(".savePost").on('click',function(){
           if($(this).attr("isSaved") == 'true'){
@@ -87,7 +138,6 @@ const timelineEvents = function(){
           }     
         })
       }
-  
 
     // event function for pagination on button-click
     
@@ -102,6 +152,7 @@ const timelineEvents = function(){
         return Object.fromEntries(array);
     }
 
+    // Event for click on pagination button
     this.paginationBtnClick =  function(){
         $(document).off('click',".click-page").on('click',".click-page",function(){
           // alert($(this).attr("page"))
@@ -143,8 +194,6 @@ const timelineEvents = function(){
     // sort posts on postTitle
     this.sortPostOnTitle = function (){
         $(document).on('click',"#sortByTitle",function(){
-
-            alert('sort on title',$(this).attr('order'))
             let url = `/timeline?sortByTitle=${$(this).attr('order')}`
             if(window.location.search){
                 let queryObject = queryToObj(window.location.search);

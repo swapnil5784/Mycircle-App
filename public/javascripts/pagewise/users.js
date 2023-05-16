@@ -9,7 +9,7 @@ const allUsersEvents = function(){
 
     // pagination for all users
       this.allusersPagination = function(){
-        $(".click-page").on('click',function(){
+        $(document).on('click',".click-page",function(){
           $("#renderHere").load(`/users?page=${$(this).attr('page')} div#renderHere`)
         })
       }

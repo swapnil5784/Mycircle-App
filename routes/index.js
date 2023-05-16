@@ -8,14 +8,8 @@ const passport = require("passport");
 const LocalStratagy = require("passport-local").Strategy;
 // 1.import node mailer
 var nodemailer = require('nodemailer');
-// 2.define transporter
-var transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'youremail@gmail.com',
-    pass: 'yourpassword'
-  }
-});
+
+
 /* GET home page. */
 
 // passport local stratagy function function
@@ -121,7 +115,7 @@ router.get("/", async function (req, res, next) {
     let totalPosts = await postsModel.find({})
     let postPerPagination = 4 ;
     let pipeline =[]
-    let lookup = {
+    let lookupOne = {
       $lookup: {
         from: "users",
         let: { posts: "$_user" },
@@ -149,6 +143,7 @@ router.get("/", async function (req, res, next) {
         postDescription: 1,
         imageName: 1,
         imagePath: 1,
+        comments:{$size:'$comments'},
         createdOn: 1,
         user: { $arrayElemAt: ["$user", 0] },
       },
@@ -175,9 +170,27 @@ router.get("/", async function (req, res, next) {
       }
     }
 
+    let lookupTwo = {
+      $lookup: {
+        from: "comments",
+        let: { comment: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$_post", "$$comment"],
+              },
+              isDeleted:false
+            },
+          }
+        ],
+        as: "comments",
+      },
+    }
+
     
 
-    pipeline.push(limit,skip,sort,lookup,project)
+    pipeline.push(limit,skip,sort,lookupOne,lookupTwo,project)
     // console.log(JSON.stringify(pipeline,null,3))
     let allPostsWithUsername = await postsModel.aggregate(pipeline);
     console.log(allPostsWithUsername)
@@ -233,9 +246,37 @@ router.get("/login", function (req, res, next) {
 router.post("/signup", async function (req, res, next) {
   try {
     req.body.profileImagePath = `/uploads/default/${req.body.gender}.png`;
-    let userDetails = req.body;
-    // console.log(userDetails)
+    // let userDetails = req.body;
+    console.log(req.body)
     await usersModel.create(userDetails);
+
+    // 2.define transporter
+      var transporter = nodemailer.createTransport({
+        service:'gmail',
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: true,
+        auth: {
+          user: 'swapnil.mycircle@gmail.com',
+          pass: 'lxoldjnefineriei'
+        }
+      });
+      console.log(transporter)
+    // 3. mail option
+    var mailOptions = {
+      from: 'swapnil.mycircle@gmail.com',
+      to:req.body.userEmail,
+      subject: 'You have registered on Mycircle-App',
+      text: 'registration completed'
+    };
+    // 4. send email with mail options
+    await transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + req.body.userEmail);
+      }
+    });
     res.send({
       type: "success",
       message: "get userDetails sucessfully",
@@ -378,7 +419,6 @@ router.get("/search", async function (req, res, next) {
 });
 
 // route for email validation remote
-
 router.get("/users/validate/email", async function (req, res, next) {
   try {
     console.log(req.query.userEmail);
@@ -440,6 +480,7 @@ router.get('/view-post/:postId',async function(req,res,next){
                 $expr: {
                   $eq: ["$_post", "$$comment"],
                 },
+                isDeleted:false,
               },
             },
             {
@@ -455,15 +496,15 @@ router.get('/view-post/:postId',async function(req,res,next){
                     },
                   },
                   {
-                    $project:{
-                      firstName:1,
-                      lastName:1,
-                      profileImagePath:1
-                    }
-                  }
+                    $project: {
+                      firstName: 1,
+                      lastName: 1,
+                      profileImagePath: 1,
+                    },
+                  },
                 ],
                 as: "commentByDetails",
-              },
+              }
             },
             {
               $sort:{
@@ -474,33 +515,13 @@ router.get('/view-post/:postId',async function(req,res,next){
               $project: {
                 commentByDetails:{ $arrayElemAt: ["$commentByDetails", 0] },
                 comment: 1,
+                createdOn:1,
                 _commentBy: 1,
               },
             },
             
           ],
           as: "comments",
-        },
-      },
-      {
-        $lookup: {
-          from: "savedposts",
-          let: { saved: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ["$_post", "$$saved"],
-                },
-              },
-            },
-            {
-              $project:{
-                savedBy:1,
-              }
-            }
-          ],
-          as: "savedDetails",
         },
       },
       {
@@ -513,7 +534,6 @@ router.get('/view-post/:postId',async function(req,res,next){
           _user: 1,
           postOwner: { $arrayElemAt: ["$postOwner", 0] },
           comments: 1,
-          savedDetails: 1,
         },
       },
     ]);

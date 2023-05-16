@@ -14,14 +14,12 @@ const userEvents =function(){
         _this.ajaxCallforModal();
         _this.editPostValidation();
         _this.sortUsers();
-        _this.archivePosts();
-        _this.unarchivePosts();
+
     }
     //4. declare event function
 
     // click event on view post without login
     this.viewPostWithoutLogin =  function(){
-      console.log('script ready to view post without login')
       $(".viewPostWithoutLogin").on('click',function(){
         $("#renderSearch").load(`/view-post/${$(this).attr("id")} div#commentList`)
       })
@@ -57,36 +55,7 @@ const userEvents =function(){
   }
 
 
-  // unarchive posts
 
-  this.unarchivePosts = function(){
-    $(".unarchivePost").on('click',function(){
-      alert('unarchoved called');
-      $.ajax({
-        method:'get',
-        url:`/post?_id=${$(this).attr('id')}&_user=${$(this).attr('data')}`,
-        success:function(res){
-          console.log('success in ajax call for unarchive posts')
-          window.location.href = '/post/archived-posts'
-        }
-      })
-    })
-  }
-
-  // archive posts
-    this.archivePosts = function(){
-      $(".archivePost").on('click',function(){
-        alert($(this).attr('id'))
-        $.ajax({
-          method:'get',
-          url:`/post/archive/${$(this).attr('id')}`,
-          success:function(res){
-            console.log('archive ajax successfully called !')
-            window.location.href = "/timeline/"
-          }
-        })
-      })
-    }
 
    // sort users
    this.sortUsers = function(){

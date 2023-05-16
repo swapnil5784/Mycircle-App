@@ -17,6 +17,11 @@ const comments = new mongoose.Schema({
         type:String,
         required:true
     },
+    isDeleted:{
+        type:Boolean,
+        required:true,
+        default:false
+    },
     _commentBy:{
         type:ObjectId,
         required:true,
@@ -27,24 +32,27 @@ const comments = new mongoose.Schema({
         type:ObjectId,
         required:true,
         ref:postsModel
-    },
+    }
 
 },options)
 
 // prehook for post model
-comments.pre('save',async function(next){
-    try{
-        // this.timeAgo = 
-        const _this = this
-        console.log(moment(this.createdOn).fromNow())
-        _this['timeAgo'] = moment(_this.createdOn).fromNow()
-        console.log('--------------------------> pre hook',_this)
-    }
-    catch(error){
-        console.log(error)
-    }
-    next();
-})
+//------------------------
+//----blow prehook can't use cause once field added in db remails same not changed with time and we want to change with time
+//-----------------
+// comments.pre('save',async function(next){
+//     try{
+//         // this.timeAgo = 
+//         const _this = this
+//         console.log(moment(this.createdOn).fromNow())
+//         _this['timeAgo'] = moment(_this.createdOn).fromNow()
+//         console.log('--------------------------> pre hook',_this)
+//     }
+//     catch(error){
+//         console.log(error)
+//     }
+//     next();
+// })
 
 // export
 

@@ -33,7 +33,7 @@
 {{!-- {{#log savedByOwner}}{{/log}}
 {{#log isOwner }}{{/log}} --}}
 {{!-- '||' this.savedBy '==' ../user._id   --}}
-{{#or isOwner savedByOwner}}
+{{#or postOwner savedByOwner}}
     <form id="addCommentForm">
         <div class="row row-cards">
             <div class="mb-3 col-sm-4 col-md-2">
@@ -61,20 +61,35 @@
             <label class="form-label">Comments:</label>
         </div>
         <div class="mb-3 col-sm-8 col-md-10">
-            {{!-- {{#each commentTime}} --}}
+            {{#if post.comments}}
+            {{#log post.comments}}{{/log}}
             {{#each post.comments }} 
               <div  class="nav-link d-flex lh-1 text-reset p-0 commentEach">
                 <span class="avatar avatar-sm" style="background-image: url({{this.commentByDetails.profileImagePath}})"></span>
                 <label  class="form-label">{{this.commentByDetails.firstName}} {{this.commentByDetails.lastName}}</label>
+                {{!-- {{#log ../isOwner}}{{/log}} --}}
+                
+                {{#or ../postOwner (compare this._commentBy '==' ../user._id) }}
+                <button style="margin-left: 30px;" id="{{this._id}}" data="{{../post._id}}"
+                class="btn btn-outline-danger  col-2 deleteComment" 
+                type="submit">Delete</button>
+                {{/or}}
+
               </div>
             
             <input disabled name="url" type="text" class="form-control" value="{{this.comment}}">
-            {{!-- <h3>{{../this}}</h3> --}}
+            <h4>{{moment this.createdOn}}</h4>
             {{/each}}
-            {{!-- {{/each}}  --}}
+            {{/if}}
         </div>
     </div>
 
 
 
 </div>
+
+  <script>
+    $(document).ready(function () {
+      timelineEvents();
+    })
+  </script>
