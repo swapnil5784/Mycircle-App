@@ -4,6 +4,7 @@ const userEvents =function(){
     this.init = function(){
         // _this.updatePostValidation();
         _this.signupValidate();
+        _this.viewPostWithoutLogin();
         _this.postUserDetails();
         _this.loginValidate();
         _this.userUpdateFormValidation();
@@ -15,148 +16,16 @@ const userEvents =function(){
         _this.sortUsers();
         _this.archivePosts();
         _this.unarchivePosts();
-        // _this.filterpostsAtTimeline();
-        // _this.sortPostOnTitle();
-        // _this.paginationBtnClick();
-        // _this.sortByTitle();
-        // _this.sortByDateTime();
     }
     //4. declare event function
 
-    // sort posts By DateTime
-
-    // this.sortByDateTime = function(){
-    //   $("#sortByDateTime").on('click',function(){
-    //     // alert('sort by title clicked')
-    //     let order=[]
-    //     const _this =this;
-    //     if($(this).attr('order') == 'descending' ){
-    //       order.push('asc') 
-    //     }
-    //     else{
-    //       order.push('desc')
-    //     }
-    //     console.log(order)
-    //     if(window.location.search == ''){
-    //       $("#renderHere").load(`/timeline?sortDateTime=${order[0]} div#renderHere`)
-    //       // window.history.pushState(null,null,`/timeline?sortDateTime=${order[0]}`)
-    //     }
-    //     else{
-    //       $("#renderHere").load(`/timeline${window.location.search}&sortDateTime=${order[0]} div#renderHere`)
-    //       // window.history.pushState(null,null,`/timeline${window.location.search}&sortDateTime=${order[0]}`)
-
-    //     }
-    //     // $.ajax({
-    //     //   method:'get',
-    //     //   url:`/timeline?sortDateTime=${order[0]}`,
-    //     //   success:function(res){
-    //     //     // console.log(res)
-            
-    //     //   }
-    //     // })
-    //     if($(_this).attr('order') == 'descending'){
-    //       return $(_this).attr('order' ,'ascending') 
-    //     }
-    //     return $(_this).attr('order' ,'descending')
-    //   })
-    // }
-
-
-    // // sort posts By Title
-
-    // this.sortByTitle = function(){
-    //   $("#sortByTitle").on('click',function(){
-    //     // alert('sort by title clicked')
-    //     console.log(window.location.search.split("&").map(p =>p.split("=")));
-    //     let order=[]
-    //     const _this =this;
-    //     if($(this).attr('order') == 'descending' ){
-    //       order.push('asc') 
-    //     }
-    //     else{
-    //       order.push('desc')
-    //     }
-    //     console.log(order)
-    //     if(window.location.search == ''){
-    //       $("#renderHere").load(`/timeline?sortTitle=${order[0]} div#renderHere`)
-    //       // window.history.pushState(null,null,`/timeline?sortTitle=${order[0]}`)
-
-    //     }
-    //     else{
-    //       $("#renderHere").load(`/timeline${window.location.search}&sortTitle=${order[0]} div#renderHere`,function(){}) 
-    //       // window.history.pushState(null,null,`/timeline${window.location.search}&sortTitle=${order[0]}`)
- 
-    //     }
-        
-        // ajax and load method wordks same for get route call
-        // $.ajax({
-        //   method:'get',
-        //   url:`/timeline${window.location.search}&sortTitle=${order[0]}`,
-        //   success:function(res){
-        //     // console.log(res)
-            
-            
-        //     window.history.pushState(null,null,`/timeline${window.location.search}&sortTitle=${order[0]}`)
-      //   //   }
-      //   })
-      //   if($(_this).attr('order') == 'descending'){
-      //     return $(_this).attr('order' ,'ascending') 
-      //   }
-      //   return $(_this).attr('order' ,'descending')
-      // })
-      // }
-
-
-
-    // pagination 
-
-    // this.paginationBtnClick =  function(){
-    //   $(document).off('click',".click-page").on('click',".click-page",function(){
-    //     // alert($(this).attr("page"))
-    //     const page =  $(this).attr("page")
-    //     $("#index-pagination").load(`/timeline?page=${page} div#index-pagination`,function(){
-    //       window.history.pushState(null,null,`/timeline?page=${page}`)
-    //     })
-        // ajax and load methos works same calls route and without reload
-        // $.ajax({
-        //   method:'get',
-        //   url:`/timeline?page=${page}`,
-        //   success:function(res){
-        //     // console.log(res)
-            
-        //     window.history.pushState(null,null,`/timeline?page=${page}`)
-        //   }
-        // })
-    //   })
-    // }
-
-
-
-
-    // // sort post by title
-    // this.sortPostOnTitle = function(){
-    //   // console.log("ready to sort post on title")
-    //   $("#sortTitleAtlandingPage").on('click',function(){
-    //     if($(this).attr('sort')){
-    //       $(this).html('Title [a-z]')
-    //       $(this).attr('sort','false')
-    //     }else{
-    //       $(this).html('Title [z-a]')
-    //     return $(this).attr('sort','true')
-    //     }
-    //     alert($(this).attr("sort"))
-    //      $.ajax({
-    //       method:'get',
-    //       url:`/timeline?sortOnTitle=${$(this).attr('sort')}`,
-    //       success:function(res){
-    //         // console.log(res)
-    //         $("#renderHere").load(`/timeline?sortOnTitle=${$(this).attr('sort')} div#renderHere`)
-    //       }
-    //      })
-
-        
-    //   })
-    // }
+    // click event on view post without login
+    this.viewPostWithoutLogin =  function(){
+      console.log('script ready to view post without login')
+      $(".viewPostWithoutLogin").on('click',function(){
+        $("#renderSearch").load(`/view-post/${$(this).attr("id")} div#commentList`)
+      })
+    }
 
     // validation for edit post
     this.editPostValidation = function(){
@@ -185,35 +54,8 @@ const userEvents =function(){
           form.submit()
         }
       })
-      // $(".fireEdit").on('click',function(){
-      //   alert('clicked')
-      // })
   }
 
-
-
-// -------------------------------moved to tileline-----------------------------------------------
-
-  // // filter posts at timeline page
-  // this.filterpostsAtTimeline = function(){
-  //   $("#filterBtn").on('click',function(){
-  //     alert('clicked')
-  //     let postDetailsToSearch={
-  //       whichPosts:$("#whichPosts").val(),
-  //       aboutPosts:$("#aboutPosts").val()
-  //     }
-  //     console.log(postDetailsToSearch)
-  //     $.ajax({
-  //       method:'get',
-  //       url:`/timeline?whichPosts=${$("#whichPosts").val()}&aboutPosts=${$("#aboutPosts").val()}`,
-  //       success:function(res){
-  //         $("#renderHere").load(`/timeline?whichPosts=${$("#whichPosts").val()}&aboutPosts=${$("#aboutPosts").val()} div#renderHere`)
-  //       }
-  //     })
-  //   })
-  // }
-
-// --------------------------------------------------------------------------------------------------------
 
   // unarchive posts
 

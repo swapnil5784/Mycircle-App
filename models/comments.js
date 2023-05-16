@@ -4,7 +4,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId
 const commentsModel = require('../models/users')
 const usersModel = require('../models/users')
 const postsModel = require('../models/posts')
-
+const moment = require('moment')
 const options = {
     timestamps:{
         createdAt:'createdOn',
@@ -12,7 +12,7 @@ const options = {
     }
 }
 // make schema
-const posts = new mongoose.Schema({
+const comments = new mongoose.Schema({
     comment:{
         type:String,
         required:true
@@ -32,10 +32,22 @@ const posts = new mongoose.Schema({
 },options)
 
 // prehook for post model
-
+comments.pre('save',async function(next){
+    try{
+        // this.timeAgo = 
+        const _this = this
+        console.log(moment(this.createdOn).fromNow())
+        _this['timeAgo'] = moment(_this.createdOn).fromNow()
+        console.log('--------------------------> pre hook',_this)
+    }
+    catch(error){
+        console.log(error)
+    }
+    next();
+})
 
 // export
 
-const Comments = mongoose.model('Comments',posts);
+const Comments = mongoose.model('Comments',comments);
 module.exports = Comments;
 

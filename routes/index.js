@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 const usersModel = require("../models/users");
 const postsModel = require("../models/posts");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 const passport = require("passport");
 const LocalStratagy = require("passport-local").Strategy;
 // 1.import node mailer
@@ -176,8 +178,9 @@ router.get("/", async function (req, res, next) {
     
 
     pipeline.push(limit,skip,sort,lookup,project)
-    console.log(JSON.stringify(pipeline,null,3))
+    // console.log(JSON.stringify(pipeline,null,3))
     let allPostsWithUsername = await postsModel.aggregate(pipeline);
+    console.log(allPostsWithUsername)
     let noOfPosts = totalPosts.length;
 
     let needPagination = noOfPosts/4;
@@ -394,4 +397,134 @@ router.get("/users/validate/email", async function (req, res, next) {
   }
 });
 
+
+// router to view post
+router.get('/view-post/:postId',async function(req,res,next){
+  try{
+    console.log('-----------idhr aaya---------------------')
+    let postDetails = await postsModel.aggregate([
+      {
+        $match: {
+          _id: new ObjectId(req.params.postId),
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          let: { user: "$_user" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$user"],
+                },
+              },
+            },
+            {
+              $project: {
+                firstName: 1,
+                lastName: 1,
+              },
+            },
+          ],
+          as: "postOwner",
+        },
+      },
+      {
+        $lookup: {
+          from: "comments",
+          let: { comment: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_post", "$$comment"],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: "users",
+                let: { user: "$_commentBy" },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ["$_id", "$$user"],
+                      },
+                    },
+                  },
+                  {
+                    $project:{
+                      firstName:1,
+                      lastName:1,
+                      profileImagePath:1
+                    }
+                  }
+                ],
+                as: "commentByDetails",
+              },
+            },
+            {
+              $sort:{
+                createdOn:-1,
+              }
+            },
+            {
+              $project: {
+                commentByDetails:{ $arrayElemAt: ["$commentByDetails", 0] },
+                comment: 1,
+                _commentBy: 1,
+              },
+            },
+            
+          ],
+          as: "comments",
+        },
+      },
+      {
+        $lookup: {
+          from: "savedposts",
+          let: { saved: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_post", "$$saved"],
+                },
+              },
+            },
+            {
+              $project:{
+                savedBy:1,
+              }
+            }
+          ],
+          as: "savedDetails",
+        },
+      },
+      {
+        $project: {
+          postDescription: 1,
+          postTitle: 1,
+          imagePath: 1,
+          createdOn: 1,
+          updatedOn: 1,
+          _user: 1,
+          postOwner: { $arrayElemAt: ["$postOwner", 0] },
+          comments: 1,
+          savedDetails: 1,
+        },
+      },
+    ]);
+    console.log(postDetails)
+
+    res.render('postView/index',{post: postDetails[0]})
+
+  }
+  catch(error){
+    console.log(error);
+    res.render("error", { message: error, status: 404 });
+  }
+})
 module.exports = router;

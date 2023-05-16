@@ -6,6 +6,7 @@ const commentsModel = require("../models/comments");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const fs = require("fs");
+const moment = require("moment");
 
 // import multer
 const multer = require("multer");
@@ -155,6 +156,8 @@ router.get("/view-post/:postId", async function (req, res, next) {
               $project: {
                 commentByDetails:{ $arrayElemAt: ["$commentByDetails", 0] },
                 comment: 1,
+                createdOn:1,
+                timeAgo:moment('$createdOn').fromNow(),
                 _commentBy: 1,
               },
             },
@@ -212,12 +215,20 @@ router.get("/view-post/:postId", async function (req, res, next) {
       }
     }
     console.log(isOwner,savedByOwner)
-    console.log('==>>>',JSON.stringify(postDetails[0], null, 3));
+    // console.log('==>>>',JSON.stringify(postDetails[0], null, 3));
+    console.log(postDetails[0].comments)
+    let commentTimeArray = []
+    for (let i = 0; i < postDetails[0].comments.length; i++) {
+      commentTimeArray.push(moment(postDetails[0].comments[i].createdOn).fromNow())
+      console.log(moment(postDetails[0].comments[i].createdOn).fromNow())
+    }
+    console.log(commentTimeArray)
     res.render("postView/index", {
       post: postDetails[0],
       userLogged: loginUser,
       isOwner:isOwner,
-      savedByOwner:savedByOwner
+      savedByOwner:savedByOwner,
+      commentTime:commentTimeArray
 
     });
   } catch (error) {

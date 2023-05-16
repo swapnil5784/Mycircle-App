@@ -30,8 +30,8 @@
         </div>
     </div>  
 {{!-- {{#each post.savedDetails}} --}}
-{{#log savedByOwner}}{{/log}}
-{{#log isOwner }}{{/log}}
+{{!-- {{#log savedByOwner}}{{/log}}
+{{#log isOwner }}{{/log}} --}}
 {{!-- '||' this.savedBy '==' ../user._id   --}}
 {{#or isOwner savedByOwner}}
     <form id="addCommentForm">
@@ -61,14 +61,17 @@
             <label class="form-label">Comments:</label>
         </div>
         <div class="mb-3 col-sm-8 col-md-10">
-            {{#each post.comments}}
+            {{!-- {{#each commentTime}} --}}
+            {{#each post.comments }} 
               <div  class="nav-link d-flex lh-1 text-reset p-0 commentEach">
                 <span class="avatar avatar-sm" style="background-image: url({{this.commentByDetails.profileImagePath}})"></span>
                 <label  class="form-label">{{this.commentByDetails.firstName}} {{this.commentByDetails.lastName}}</label>
               </div>
             
             <input disabled name="url" type="text" class="form-control" value="{{this.comment}}">
+            {{!-- <h3>{{../this}}</h3> --}}
             {{/each}}
+            {{!-- {{/each}}  --}}
         </div>
     </div>
 
