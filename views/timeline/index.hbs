@@ -86,7 +86,7 @@
 
 
           <div id="post" class="col-md-6 col-lg-3">
-            <div class="card postBox">
+            <div style="border-radius: 15px; padding:8px;" class="card postBox">
               <!-- Photo -->
               <div class="img-responsive img-responsive-21x9 card-img-top  ">
                 {{!----------------}}
@@ -99,25 +99,56 @@
                     <img class="avatar avatar-sm" src="{{this.user.profileImagePath}}" alt="no profile">
                     <div class="d-none d-xl-block ps-2">
                       <div>
-                        <h3>{{this.user.firstName}} {{this.user.lastName}}</h3>
+                        <h4 class="text-muted">{{this.user.firstName}} {{this.user.lastName}}</h3>
                       </div>
                     </div>
                   </a>
 
+                  {{!-- --------- start actions in post --}}
 
+                  <span style="margin-left:120px;" class="dropdown">
+                    <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport"
+                      data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                    <div class="dropdown-menu dropdown-menu-end" style="">
+                      {{#compare this.user._id '!=' ../user._id }}
+                      <button style="margin-right: 30px;" postOwner="{{this._user}}" id="{{this._id}}"
+                        data="{{../user._id}}" class="btn dropdown-item btn-outline-success savePost" isSaved='false'
+                        type="submit">Save</button>
+                      {{/compare}}
+
+                      {{#compare this.user._id '==' ../user._id }}
+                      <button id="{{this._id}}" type="button"
+                        class=" editPost dropdown-item btn btn-outline-danger callAjaxforModal" data-bs-toggle="modal">
+                        Edit
+                      </button>
+                      <button  id="{{this._id}}" data="{{../user._id}}"
+                        class="btn dropdown-item btn-outline-info archivePost" isSaved='false'
+                        type="submit">Archive</button>
+                      {{/compare}}
+                      <button  id="{{this._id}}" data="{{../user._id}}"
+                        class="btn dropdown-item btn-outline-success viewPost" type="submit">View
+                      </button>
+                    </div>
+                  </span>
+
+
+                  {{!-- --------- start actions in post --}}
                 </div>
                 {{!-- ------------ --}}
 
                 {{!-- <h2 class="card-title">{{this.user.firstName}} {{this.user.lastName}}</h2> --}}
 
-                <img class="postImage" src="{{this.imagePath}}">
+                <img style="border-radius: 15px; margin:8px 0 0 0" class="postImage" src="{{this.imagePath}}">
 
               </div>
-              <h3 class="text-muted">{{this.postTitle}}</h3>
-              <div class="card-body">
-                <p class="text-muted">{{this.postDescription}}</p>
+              <div>
+              <h2 style="margin:10px 0 0 10px ;" class="text-muted">Title:{{this.postTitle}}</h2>
+              <h3 style="margin:10px 0 0 12px ;" class="text-muted">Description:{{this.postDescription}}</h3>
+              <h3 style="margin:0 0 0 12px ;" class="text-muted">Commments:{{this.comments}}</h3>
               </div>
-              <div style="display: flexbox;">
+              <div class="card-body">
+              </div>
+              {{!-- <div style="display: flexbox;">
 
                 {{#compare this.user._id '!=' ../user._id }}
 
@@ -152,11 +183,10 @@
                 {{!-- <button id="{{this._id}}" style="margin-left: 10px;" data="{{this.user._id}}"
                   class="btn btn-outline-danger  col-6 col-sm-4 col-md-5 col-xl py-3 savePost"
                   type="submit">Edit</button>
-                --}}
 
 
-              </div>
-              <h2>Commments:{{this.comments}}</h2>
+
+              </div> --}}
             </div>
           </div>
           {{!-- -------------------------------------------------------------- --}}
@@ -188,9 +218,9 @@
 
 </div>
 
-  <script>
-    $(document).ready(function () {
-      timelineEvents();
-      userEvents();
-    })
-  </script>
+<script>
+  $(document).ready(function () {
+    timelineEvents();
+    userEvents();
+  })
+</script>

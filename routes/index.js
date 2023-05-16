@@ -131,6 +131,7 @@ router.get("/", async function (req, res, next) {
             $project: {
               firstName: 1,
               lastName: 1,
+              profileImagePath:1,
             },
           },
         ],

@@ -66,23 +66,30 @@
 
 
       <div id="post" class="col-md-6 col-lg-3">
-        <div class="card postBox">
+        <div style="border-radius: 15px; padding:8px;" class="card postBox">
           <!-- Photo -->
-          <div class="img-responsive img-responsive-21x9 card-img-top  ">
-            <h2 class="card-title">{{this.user.firstName}} {{this.user.lastName}}</h2>
+          <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown"
+                    aria-label="Open user menu">
+                    <img class="avatar avatar-sm" src="{{this.user.profileImagePath}}" alt="no profile">
+                    <div class="d-none d-xl-block ps-2">
+                      <div>
+                        <h3>{{this.user.firstName}} {{this.user.lastName}}</h3>
+                      </div>
+                    </div>
+                  </a>  
+            <img style="border-radius: 15px; margin:8px 0 0 0" class="postImage" src="{{this.imagePath}}">
+              <h2 style="margin:10px 0 0 10px ;" class="text-muted">Title:{{this.postTitle}}</h2>
+              <h3 style="margin:10px 0 0 12px ;" class="text-muted">Description:{{this.postDescription}}</h3>
+              <h3 style="margin:0 0 0 12px ;" class="text-muted">Commments:{{this.comments}}</h3>
 
-            <img class="postImage" src="{{this.imagePath}}">
-
-          </div>
-          <h3 class="text-muted">{{this.postTitle}}</h3>
-          <div class="card-body">
-            <p class="text-muted">{{this.postDescription}}</p>
-          </div>
+              <div class="card-body">
+              </div>
+               </div>
           <div style="display: flexbox;">
-
-            <button style="margin-left: 30px;" id="{{this._id}}" data="{{../user._id}}"
-                class="btn btn-outline-success  col-6 col-sm-4 col-md-3 col-xl py-3 viewPostWithoutLogin" 
-                type="submit">View </button>
+<button style="margin-left: 30px;" id="{{this._id}}" data="{{../user._id}}"
+                  class="btn btn-outline-success  col-6 col-sm-4 col-md-3 col-xl py-3 viewPost" type="submit">View
+                </button>
+           
     
 
             {{!-- Scrollable --}}
@@ -94,8 +101,7 @@
               class="btn btn-outline-danger  col-6 col-sm-4 col-md-5 col-xl py-3 savePost" type="submit">Edit</button> --}}
            
             
-          </div>
-            <h2>Commments:{{this.comments}}</h2>
+          
 
 
         </div>
