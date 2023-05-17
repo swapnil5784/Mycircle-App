@@ -85,7 +85,7 @@
           {{!-- -------------------------------------------------------------- --}}
 
 
-          <div id="post" class="col-md-6 col-lg-3">
+          <div  class="col-md-6 col-lg-3 ">
             <div style="border-radius: 15px; padding:8px;" class="card postBox">
               <!-- Photo -->
               <div class="img-responsive img-responsive-21x9 card-img-top  ">
@@ -118,7 +118,8 @@
 
                       {{#compare this.user._id '==' ../user._id }}
                       <button id="{{this._id}}" type="button"
-                        class=" editPost dropdown-item btn btn-outline-danger callAjaxforModal" data-bs-toggle="modal">
+                        class=" editPost dropdown-item btn btn-outline-danger callAjaxforModal" data-bs-toggle="modal" data-bs-target="#modal-scrollable"
+                        >
                         Edit
                       </button>
                       <button  id="{{this._id}}" data="{{../user._id}}"
@@ -138,13 +139,13 @@
 
                 {{!-- <h2 class="card-title">{{this.user.firstName}} {{this.user.lastName}}</h2> --}}
 
-                <img style="border-radius: 15px; margin:8px 0 0 0" class="postImage" src="{{this.imagePath}}">
+                <img id="{{this._id}}" style="border-radius: 15px; margin:8px 0 0 0" class="viewPost postImage" src="{{this.imagePath}}">
 
               </div>
               <div>
               <h2 style="margin:10px 0 0 10px ;" class="text-muted">Title:{{this.postTitle}}</h2>
               <h3 style="margin:10px 0 0 12px ;" class="text-muted">Description:{{this.postDescription}}</h3>
-              <h3 style="margin:0 0 0 12px ;" class="text-muted">Commments:{{this.comments}}</h3>
+              <h3 style="margin:0 0 0 12px ;" class="text-muted"><img style="margin:2px 0 0 0" class="avatar avatar-sm" src="uploads/default/comment.png" alt="">:{{this.comments}}</h3>
               </div>
               <div class="card-body">
               </div>
