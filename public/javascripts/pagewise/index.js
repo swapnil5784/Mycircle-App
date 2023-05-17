@@ -8,8 +8,6 @@ const userEvents =function(){
         _this.postUserDetails();
         _this.loginValidate();
         _this.userUpdateFormValidation();
-        _this.savePost();
-        _this.unsavePost();
         _this.createPostValidation();
         _this.ajaxCallforModal();
         _this.editPostValidation();
@@ -137,62 +135,9 @@ const userEvents =function(){
 
 
 
-    // savepost button functionality
 
-    this.savePost =  function(){
-      $(".savePost").on('click',function(){
-        if($(this).attr("isSaved") == 'true'){
-          return alert('already saved !')
-          // $(this).attr('isSaved','true')
-          // $(this).html('Saved')
-        } 
-        if($(this).attr("isSaved") == 'false'){
-          // alert('Saved')
-          toastr.success('post saved')
-          $(this).attr('isSaved','true')
-          $(this).html('Saved')
-          $.ajax({
-            method:'post',
-            url:'/saved-posts/save',
-            data:{
-              savedBy:$(this).attr('data'),
-              _post:$(this).attr('id'),
-              postBy:$(this).attr('postOwner')
-            },
-            success:function(res){
-              console.log('saved ajax called successfully')
-            }
-          });
-        }     
-      })
-    }
 
-    // unsave the post
 
-    this.unsavePost = function(){
-      $(".unsavePost").on('click',function(){
-          alert('unsave clicked !')   
-          let postDetails = {
-            savedBy:$(this).attr('data'),
-            _post:$(this).attr('id'),
-          }
-          $.ajax({
-            method:'delete',
-            url:'/saved-posts/delete',
-            data:postDetails,
-            success:function(res){
-              if(res.type == 'success'){
-                console.log("delete ajax called successfully !")
-                return window.location.href = '/saved-posts/'
-              }
-              if(res.type == 'error'){
-                console.log("error in delete query for unsave post !")
-              }
-            }
-          })     
-      })
-      
-    }
 
     // update user details  by update query
 

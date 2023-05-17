@@ -1,6 +1,6 @@
 //1. create indexEvents
 const landingPageEvents = function(){
-    console.log("------------------------------new javascript--------------------")
+    // console.log("------------------------------new javascript--------------------")
     //2.create init
     this.init = function(){
         _this.paginationOnLanding();
@@ -9,7 +9,7 @@ const landingPageEvents = function(){
  
     //4. define functions
     this.paginationOnLanding = function(){
-        console.log('script of pagination ready')
+        // console.log('script of pagination ready')
         $(document).off().on('click',".click-page",function(){
             // alert($(this).attr('page'))
             $("#renderHere").load(`?page=${$(this).attr('page')} div#renderHere`)
@@ -18,7 +18,7 @@ const landingPageEvents = function(){
 
       // index page searching
   this.searchPostsAtIndexpage = function(){
-    console.log('script of searching ready')
+    // console.log('script of searching ready')
     $("#searchAtIndex").on('keyup',function(){
       console.log($("#searchAtIndex").val())
 

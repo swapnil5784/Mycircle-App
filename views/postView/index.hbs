@@ -62,7 +62,7 @@
         </div>
         <div class="mb-3 col-sm-8 col-md-10">
             {{#if post.comments}}
-            {{#log post.comments}}{{/log}}
+            {{!-- {{#log post.comments}}{{/log}} --}}
             {{#each post.comments }} 
               <div  class="nav-link d-flex lh-1 text-reset p-0 commentEach">
                 <span class="avatar avatar-sm" style="background-image: url({{this.commentByDetails.profileImagePath}})"></span>

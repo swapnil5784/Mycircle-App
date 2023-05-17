@@ -6,6 +6,12 @@ const savedPostModel = require('./models/savedPosts')
 const cronDataModel = require('./models/cronData')
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
+const toastr = require('toastr')
+
+
+
+
+
 // import cron
 var cron = require('node-cron');
 // cron scheduler
@@ -117,7 +123,7 @@ var helperHandlebar = require("handlebars-helpers")();
 // import mongoose and connect express with mongodb
 try{
   const mongoose = require('mongoose');
-  mongoose.connect(process.env.MONGO_URL_HOME);
+  mongoose.connect(process.env.MONGO_URL);
   const db = mongoose.connection;
   console.log(process.env.MONGO_URL)
   

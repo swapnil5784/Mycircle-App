@@ -7,6 +7,7 @@ const timelineEvents = function(){
     _this.sortPostOnDateandTime();
     _this.paginationBtnClick();
     _this.savePost();
+    _this.unsavePost();
     _this.viewPost();
     _this.addComment();
     _this.removeComment();
@@ -19,16 +20,20 @@ const timelineEvents = function(){
   this.removeComment = function(){
     $(document).on('click',".deleteComment",function(){
         console.log('---------> script to delete comment')
-        alert('delete comment',$(this).attr('id'))
+        // alert('delete comment',$(this).attr('id'))
         $("#commentList").load(`/timeline/add-comment?removeComment=true&commentId=${$(this).attr('id')}&postId=${$(this).attr('data')} div#commentList`)
+        toastr.success('Comment Removed Successfully !')
+
       })
+
     }
 
     //add comment
     this.addComment = function(){
+      console.log('Ready to emit comment added')
       $(document).on('click','.addComment',function(){
         if($("#comment").val() == ''){
-          alert('Enter comment first !')
+          toastr.error('Write comment first !')
         }
         else{
           $("#commentList").load(`/timeline/add-comment?_post=${$(this).attr('id')}&_commentBy=${$(this).attr('data')}&comment=${encodeURIComponent($("#comment").val())} div#commentList`)
@@ -47,11 +52,12 @@ const timelineEvents = function(){
           //   error:function(error){
           //     console.log('error in ajax for add comment',error)
           //   }
-          // })
-          console.log($('#comment').val())
-
-
+          // }) 
+          toastr.success('Comment successfully added :)')
+          socket.emit('commentAdded',{postId:$(this).attr('id'),comment:$("#comment").val()})
+          console.log('After emit comment added')
         }
+
       })
     
     }
@@ -93,12 +99,13 @@ const timelineEvents = function(){
           window.location.href = '/post/archived-posts'
         }
       })
+      toastr.success('Post Unarchived successfully ')
     })
   }
 
   // archive posts
     this.archivePosts = function(){
-      $(".archivePost").on('click',function(){
+      $(document).on('click',".archivePost",function(){
         // alert($(this).attr('id'))
         $.ajax({
           method:'get',
@@ -108,6 +115,7 @@ const timelineEvents = function(){
             window.location.href = "/timeline/"
           }
         })
+        toastr.info('Post Archived successfully ')
       })
     }
 
@@ -115,12 +123,13 @@ const timelineEvents = function(){
     this.savePost =  function(){
         $(".savePost").on('click',function(){
           if($(this).attr("isSaved") == 'true'){
+            toastr.warning('already saved ! ')
             return alert('already saved !')
             // $(this).attr('isSaved','true')
             // $(this).html('Saved')
           } 
           else{
-            alert('Saved')
+            toastr.success('post saved')
             $(this).attr('isSaved','true')
             $(this).html('Saved')
             $.ajax({
@@ -138,6 +147,34 @@ const timelineEvents = function(){
           }     
         })
       }
+
+          // unsave the post
+
+    this.unsavePost = function(){
+      $(".unsavePost").on('click',function(){ 
+        toastr.success('post Unsaved Successfully !')
+          let postDetails = {
+            savedBy:$(this).attr('data'),
+            _post:$(this).attr('id'),
+          }
+          $.ajax({
+            method:'delete',
+            url:'/saved-posts/delete',
+            data:postDetails,
+            success:function(res){
+              if(res.type == 'success'){
+                console.log("delete ajax called successfully !")
+                return window.location.href = '/saved-posts/'
+              }
+              if(res.type == 'error'){
+                console.log("error in delete query for unsave post !")
+              }
+            }
+          }) 
+    
+      })
+      
+    }
 
     // event function for pagination on button-click
     

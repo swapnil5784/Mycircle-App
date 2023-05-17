@@ -5,6 +5,8 @@ const postsModel = require("../models/posts");
 const SavedPostsModel = require("../models/savedPosts");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
+const toastr = require('toastr')
+
 // get route to render the saved posts page
 router.get("/", async function (req, res, next) {
   try {
@@ -100,6 +102,7 @@ router.get("/", async function (req, res, next) {
 // save the post
 
 router.post("/save", async function (req, res, next) {
+  
   try {
     console.log(req.user._id);
     console.log("-------------->>>>>>",req.body)

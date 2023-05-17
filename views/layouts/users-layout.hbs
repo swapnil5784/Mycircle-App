@@ -6,9 +6,24 @@
     {{> css}}
   </head>
   <body>
+    {{!-- socket cdn for client side --}}
+       <script src="/socket.io/socket.io.min.js"></script>
+      <script>
+
+        var socket = io("http://192.168.1.178:3001", {transports: ["websocket"]});
+        socket.on('message',(arg)=>{
+          console.log(arg)
+        })
+        socket.on('showCommentAddedMessage',function(data){
+          console.log('message from server by emit event data in user-layout-->',data)
+        })
+
+      </script>
     <script src="/javascripts/landing-page/demo-theme.min.js?1674944402"></script>
 
     {{> nav}}
+    
+
     {{{body}}}
   </body>
   {{> scripts}}

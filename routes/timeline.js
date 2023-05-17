@@ -6,13 +6,18 @@ const commentsModel = require("../models/comments");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const fs = require("fs");
+const toastr = require('toastr')
 const moment = require("moment");
+// const app = require('../app')
+
+
+
 
 // import multer
 const multer = require("multer");
+
 // import path for extname of file[express inbuilt]
 const path = require("path");
-const { Console } = require("console");
 
 // 1.upload by destination method
 // const upload = multer({dest:'./public/uploads'})
@@ -205,7 +210,7 @@ router.get("/view-post/:postId", async function (req, res, next) {
         },
       },
     ]);
-    console.log(JSON.stringify(postDetails[0], null, 3));
+    // console.log(JSON.stringify(postDetails[0], null, 3));
 
     //------------------------------ for helpers
     let postOwner = false;
@@ -233,6 +238,7 @@ router.get("/view-post/:postId", async function (req, res, next) {
     // console.log('==>>>',JSON.stringify(postDetails[0], null, 3));
     res.render("postView/index", {
       post: postDetails[0],
+      layout: "users-layout",
       userLogged: loginUser,
       postOwner: postOwner,
       savedByOwner: savedByOwner,
@@ -258,6 +264,8 @@ router.get("/", async function (req, res, next) {
     };
     let limit = 4;
     let skip = 0;
+
+    io.emit('message',{data:'Event emitted from server'})
 
     // first stage in aggregation
     pipeline.push({ $match: match });
@@ -412,9 +420,9 @@ router.get("/", async function (req, res, next) {
       }
     }
     pipeline.push({ $sort: sort });
-    console.log(JSON.stringify(pipeline, null, 3));
+    // console.log(JSON.stringify(pipeline, null, 3));
     let allPostsWithUsername = await postsModel.aggregate(pipeline);
-    console.log(allPostsWithUsername);
+    // console.log(allPostsWithUsername);
     let postArray = [];
     console.log("-----------------------------> totalPosts", totalPosts);
     for (let i = 1; i <= Math.ceil(totalPosts / 4); i++) {
