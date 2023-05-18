@@ -6,16 +6,29 @@
     {{> css}}
   </head>
   <body>
+
     {{!-- socket cdn for client side --}}
        <script src="/socket.io/socket.io.min.js"></script>
       <script>
 
-        var socket = io("http://192.168.1.178:3001", {transports: ["websocket"]});
+        var socket = io("http://192.168.1.178:3000", {transports: ["websocket"]});
+        
+        //socket.emit('createRoom')
+
         socket.on('message',(arg)=>{
           console.log(arg)
         })
         socket.on('showCommentAddedMessage',function(data){
           console.log('message from server by emit event data in user-layout-->',data)
+          toastr.success(data)
+          $("#notificationBigList").load(`/timeline/ div#notificationBigList`)
+          //$("#notificationNumber").load(`/timeline/ div#notificationNumber`)
+          //$("#notificationList").load(`/timeline/ div#notificationList`)
+          //alert(data)
+        })
+
+        socket.on('backToPostsaved',function(data){
+          toastr.success(data)
         })
 
       </script>

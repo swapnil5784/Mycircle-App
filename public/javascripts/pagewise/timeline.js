@@ -13,6 +13,7 @@ const timelineEvents = function(){
     _this.removeComment();
     _this.archivePosts();
     _this.unarchivePosts();
+
   }
 
   
@@ -32,10 +33,7 @@ const timelineEvents = function(){
     this.addComment = function(){
       console.log('Ready to emit comment added')
       $(document).on('click','.addComment',function(){
-        if($("#comment").val() == ''){
-          toastr.error('Write comment first !')
-        }
-        else{
+        if($("#comment").val()){
           $("#commentList").load(`/timeline/add-comment?_post=${$(this).attr('id')}&_commentBy=${$(this).attr('data')}&comment=${encodeURIComponent($("#comment").val())} div#commentList`)
           // $.ajax({
           //   method:'post',
@@ -54,13 +52,15 @@ const timelineEvents = function(){
           //   }
           // }) 
           toastr.success('Comment successfully added :)')
-          socket.emit('commentAdded',{postId:$(this).attr('id'),comment:$("#comment").val()})
           console.log('After emit comment added')
+          return socket.emit('commentAdded',{postId:$(this).attr('id'),postBy:$(this).attr('data-postBy'),comment:$("#comment").val()})
         }
-
+          toastr.error('Write comment first !')
       })
     
     }
+
+
 
     // view post on view click at post
     this.viewPost = function(){
@@ -121,7 +121,7 @@ const timelineEvents = function(){
 
     // save post event 
     this.savePost =  function(){
-        $(".savePost").on('click',function(){
+        $(document).on('click',".savePost",function(){
           if($(this).attr("isSaved") == 'true'){
             toastr.warning('already saved ! ')
             return alert('already saved !')
@@ -129,6 +129,7 @@ const timelineEvents = function(){
             // $(this).html('Saved')
           } 
           else{
+            socket.emit('postSaved',{postBy:$(this).attr('postOwner')})
             toastr.success('post saved')
             $(this).attr('isSaved','true')
             $(this).html('Saved')

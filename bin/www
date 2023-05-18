@@ -12,7 +12,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3001');
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
@@ -27,11 +27,20 @@ try{
 io.on('connection',function(socket){
   console.log('---------------------------->  socket successfully connected!',socket.id)
   socket.on('disconnect',function(){
+    console.log('------------------> socket disconnected')
   })
+  socket.join(user._id)
+  // console.log(user._id)  
+
+  socket.on('postSaved',function(data){
+    console.log("--------------------->PostOwner",data.postBy)
+    io.sockets.to(data.postBy).emit('backToPostsaved', 'saved by '+user.firstName+" "+user.lastName )
+  })
+
   socket.on('commentAdded',(data)=>{
     console.log('---------------------------->  socket listened in comment added!')
     console.log('--------------->addedComment data',data)
-    socket.emit('showCommentAddedMessage',data)
+    io.sockets.to(data.postBy).emit('showCommentAddedMessage','commented by '+user.firstName+" "+user.lastName)
   })
 })
 

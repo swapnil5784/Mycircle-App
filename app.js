@@ -207,6 +207,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req,res,next){
   // console.log(req.user,"local variable assigned")
   res.locals.user = req.user;
+  global.user = req.user
   next();
 })
 

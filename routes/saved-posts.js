@@ -5,6 +5,7 @@ const postsModel = require("../models/posts");
 const SavedPostsModel = require("../models/savedPosts");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
+const notificationsModel = require("../models/notifications")
 const toastr = require('toastr')
 
 // get route to render the saved posts page
@@ -106,6 +107,15 @@ router.post("/save", async function (req, res, next) {
   try {
     console.log(req.user._id);
     console.log("-------------->>>>>>",req.body)
+    let notificationDetails = {
+      _from:req.user._id,
+      _to:req.body.postBy,
+      title:`${req.user.firstName} ${req.user.lastName} saved post`,
+      type:'save',
+      isSeen:false,
+
+    }
+    await notificationsModel.create(notificationDetails)
     await SavedPostsModel.create(req.body);
     res.send("ok");
   } catch (error) {

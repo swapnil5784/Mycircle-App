@@ -3,9 +3,10 @@
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+          <a href="/"><h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
             My Circle
-          </h1>
+          </h1></a>
+          
           <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
                 <form action="../" method="get" autocomplete="off" novalidate>
                   <div class="input-icon">
@@ -77,18 +78,18 @@
                       </div>
                     </div>
                   </a>  
-            <img style="border-radius: 15px; margin:8px 0 0 0" class="postImage" src="{{this.imagePath}}">
+            <img style="border-radius: 15px; margin:8px 0 0 0" id="{{this._id}}" class="postImage viewPostwihoutLogin" src="{{this.imagePath}}">
               <h2 style="margin:10px 0 0 10px ;" class="text-muted">Title:{{this.postTitle}}</h2>
               <h3 style="margin:10px 0 0 12px ;" class="text-muted">Description:{{this.postDescription}}</h3>
-              <h3 style="margin:0 0 0 12px ;" class="text-muted">Commments:{{this.comments}}</h3>
+              <h3 style="margin:0 0 0 12px ;" class="text-muted"><img style="margin:2px 0 0 0" class="avatar avatar-sm" src="/uploads/default/comment.png" alt="">:{{this.comments}}</h3>
 
               <div class="card-body">
               </div>
                </div>
           <div style="display: flexbox;">
-<button style="margin-left: 30px;" id="{{this._id}}" data="{{../user._id}}"
-                  class="btn btn-outline-success  col-6 col-sm-4 col-md-3 col-xl py-3 viewPost" type="submit">View
-                </button>
+{{!-- <button style="margin-left: 30px;" id="{{this._id}}" data="{{../user._id}}"
+                  class="btn btn-outline-success  col-6 col-sm-4 col-md-3 col-xl py-3 viewPostwihoutLogin" type="submit">View
+                </button> --}}
            
     
 
@@ -132,6 +133,7 @@
 <script>
   $(document).ready(function () {
     userEvents();
+    timelineEvents();
     landingPageEvents();
   })
 </script>

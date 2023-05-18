@@ -4,10 +4,23 @@ const landingPageEvents = function(){
     //2.create init
     this.init = function(){
         _this.paginationOnLanding();
-        _this.searchPostsAtIndexpage()
+        _this.searchPostsAtIndexpage();
+        _this.viewPostwihoutLogin();
+
     }
  
     //4. define functions
+
+        // landing app view post
+        this.viewPostwihoutLogin = function(){
+          console.log('------------> test: for view post without login at timeline js')
+          $(document).on('click',".viewPostwihoutLogin",function(){
+            let postId= $(this).attr('id')
+            $("#renderSearch").load(`/view-post/${postId} div.postView`)
+          })
+        }
+
+
     this.paginationOnLanding = function(){
         // console.log('script of pagination ready')
         $(document).off().on('click',".click-page",function(){

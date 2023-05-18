@@ -247,7 +247,7 @@ router.get("/login", function (req, res, next) {
 router.post("/signup", async function (req, res, next) {
   try {
     req.body.profileImagePath = `/uploads/default/${req.body.gender}.png`;
-    // let userDetails = req.body;
+    let userDetails = req.body;
     console.log(req.body)
     await usersModel.create(userDetails);
 
@@ -540,7 +540,7 @@ router.get('/view-post/:postId',async function(req,res,next){
     ]);
     console.log(postDetails)
 
-    res.render('postView/index',{post: postDetails[0]})
+    res.render('landing-page/post-view',{post: postDetails[0]})
 
   }
   catch(error){
