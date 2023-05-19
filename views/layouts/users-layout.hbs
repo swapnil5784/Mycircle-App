@@ -30,8 +30,13 @@
         socket.on('backToPostsaved',function(data){
           toastr.success(data)
           $("#notificationBigList").load(`/timeline/ div#notificationBigList`)
-
         })
+
+        socket.on('removeNotificationFromList',function(data){
+          console.log('Notification data from sever emit',data)
+          $("#notificationBigList").load(`/timeline/notification-mark-seen?notificationId=${data.notificationId} div#notificationBigList`)
+        })
+
 
       </script>
     <script src="/javascripts/landing-page/demo-theme.min.js?1674944402"></script>

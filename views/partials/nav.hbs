@@ -118,7 +118,7 @@
               </div>
               {{#each userLogged.notifications}}
 
-              <div class="list-group list-group-flush list-group-hoverable">
+              <div class="list-group list">
                 <div class="list-group-item">
                   <div class="row align-items-center">
 
@@ -132,13 +132,13 @@
                     </div>
                     {{/compare}}
 
-                    <div class="col text-truncate">
+                    <div style="padding:0 100px 0 0;" class="col text-truncate">
                       <a href="#" class="text-body d-block">{{moment this.createdOn}}</a>
                       <div class="d-block text-muted text mt-n1">
                         {{this.title}}
                       </div>
                     </div>
-                    <div class="col-auto">
+                    <div id="seenBtn" data-notification-id="{{this._id}}" data-notification-owner="{{this._to}}" class="col">
                         <img id="seenIcon" class="icon" src="/uploads/default/seen.png" alt="">
                     </div>
                   </div>

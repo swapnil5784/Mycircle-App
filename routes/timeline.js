@@ -284,20 +284,18 @@ router.get("/", async function (req, res, next) {
                   $sort:{
                     createdOn:-1
                   }
-                },
-                {
-                  $match:{
-                    isSeen:false
-                  }
-                },
-                {
-                  $limit:6
-                },
+                }
+                // ,
+                // {
+                //   $limit:6
+                // }
+                ,
                 {
                 $match:{
                   $expr:{
                     $eq:['$_to','$$id']
-                  }
+                  },
+                  isSeen:false
                 }
               }],
               as:'notifications'
@@ -502,5 +500,18 @@ router.get("/", async function (req, res, next) {
     res.render("error", { message: error, status: 404 });
   }
 });
+
+// route to mark notification seen
+router.get('/notification-mark-seen',async function(req,res,next){
+  try{
+    console.log(req.query)
+    await notificationsModel.updateOne({_id:new ObjectId(req.query.notificationId)},{$set:{isSeen:true}})
+    res.redirect('/timeline/')
+  }
+  catch(error){
+    console.log('error while marking notification seen',error)
+    res.render("error", { message: error, status: 404 });
+  }
+})
 
 module.exports = router;

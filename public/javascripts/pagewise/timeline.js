@@ -13,14 +13,22 @@ const timelineEvents = function(){
     _this.removeComment();
     _this.archivePosts();
     _this.unarchivePosts();
+    _this.notificationSeenEvent();
 
   }
 
-  
+  // notifiacation marked as seen
+  this.notificationSeenEvent = function(){
+    $(document).on('click',"#seenBtn",function(){
+      toastr.success('notification seen !')
+      socket.emit('seenBtnClicked',{notificationId:$(this).attr('data-notification-id'),notificationTo:$(this).attr('data-notification-owner')})
+    })
+  }
+
   // remove comment
   this.removeComment = function(){
     $(document).on('click',".deleteComment",function(){
-        console.log('---------> script to delete comment')
+        // console.log('---------> script to delete comment')
         // alert('delete comment',$(this).attr('id'))
         $("#commentList").load(`/timeline/add-comment?removeComment=true&commentId=${$(this).attr('id')}&postId=${$(this).attr('data')} div#commentList`)
         toastr.success('Comment Removed Successfully !')
@@ -31,7 +39,7 @@ const timelineEvents = function(){
 
     //add comment
     this.addComment = function(){
-      console.log('Ready to emit comment added')
+      // console.log('Ready to emit comment added')
       $(document).on('click','.addComment',function(){
         if($("#comment").val()){
           $("#commentList").load(`/timeline/add-comment?_post=${$(this).attr('id')}&_commentBy=${$(this).attr('data')}&comment=${encodeURIComponent($("#comment").val())} div#commentList`)

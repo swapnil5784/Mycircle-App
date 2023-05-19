@@ -18,7 +18,6 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
-
 var server = http.createServer(app);
 
 global.io = require('socket.io')(server)
@@ -42,7 +41,14 @@ io.on('connection',function(socket){
     console.log('--------------->addedComment data',data)
     io.sockets.to(data.postBy).emit('showCommentAddedMessage','commented by '+user.firstName+" "+user.lastName)
   })
+
+  socket.on('seenBtnClicked',function(data){
+    console.log('seen btn clicked --------> data',data)
+    io.sockets.to(data.notificationTo).emit('removeNotificationFromList',data)
+  })
+
 })
+
 
 }
 catch(error){
