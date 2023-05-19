@@ -262,7 +262,6 @@ router.get("/view-post/:postId", async function (req, res, next) {
   }
 });
 
-// remove comment
 
 // timeline rendering after login to My-circle
 router.get("/", async function (req, res, next) {
@@ -282,7 +281,7 @@ router.get("/", async function (req, res, next) {
               pipeline:[
                 {
                   $sort:{
-                    createdOn:-1
+                    createdOn:-01
                   }
                 }
                 // ,
@@ -492,8 +491,8 @@ router.get("/", async function (req, res, next) {
     res.render("timeline/index", {
       title: "user-home",
       layout: "users-layout",
-      posts: allPostsWithUsername,
       userLogged: loginUser[0],
+      posts: allPostsWithUsername,
       pageArray: postArray,
     });
   } catch (error) {

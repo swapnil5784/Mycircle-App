@@ -48,3 +48,8 @@ hr{
 .commentEach{
   margin: 20px 0;
 }
+
+.notificationList{
+  overflow-y:auto;
+  height: 300px;
+}

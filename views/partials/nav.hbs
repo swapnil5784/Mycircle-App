@@ -90,6 +90,19 @@
               </span>
             </a>
           </li>
+          <li class="nav-item ">
+            <a class="nav-link" href="/chat/">
+              <span
+                class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+
+                <img class="icon" width="24" height="24" src="/uploads/default/chat.png" alt="">
+
+              </span>
+              <span class="nav-link-title">
+                Chat
+              </span>
+            </a>
+          </li>
         </ul>
         {{!-- -------------------------------notification bell --}}
         <div id="notificationBigList" class="nav-item dropdown d-none d-md-flex me-3">
@@ -111,14 +124,14 @@
             </span>
 
           </a>
-          <div id="notificationList" class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
+          <div id="notificationList" class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card notificationList">
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Notifications</h3>
               </div>
               {{#each userLogged.notifications}}
 
-              <div class="list-group list">
+              <div data-notification-id="{{this._id}}" data-notification-owner="{{this._to}}" class="list-group list seenBtn">
                 <div class="list-group-item">
                   <div class="row align-items-center">
 
@@ -138,8 +151,9 @@
                         {{this.title}}
                       </div>
                     </div>
-                    <div id="seenBtn" data-notification-id="{{this._id}}" data-notification-owner="{{this._to}}" class="col">
-                        <img id="seenIcon" class="icon" src="/uploads/default/seen.png" alt="">
+                    <div 
+                      class="col">
+                      <img class="icon" src="/uploads/default/seen.png" alt="">
                     </div>
                   </div>
                 </div>

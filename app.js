@@ -149,6 +149,7 @@ var userRouter = require('./routes/users');
 var PostRouter = require('./routes/post');
 var savedPostsRouter = require('./routes/saved-posts');
 var reportRouter = require('./routes/report');
+var chatRouter = require('./routes/chat')
 
 
 const customHelpers = require("./helpers/helper");
@@ -229,6 +230,7 @@ app.use('/post',PostRouter);
 app.use('/saved-posts',savedPostsRouter);
 app.use('/report',reportRouter);
 app.use('/users',userRouter);
+app.use('/chat',chatRouter);
 
 
 // catch 404 and forward to error handler

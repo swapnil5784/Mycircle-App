@@ -11,7 +11,7 @@
        <script src="/socket.io/socket.io.min.js"></script>
       <script>
 
-        var socket = io("http://localhost:3000", {transports: ["websocket"]});
+        var socket = io("", {transports: ["websocket"]});
         
         //socket.emit('createRoom')
 
@@ -45,6 +45,17 @@
     
 
     {{{body}}}
+
+    <script>
+      $(document).ready(function(){
+        chatEvents();
+        editEventHandler();
+        userEvents();
+        landingPageEvents();
+        timelineEvents();
+        allUsersEvents();
+      })
+    </script>
   </body>
   {{> scripts}}
 </html>

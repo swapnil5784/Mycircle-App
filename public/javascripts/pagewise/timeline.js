@@ -17,9 +17,9 @@ const timelineEvents = function(){
 
   }
 
-  // notifiacation marked as seen
+  // notification marked as seen
   this.notificationSeenEvent = function(){
-    $(document).on('click',"#seenBtn",function(){
+    $(document).on('click',".seenBtn",function(){
       toastr.success('notification seen !')
       socket.emit('seenBtnClicked',{notificationId:$(this).attr('data-notification-id'),notificationTo:$(this).attr('data-notification-owner')})
     })
