@@ -113,7 +113,6 @@ router.post("/save", async function (req, res, next) {
       title:`${req.user.firstName} ${req.user.lastName} saved post`,
       type:'save',
       isSeen:false,
-
     }
     await notificationsModel.create(notificationDetails)
     await SavedPostsModel.create(req.body);

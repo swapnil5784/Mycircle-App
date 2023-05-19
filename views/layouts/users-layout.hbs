@@ -11,7 +11,7 @@
        <script src="/socket.io/socket.io.min.js"></script>
       <script>
 
-        var socket = io("http://192.168.1.178:3000", {transports: ["websocket"]});
+        var socket = io("http://localhost:3000", {transports: ["websocket"]});
         
         //socket.emit('createRoom')
 
@@ -29,6 +29,8 @@
 
         socket.on('backToPostsaved',function(data){
           toastr.success(data)
+          $("#notificationBigList").load(`/timeline/ div#notificationBigList`)
+
         })
 
       </script>
