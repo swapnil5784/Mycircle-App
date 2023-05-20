@@ -30,12 +30,7 @@ router.get("/", async function (req, res, next) {
                   $sort:{
                     createdOn:-01
                   }
-                }
-                // ,
-                // {
-                //   $limit:6
-                // }
-                ,
+                },
                 {
                 $match:{
                   $expr:{
@@ -56,12 +51,12 @@ router.get("/", async function (req, res, next) {
           profileImagePath:1
           }
       }) 
+      console.log(JSON.stringify(userPipeline,null,3))
+      let loginUser = await usersModel.aggregate(userPipeline)
       let firstUser = Users[0];
       if(req.query.userId){
         firstUser = await usersModel.findOne({_id:new ObjectId(req.query.userId)}).lean(true)
       }    
-    console.log(JSON.stringify(userPipeline,null,3))
-    let loginUser = await usersModel.aggregate(userPipeline)
     console.log(Users[0])
     res.render("chat/index", {
       title: "Chat",

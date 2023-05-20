@@ -1,6 +1,7 @@
 const chatEvents = function () {
   this.init = function () {
     _this.sendChatContainer();
+    _this.sendMessage();
   };
 
   this.sendChatContainer = function () {
@@ -18,6 +19,15 @@ const chatEvents = function () {
       console.log("error at chat event script in people card rendering", error);
     }
   };
+
+  this.sendMessage = function(){
+      $("#sendMessageBtn").on("click", function(){
+        if(!$("#chatboxMessage").val()){
+         return toastr.error("Write message first !")
+        }
+        toastr.success(`message: ${$("#chatboxMessage").val()}  \nrom: ${$(this).attr("data-sender")} \nTo: ${$(this).attr("data-reciever")}\n`)
+      })
+  }  
 
   const _this = this;
   _this.init();

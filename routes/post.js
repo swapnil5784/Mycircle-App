@@ -36,15 +36,52 @@ const upload = multer({ storage: storage });
 // get route to render the create-post page
 router.get("/", async function (req, res, next) {
   try {
-    const loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
-    if(req.query._id){
+    let userPipeline = []
+    userPipeline.push({
+      $match:{
+        _id:new ObjectId(req.user._id),
+      }
+    })
+    userPipeline.push({
+      $lookup:{
+        from:'notifications',
+              let:{'id':'$_id'},
+              pipeline:[
+                {
+                  $sort:{
+                    createdOn:-01
+                  }
+                },
+                {
+                $match:{
+                  $expr:{
+                    $eq:['$_to','$$id']
+                  },
+                  isSeen:false
+                }
+              }],
+              as:'notifications'
+            }
+          })
+     userPipeline.push({
+      $project:{
+          lastName:1,
+          firstName:1,
+          notifications:1,
+          totalNotifications:{$size:'$notifications'},
+          profileImagePath:1
+          }
+      }) 
+      console.log(JSON.stringify(userPipeline,null,3))
+      let loginUser = await usersModel.aggregate(userPipeline)
+      if(req.query._id){
       await postsModel.updateOne(req.query,{$set:{'isArchived':false}})
       return res.redirect('/post/archived-posts')
     }
     res.render("create-post/index", {
       title: "user-home",
       layout: "users-layout",
-      userLogged:loginUser
+      userLogged:loginUser[0]
     });
   } catch (error) {
     console.log(error);
@@ -104,8 +141,44 @@ router.get("/archive/:postId", async function (req, res, next) {
 
 router.get("/archived-posts/", async function (req, res, next) {
   try {
-    const loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
-
+    let userPipeline = []
+    userPipeline.push({
+      $match:{
+        _id:new ObjectId(req.user._id),
+      }
+    })
+    userPipeline.push({
+      $lookup:{
+        from:'notifications',
+              let:{'id':'$_id'},
+              pipeline:[
+                {
+                  $sort:{
+                    createdOn:-01
+                  }
+                },
+                {
+                $match:{
+                  $expr:{
+                    $eq:['$_to','$$id']
+                  },
+                  isSeen:false
+                }
+              }],
+              as:'notifications'
+            }
+          })
+     userPipeline.push({
+      $project:{
+          lastName:1,
+          firstName:1,
+          notifications:1,
+          totalNotifications:{$size:'$notifications'},
+          profileImagePath:1
+          }
+      }) 
+      console.log(JSON.stringify(userPipeline,null,3))
+      let loginUser = await usersModel.aggregate(userPipeline)
     console.log('---------archived called to show  list------------',req.user._id)
     let userId = req.user._id
     let archivedPosts = await postsModel.aggregate([
@@ -138,7 +211,7 @@ router.get("/archived-posts/", async function (req, res, next) {
       title: "user-home",
       layout: "users-layout",
       posts: archivedPosts,
-      userLogged:loginUser
+      userLogged:loginUser[0]
     });
   } catch (error) {
     console.log(error);

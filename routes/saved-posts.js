@@ -11,14 +11,50 @@ const toastr = require('toastr')
 // get route to render the saved posts page
 router.get("/", async function (req, res, next) {
   try {
-    const loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
-
+    let userPipeline = []
+    userPipeline.push({
+      $match: {
+        _id: new ObjectId(req.user._id),
+      }
+    })
+    userPipeline.push({
+      $lookup: {
+        from: 'notifications',
+        let: { 'id': '$_id' },
+        pipeline: [
+          {
+            $sort: {
+              createdOn: -01
+            }
+          },
+          {
+            $match: {
+              $expr: {
+                $eq: ['$_to', '$$id']
+              },
+              isSeen: false
+            }
+          }],
+        as: 'notifications'
+      }
+    })
+    userPipeline.push({
+      $project: {
+        lastName: 1,
+        firstName: 1,
+        notifications: 1,
+        totalNotifications: { $size: '$notifications' },
+        profileImagePath: 1
+      }
+    })
+    console.log(JSON.stringify(userPipeline, null, 3))
+    let loginUser = await usersModel.aggregate(userPipeline)
     let userId = req.user._id;
     // console.log(userId)
     let allSavedposts = await SavedPostsModel.aggregate([
       {
-        $match:{
-          savedBy:new ObjectId(userId)
+        $match: {
+          savedBy: new ObjectId(userId)
         }
       },
       {
@@ -89,7 +125,7 @@ router.get("/", async function (req, res, next) {
       title: "user-home",
       layout: "users-layout",
       savedPosts: allSavedposts,
-      userLogged:loginUser
+      userLogged: loginUser[0]
     });
   } catch (error) {
     console.log(error);
@@ -103,16 +139,16 @@ router.get("/", async function (req, res, next) {
 // save the post
 
 router.post("/save", async function (req, res, next) {
-  
+
   try {
     console.log(req.user._id);
-    console.log("-------------->>>>>>",req.body)
+    console.log("-------------->>>>>>", req.body)
     let notificationDetails = {
-      _from:req.user._id,
-      _to:req.body.postBy,
-      title:`${req.user.firstName} ${req.user.lastName} saved post`,
-      type:'save',
-      isSeen:false,
+      _from: req.user._id,
+      _to: req.body.postBy,
+      title: `${req.user.firstName} ${req.user.lastName} saved post`,
+      type: 'save',
+      isSeen: false,
     }
     await notificationsModel.create(notificationDetails)
     await SavedPostsModel.create(req.body);
@@ -131,7 +167,7 @@ router.post("/save", async function (req, res, next) {
 
 router.delete("/delete", async function (req, res, next) {
   try {
-    await SavedPostsModel.deleteOne({savedBy:req.body.savedBy,_post:req.body._post});
+    await SavedPostsModel.deleteOne({ savedBy: req.body.savedBy, _post: req.body._post });
     res.send({
       type: "success",
       message: "post removed from save",

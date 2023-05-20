@@ -1,110 +1,148 @@
 <div id="chatPage">
-    <div class="page-wrapper">
-        <!-- Page header -->
-        <div class="page-header d-print-none">
-            <div class="container-xl">
-                <div class="row g-2 align-items-center">
-                    <div class="col">
-                        <h2 class="page-title">
-                            Chats
-                        </h2>
-                    </div>
-                    <!-- Page title actions -->
+  <div class="page-wrapper">
+    <!-- Page header -->
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Chats
+            </h2>
+          </div>
+          <!-- Page title actions -->
 
-                </div>
-            </div>
         </div>
-        <!-- Page body -->
-        <div class="page-body">
-            <div class="container-xl">
-                <div class="row g-4">
-                    <div class="list-people col-md-3">
-
-                        <div class="form-label">
-                            {{!-- User --}}
-                            {{!-- ------------------ --}}
-
-                            {{#each users}}
-                            <div data-userId="{{this._id}}" style="margin:10px 0" class="card people">
-                                <div class="chat-box-message-profile-box row g-0">
-                                    <div class="col-auto">
-                                        <div class="card-body">
-                                            <img class="chat-people-list-profile-img avatar avatar-md"
-                                                src="{{this.profileImagePath}}" alt="user-profile-img">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card-body ps-0">
-                                            <div class="row">
-                                                <h3 class="text-muted ">{{this.firstName}} {{this.lastName}}</h3>
-                                                <div class="col">
-                                                    <h4 class="text-muted ">Joined : {{moment this.createdOn}}</h4>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{/each}}
-                            {{!-- ---------------------------- --}}
-                        </div>
-
-
-                    </div>
-                    <div class="col-md-9  chatbox-change">
-
-                        <div id="chatBox" class="card chatbox-change-1">
-                            <div class="chat-box-message-profile-box row g-0">
-                                <div class="col-auto">
-                                    <div class="card-body">
-                                        <img class=" chat-box-user-profile avatar avatar-md"
-                                            src="{{firstUser.profileImagePath}}" alt="">
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card-body ps-0">
-
-
-                                        <h3 class="">{{firstUser.firstName}} {{firstUser.lastName }}</h3>
-
-
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-
-                    </div>
-                    <div style="margin:10px 0 0 0" class="row">
-                        <div class="col-3 ">
-
-                        </div>
-                        <div class="col-7 input-message">
-                            <div class="input-icon">
-                                <input  style="height:50px; border-bottom:2px solid grey; border-right:2px solid grey "
-                                    type="text" value="" class="form-control input-message-1" placeholder="Message..."
-                                    aria-label="Search in website">
-                            </div>
-
-                        </div>
-                        <div class="buttonTochange col-2">
-                        <button  data-reciever="{{firstUser._id}}" data-sender="{{user._id}}" style="height:50px;" class="btn w-100 btn-outline-secondary buttonTochange-1 ">
-                            Send
-                        </button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
+      </div>
     </div>
+    <!-- Page body -->
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row g-4">
+          <div class="list-people col-md-3">
+
+            <div class="form-label">
+              {{! User }}
+              {{! ------------------ }}
+
+              {{#each users}}
+                <div
+                  data-userId="{{this._id}}"
+                  style="margin:10px 0"
+                  class="card people"
+                >
+                  <div class="chat-box-message-profile-box row g-0">
+                    <div class="col-auto">
+                      <div class="card-body">
+                        <img
+                          class="chat-people-list-profile-img avatar avatar-md"
+                          src="{{this.profileImagePath}}"
+                          alt="user-profile-img"
+                        />
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="card-body ps-0">
+                        <div class="row">
+                          <h3 class="text-muted">{{this.firstName}}
+                            {{this.lastName}}</h3>
+                          <div class="col">
+                            <h4 class="text-muted">Joined :
+                              {{moment this.createdOn}}</h4>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              {{/each}}
+              {{! ---------------------------- }}
+            </div>
+
+          </div>
+          <div class="col-md-9 chatbox-change">
+
+            <div id="chatBox" class="card chatbox-change-1">
+              <div class="chat-box-message-profile-box row g-0">
+                <div class="col-auto">
+                  <div class="card-body">
+                    <img
+                      class="chat-box-user-profile avatar avatar-md"
+                      src="{{firstUser.profileImagePath}}"
+                      alt=""
+                    />
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card-body ps-0">
+
+                    <h3 class="">{{firstUser.firstName}}
+                      {{firstUser.lastName}}</h3>
+
+                  </div>
+                </div>
+              </div>
+
+              {{! ---------------- }}
+
+              <div class="container">
+                <img src="{{firstUser.profileImagePath}}" alt="Avatar" />
+                <p>Hello. How are you today?</p>
+                <span class="time-right">11:00</span>
+              </div>
+
+              <div class="container">
+                <img
+                  src="{{firstUser.profileImagePath}}"
+                  alt="Avatar"
+                  class="right"
+                />
+                <p>Hey! I'm fine. Thanks for asking!</p>
+                <span class="time-left">11:01</span>
+              </div>
+              
+
+              {{! --------------------- }}
+
+            </div>
+
+          </div>
+          <div style="margin:10px 0 0 0" class="row">
+            <div class="col-3">
+
+            </div>
+            <div class="col-7 input-message">
+              <div class="input-icon">
+                <input
+                  style="height:50px; border-bottom:2px solid grey; border-right:2px solid grey "
+                  type="text"
+                  id="chatboxMessage"
+                  class="form-control input-message-1"
+                  placeholder="Message..."
+                  aria-label="Search in website"
+                />
+              </div>
+
+            </div>
+            <div class="buttonTochange col-2">
+              <button
+                data-reciever="{{firstUser._id}}"
+                data-sender="{{user._id}}"
+                id="sendMessageBtn"
+                style="height:50px;"
+                class="btn w-100 btn-outline-secondary buttonTochange-1"
+              >
+                Send
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 <script>
-    $(document).ready(function () {
-        chatEvents();
-    })
 </script>
