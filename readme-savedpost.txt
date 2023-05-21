@@ -1,4 +1,49 @@
-
+db.getCollection('chatmessages').aggregate([
+    {
+        $lookup:{
+            from:"user",
+            let:{"user":"$_sender"},
+            pipeline:[{
+                $match:{
+                    $expr:{
+                        $eq:["$_id","$$user"]
+                    }
+                }
+            },
+            {
+                $project:{
+                    firstName:1,
+                    lastName:1,
+                    profileImagePath:1
+                }
+            }
+            ],
+            as:"sender"
+        }
+    },
+        {
+        $lookup:{
+            from:"user",
+            let:{"user":"$_receiver"},
+            pipeline:[{
+                $match:{
+                    $expr:{
+                        $eq:["$_id","$$user"]
+                    }
+                }
+            },
+            {
+                $project:{
+                    firstName:1,
+                    lastName:1,
+                    profileImagePath:1
+                }
+            }
+            ],
+            as:"receiver"
+        }
+    }
+])
 
 
 --------------------------------------------------------------------------

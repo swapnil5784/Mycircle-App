@@ -47,6 +47,16 @@ io.on('connection',function(socket){
     io.sockets.to(data.notificationTo).emit('removeNotificationFromList',data)
   })
 
+  socket.on('sendMessage',function(data){
+    try{
+      console.log('-----------------------> socket server send message',data)
+      io.sockets.to(data.receiver).emit('responseToEventSendMessage',data)
+    }
+    catch(error){
+      console.log('------------> error at send message event lister on socket sever.',error)
+    }
+  })
+
 })
 
 

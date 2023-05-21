@@ -63,8 +63,8 @@
           </div>
           <div class="col-md-9 chatbox-change">
 
-            <div id="chatBox" class="card chatbox-change-1">
-              <div class="chat-box-message-profile-box row g-0">
+            <div id="chatBox" class="card chatbox-change-1 chatbox-change">
+              <div class="chat-box-message-profile-box make-sticky row g-0">
                 <div class="col-auto">
                   <div class="card-body">
                     <img
@@ -85,22 +85,32 @@
               </div>
 
               {{! ---------------- }}
+              {{#each messages}}
 
-              <div class="container">
-                <img src="{{firstUser.profileImagePath}}" alt="Avatar" />
-                <p>Hello. How are you today?</p>
-                <span class="time-right">11:00</span>
-              </div>
+              {{#compare this._sender '==' ../user._id}}
 
-              <div class="container">
+              <div class="box">
                 <img
-                  src="{{firstUser.profileImagePath}}"
+                  src="/uploads/default/male.png"
                   alt="Avatar"
                   class="right"
                 />
-                <p>Hey! I'm fine. Thanks for asking!</p>
-                <span class="time-left">11:01</span>
+                <p>{{this.message}}</p>
+                <span class="time-right">{{moment this.createdOn}}</span>
               </div>
+
+              {{else}}
+
+              <div class="box">
+                <img src="/uploads/default/female.png" alt="Avatar" />
+                <p>{{this.message}}</p>
+                <span class="time-right">{{moment this.createdOn}}</span>
+              </div>
+
+              {{/compare}}
+
+
+              {{/each}}
               
 
               {{! --------------------- }}
@@ -118,7 +128,7 @@
                   style="height:50px; border-bottom:2px solid grey; border-right:2px solid grey "
                   type="text"
                   id="chatboxMessage"
-                  class="form-control input-message-1"
+                  class="form-control input-message input-message-1"
                   placeholder="Message..."
                   aria-label="Search in website"
                 />
@@ -127,11 +137,11 @@
             </div>
             <div class="buttonTochange col-2">
               <button
-                data-reciever="{{firstUser._id}}"
+                data-receiver="{{firstUser._id}}"
                 data-sender="{{user._id}}"
                 id="sendMessageBtn"
                 style="height:50px;"
-                class="btn w-100 btn-outline-secondary buttonTochange-1"
+                class="btn w-100 btn-outline-secondary buttonTochange buttonTochange-1"
               >
                 Send
               </button>

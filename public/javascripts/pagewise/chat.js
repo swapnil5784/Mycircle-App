@@ -7,7 +7,7 @@ const chatEvents = function () {
   this.sendChatContainer = function () {
     console.log("people chat load");
     try {
-      $(".people").on("click", function () {
+      $(".people").on("click",function () {
         // toastr.success("click on people " + $(this).attr("data-userId"));
         let url = `/chat?userId=${$(this).attr("data-userId")}`
         $('.chatbox-change').load(`${url} .chatbox-change-1`)
@@ -21,11 +21,14 @@ const chatEvents = function () {
   };
 
   this.sendMessage = function(){
-      $("#sendMessageBtn").on("click", function(){
+      $("#sendMessageBtn").on("click",function(){
         if(!$("#chatboxMessage").val()){
          return toastr.error("Write message first !")
         }
-        toastr.success(`message: ${$("#chatboxMessage").val()}  \nrom: ${$(this).attr("data-sender")} \nTo: ${$(this).attr("data-reciever")}\n`)
+        // toastr.success(`message: ${$("#chatboxMessage").val()}  \nfrom: ${$(this).attr("data-sender")} \nTo: ${$(this).attr("data-reciever")}\n`)
+        socket.emit('sendMessage',{message:$("#chatboxMessage").val(),sender:$(this).attr("data-sender"),receiver:$(this).attr("data-receiver")})
+        
+        $('.chatbox-change').load(`/chat/message?sender=${$(this).attr("data-sender")}&receiver=${$(this).attr("data-receiver")}&message=${$("#chatboxMessage").val()} .chatbox-change-1`)
       })
   }  
 
