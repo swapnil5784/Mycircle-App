@@ -10,6 +10,16 @@
 
     {{> nav}}
     {{{body}}}
+         <script>
+      $(document).ready(function(){
+        chatEvents();
+        editEventHandler();
+        userEvents();
+        landingPageEvents();
+        timelineEvents();
+        allUsersEvents();
+      })
+    </script>
   </body>
   {{> scripts}}
 </html>

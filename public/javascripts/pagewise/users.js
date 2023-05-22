@@ -16,10 +16,10 @@ const allUsersEvents = function(){
 
     // for search users from all users
         this.searchUsersFromAllUsers = function(){
-            console.log('ready for search at all users')
+            // console.log('ready for search at all users')
             $("#searchUsers").on('keyup',function(){
               console.log($("#searchUsers").val())
-              $("#renderWithPagination").load(`/users?user=${$("#searchUsers").val()} div#renderWithPagination`)
+              $("#renderWithPagination").load(`/users?user=${$("#searchUsers").val()} div#index-pagination`)
             //   $.ajax({
             //     method:'get',
             //     url:`/users?user=${$("#searchUsers").val()}`,

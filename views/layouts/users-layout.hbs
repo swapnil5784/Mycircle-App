@@ -10,6 +10,7 @@
     {{!-- socket cdn for client side --}}
        <script src="/socket.io/socket.io.min.js"></script>
       <script>
+        let messageNotificationNumber = 0;
 
         var socket = io("", {transports: ["websocket"]});
         
@@ -37,10 +38,23 @@
           $("#notificationBigList").load(`/timeline/notification-mark-seen?notificationId=${data.notificationId} div#notificationBigList`)
         })
 
+
         socket.on('responseToEventSendMessage',function(data){
           console.log(data)
-          toastr.warning('message received',data.message)
-          $(".chatbox-change").load(`/chat?fromMessage=${data.sender} div.chatbox-change-1`)
+          $("#sendMessageBtn").attr('data-receiver',data.sender)
+          if($("#chatBox").attr('chatBoxOf') != data.sender ){
+            messageNotificationNumber++;
+             $("#messageNotificationNumber").attr('style','display:block;')
+            return $("#messageNotificationNumber").html(messageNotificationNumber);
+              
+          }
+          $(".chatbox-change").load(`/chat?fromMessage=${data.sender} div#chatBox`)
+          messageNotificationNumber=0;
+        })
+
+        socket.on('online',function(data){
+          console.log('----------------> online event listened !')
+          $(`div[data-userId=${data}]`).attr('style','margin:10px 0;background-color:#ffcccc;border-bottom: 4px solid red;')
         })
 
 
@@ -54,7 +68,6 @@
 
     <script>
       $(document).ready(function(){
-        chatEvents();
         editEventHandler();
         userEvents();
         landingPageEvents();

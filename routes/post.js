@@ -205,8 +205,17 @@ router.get("/archived-posts/", async function (req, res, next) {
           },
         },
       ]);
-    console.log(archivedPosts);
+    console.log(archivedPosts.length);
     // res.send('ok')
+    if(!archivedPosts.length){
+      res.render('no-post-found/index',{
+        title: "user-home",
+        layout: "users-layout",
+        userLogged: loginUser[0],
+        whatNotFound:'No Archived-Post Found',
+        postOrUser:'post'
+      })
+    }
     res.render("archived-posts/index", {
       title: "user-home",
       layout: "users-layout",

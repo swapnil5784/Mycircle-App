@@ -119,9 +119,11 @@
 
 
             {{!-- notifications counts --}}
+            {{#compare userLogged.totalNotifications ">" 0 }}
             <span id="notificationNumber" class="badge bg-blue">
               {{userLogged.totalNotifications}}
             </span>
+            {{/compare}}
 
           </a>
           <div id="notificationList" class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card notificationList">

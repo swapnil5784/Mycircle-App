@@ -13,7 +13,7 @@ const landingPageEvents = function(){
 
         // landing app view post
         this.viewPostwihoutLogin = function(){
-          console.log('------------> test: for view post without login at timeline js')
+          // console.log('------------> test: for view post without login at timeline js')
           $(document).on('click',".viewPostwihoutLogin",function(){
             let postId= $(this).attr('id')
             $("#renderSearch").load(`/view-post/${postId} div.postView`)

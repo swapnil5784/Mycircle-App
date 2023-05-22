@@ -120,9 +120,18 @@ router.get("/", async function (req, res, next) {
         },
       },
     ]);
-    console.log(allSavedposts);
+    console.log(allSavedposts.length);
+    if(!(allSavedposts.length)){
+      res.render('no-post-found/index',{
+        title: "Saved-Posts",
+        layout: "users-layout",
+        userLogged: loginUser[0],
+        whatNotFound:'No Saved-Posts Found',
+        postOrUser:'post'
+      })
+    }
     res.render("saved-posts/index", {
-      title: "user-home",
+      title: "Saved-Posts",
       layout: "users-layout",
       savedPosts: allSavedposts,
       userLogged: loginUser[0]

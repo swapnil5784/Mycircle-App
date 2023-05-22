@@ -398,6 +398,7 @@ router.get("/", async function (req, res, next) {
     console.log(pipeline);
     let postsInQuery = await postsModel.aggregate(pipeline);
     let totalPosts = postsInQuery.length;
+    
 
     pipeline.push({
       $lookup: {
@@ -484,6 +485,15 @@ router.get("/", async function (req, res, next) {
     // console.log(allPostsWithUsername);
     let postArray = [];
     console.log("-----------------------------> totalPosts", totalPosts);
+    if(!totalPosts){
+      res.render('no-post-found/index',{
+        title: "user-home",
+        layout: "users-layout",
+        userLogged: loginUser[0],
+        whatNotFound:'No Post Found',
+        postOrUser:'post'
+      })
+    }
     for (let i = 1; i <= Math.ceil(totalPosts / 4); i++) {
       postArray.push(i);
     }

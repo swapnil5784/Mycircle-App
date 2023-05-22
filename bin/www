@@ -25,6 +25,7 @@ global.io = require('socket.io')(server)
 try{
 io.on('connection',function(socket){
   console.log('---------------------------->  socket successfully connected!',socket.id)
+  socket.broadcast.emit('online',user._id)
   socket.on('disconnect',function(){
     console.log('------------------> socket disconnected')
   })

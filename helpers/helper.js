@@ -16,7 +16,12 @@ const customHandlebarHelper = {
     // moment helper for time format
     moment: function(data){
         return moment(data).fromNow()
+    },
+    // to reverse arrar
+    revArray : function(data){
+        return data.reverse(); 
     }
+
 
 };
 module.exports=customHandlebarHelper;

@@ -230,13 +230,24 @@ router.get('/', async function (req, res, next) {
 
     let allUsers = await usersModel.aggregate([match])
     let noOfUsers = allUsers.length
+    console.log('-------------------------> noOfUsers',noOfUsers)
+    
     let usersPerPage = 2;
     let arrUsers = []
     for (let i = 1; i <= Math.ceil(noOfUsers / usersPerPage); i++) {
       arrUsers.push(i)
     }
+    if(!noOfUsers){
+      res.render('no-post-found/index',{
+        title: "Users",
+        layout: "for-user",
+        userLogged: loginUser[0],
+        whatNotFound:'No Users Found',
+        postOrUser:'user'
+      })
+    }
 
-    console.log("usersssssssssssssssssssssssssssssssssssss", arrUsers);
+    console.log("users", arrUsers);
     res.render("all-users/index", {
       title: "users",
       layout: "for-user",

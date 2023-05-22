@@ -1,11 +1,11 @@
 const editEventHandler = function(){
     this.init = function(){
-        console.log("updatePostValidation")
+        // console.log("updatePostValidation")
         _this.updatePostValidation();
     }
 
     this.updatePostValidation = function(){
-        console.log("hello")
+        // console.log("hello")
         $("#editPostForm").validate({
           rules:{
             postTitle:{
