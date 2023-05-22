@@ -28,7 +28,10 @@ const chatEvents = function () {
         // toastr.success(`message: ${$("#chatboxMessage").val()}  \nfrom: ${$(this).attr("data-sender")} \nTo: ${$(this).attr("data-reciever")}\n`)
         socket.emit('sendMessage',{message:$("#chatboxMessage").val(),sender:$(this).attr("data-sender"),receiver:$(this).attr("data-receiver")})
         
-        $('.chatbox-change').load(`/chat/message?sender=${$(this).attr("data-sender")}&receiver=${$(this).attr("data-receiver")}&message=${$("#chatboxMessage").val()} .chatbox-change-1`)
+        $('.chatbox-change').load(`/chat/message?sender=${$(this).attr("data-sender")}&receiver=${$(this).attr("data-receiver")}&message=${encodeURIComponent($("#chatboxMessage").val())} .chatbox-change-1`)
+    
+        // $("#chatboxMessage").reset()
+
       })
   }  
 

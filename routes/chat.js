@@ -55,17 +55,28 @@ router.get("/", async function (req, res, next) {
       console.log(JSON.stringify(userPipeline,null,3))
       let loginUser = await usersModel.aggregate(userPipeline)
       let firstUser = Users[0];
+      // console.log('fromMessage from socket client side ----------------------->',req.query.fromMessage)
       if(req.query.fromMessage){
         firstUser = await usersModel.findOne({_id:new ObjectId(req.query.fromMessage)}).lean(true)
       }
       if(req.query.userId){
         firstUser = await usersModel.findOne({_id:new ObjectId(req.query.userId)}).lean(true)
-      }    
+      }  
+      console.log(firstUser) 
       let messages = await chatMessagesModel.aggregate([
         {
           $match:{
-            _sender:new ObjectId(req.user._id),
-            _receiver:new ObjectId(req.query.fromMessage)
+            $or:[
+              {
+                _sender:new ObjectId(req.user._id),
+                _receiver:new ObjectId(firstUser._id),
+              },
+              {
+                _sender:new ObjectId(firstUser._id),
+                _receiver:new ObjectId(req.user._id),
+
+              }
+            ]
           }
         },
         {

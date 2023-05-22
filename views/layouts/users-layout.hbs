@@ -40,6 +40,7 @@
         socket.on('responseToEventSendMessage',function(data){
           console.log(data)
           toastr.warning('message received',data.message)
+          $(".chatbox-change").load(`/chat?fromMessage=${data.sender} div.chatbox-change-1`)
         })
 
 
