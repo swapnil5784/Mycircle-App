@@ -17,11 +17,6 @@ const savedPosts = new mongoose.Schema({
         type:ObjectId,
         required:true
     },
-    isSavedOnce:{
-        type:Boolean,
-        required:true,
-        default:true
-    },
     postBy:{
         type:ObjectId,
         required:true,

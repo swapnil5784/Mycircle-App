@@ -12,9 +12,30 @@ const userEvents =function(){
         _this.ajaxCallforModal();
         _this.editPostValidation();
         _this.sortUsers();
+        _this.closeErrorModal();
 
     }
     //4. declare event function
+
+    // close error modal at login
+
+    this.closeErrorModal = function(){
+      $('.closeBtn').on('click',function(){
+        $("#modal-warning").removeClass('show')
+        $.ajax({
+          method:'get',
+          url:'/login',
+          success:function(res){
+            window.location.href='/login'
+          },
+          error:function(error){
+            console.log('error at script for close error modal !',error)
+          }
+        })
+      })
+    }
+  
+
 
     // click event on view post without login
     this.viewPostWithoutLogin =  function(){
@@ -97,7 +118,6 @@ const userEvents =function(){
 
     // create-post validation
     this.createPostValidation = function(){
-        // console.log("===============edit post")
         $("#createPostForm").validate({
           rules:{
             postTitle:{
@@ -261,6 +281,10 @@ const userEvents =function(){
 
     this.postUserDetails = function(){
         $("#submitSingin").on('click',function(){
+          if(!$("#firstName").val() | !$("#lastName").val() | !$("#password").val() | !$("#confirmPassword").val() ){
+            console.log($("#password").val() , $("#confirmPassword").val())
+            return toastr.error('fill Signup form properly !')
+          }
             $.ajax({
                 url:'/signup',
                 method:'post',

@@ -52,4 +52,5 @@ hr{
 .notificationList{
   overflow-y:auto;
   height: 300px;
+  width:350px;
 }

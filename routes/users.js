@@ -6,94 +6,8 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const moment = require('moment');
 moment().format();
+
 // get route for rendering all users in application
-// router.get("/", async function (req, res, next) {
-//   try {
-//     const loginUser = await usersModel.findOne({_id:req.user._id}).lean(true); 
-
-//     if(req.query.user){
-//       console.log(req.query.user)
-//       let usersMatched = await usersModel.aggregate([
-//         ,
-//         ,
-//         ,
-//         {
-//           $project:{
-//               posts:{$size:'$posts'},
-//               savedPosts:{$size:'$savedPosts'},
-//               firstName:1,
-//               lastName:1,
-//               userEmail:1,
-//               gender:1,
-//               profileImagePath:1,
-//               createdOn:1
-//           }
-//       },
-//       ])
-//       // console.log(usersMatched)
-//       return res.render("all-users/index", {
-//         title: "users",
-//         layout: "for-user",
-//         users:usersMatched,
-//         userLogged:loginUser
-
-//       });
-//     }
-//     let userPostCount = await usersModel.aggregate([
-//       {
-//         $lookup: {
-//           from: "posts",
-//           let: { userPost: "$_id" },
-//           pipeline: [
-//             {
-//               $match: {
-//                 $expr: {
-//                   $eq: ["$_user", "$$userPost"],
-//                 },
-//               },
-//             },
-//           ],
-//           as: "posts",
-//         },
-//       },
-//       {
-//         $lookup: {
-//           from: "savedposts",
-//           let: { userPostSaved: "$_id" },
-//           pipeline: [
-//             {
-//               $match: {
-//                 $expr: {
-//                   $eq: ["$savedBy", "$$userPostSaved"],
-//                 },
-//               },
-//             },
-//           ],
-//           as: "savedPosts",
-//         },
-//       },
-//       ,
-//     ]);
-//     console.log("---------------------------------->>",moment().week())
-//     console.log(userPostCount);
-//     res.render("all-users/index", {
-//       title: "users",
-//       layout: "for-user",
-//       users:userPostCount,
-//       userLogged:loginUser
-
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.render("error", {
-//       message: "error in redndering all-users of application",
-//       status: 404,
-//     });
-//   }
-// });
-
-// updated route frender user accorrifing to paginations
-
 router.get('/', async function (req, res, next) {
   try {
     let userPipeline = []
@@ -390,6 +304,7 @@ router.get('/sort/:order', async function (req, res, next) {
 
     }
     res.render("partials/sorted", {
+      title:'Users',
       layout: false,
       users: sortedUsers,
       userLogged: loginUser

@@ -40,7 +40,10 @@ io.on('connection',function(socket){
   socket.on('commentAdded',(data)=>{
     console.log('---------------------------->  socket listened in comment added!')
     console.log('--------------->addedComment data',data)
-    io.sockets.to(data.postBy).emit('showCommentAddedMessage','commented by '+user.firstName+" "+user.lastName)
+    console.log(data.postBy," === ",user._id)
+    if(data.postBy != user._id){
+      io.sockets.to(data.postBy).emit('showCommentAddedMessage','commented by '+user.firstName+" "+user.lastName)
+    }
   })
 
   socket.on('seenBtnClicked',function(data){

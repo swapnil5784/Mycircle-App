@@ -80,7 +80,7 @@ router.get('/', async function (req, res, next) {
     const updatedUser = await usersModel.findOne({ _id: req.user._id }).lean();
     console.log(updatedUser, "====================>:")
     console.log(req.user, "====================>:")
-    res.render('profile/index', { title: 'user-home', layout: 'users-layout', user: updatedUser, userLogged: loginUser[0] })
+    res.render('profile/index', { title: 'User Profile', layout: 'users-layout', user: updatedUser, userLogged: loginUser[0] })
   }
   catch (error) {
     console.log(error);

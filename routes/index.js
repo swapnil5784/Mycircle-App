@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const passport = require("passport");
 const LocalStratagy = require("passport-local").Strategy;
+
 // 1.import node mailer
 var nodemailer = require('nodemailer');
 
@@ -220,7 +221,7 @@ router.get("/", async function (req, res, next) {
 // get route for redndering signin page
 router.get("/signup", function (req, res, next) {
   try {
-    res.render("landing-page/signup", { title: "signup" });
+    res.render("landing-page/signup", { title: "Signup" });
   } catch (error) {
     console.log(error);
     res.render("error", {
@@ -233,7 +234,7 @@ router.get("/signup", function (req, res, next) {
 // get route to render login page
 router.get("/login", function (req, res, next) {
   try {
-    res.render("landing-page/login", { title: "login" });
+    res.render("landing-page/login", { title: "Login" });
   } catch (error) {
     console.log(error);
     res.render("error", {
@@ -248,8 +249,9 @@ router.post("/signup", async function (req, res, next) {
   try {
     req.body.profileImagePath = `/uploads/default/${req.body.gender}.png`;
     let userDetails = req.body;
-    console.log(req.body)
-    await usersModel.create(userDetails);
+    console.log('===============================-------------------------------> signup post router',userDetails)
+
+    // await usersModel.create(userDetails);
 
     // 2.define transporter
       var transporter = nodemailer.createTransport({
@@ -271,13 +273,15 @@ router.post("/signup", async function (req, res, next) {
       text: 'registration completed'
     };
     // 4. send email with mail options
-    await transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + req.body.userEmail);
-      }
-    });
+    //--------------------currently node-mailer not included
+    // await transporter.sendMail(mailOptions, function(error, info){
+    //   if (error) {
+    //     console.log(error);
+    //   } else {
+    //     console.log('Email sent: ' + req.body.userEmail);
+    //   }
+    // });
+    
     res.send({
       type: "success",
       message: "get userDetails sucessfully",
@@ -301,9 +305,8 @@ router.post("/login", async function (req, res, next) {
       // console.log(user);
       if (!user) {
         // console.log("---------------------- not user");
-        return res.redirect("/login");
+        return res.render("landing-page/error-modal");
       }
-      // console.log(user,"hiiiiiiiiiiiiiiiii");
       req.logIn(user, function (err) {
         if (err) {
           console.log(err, "hello");

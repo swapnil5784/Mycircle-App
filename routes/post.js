@@ -79,7 +79,7 @@ router.get("/", async function (req, res, next) {
       return res.redirect('/post/archived-posts')
     }
     res.render("create-post/index", {
-      title: "user-home",
+      title: "Create Post",
       layout: "users-layout",
       userLogged:loginUser[0]
     });
@@ -209,7 +209,7 @@ router.get("/archived-posts/", async function (req, res, next) {
     // res.send('ok')
     if(!archivedPosts.length){
       res.render('no-post-found/index',{
-        title: "user-home",
+        title: "Archived Posts",
         layout: "users-layout",
         userLogged: loginUser[0],
         whatNotFound:'No Archived-Post Found',

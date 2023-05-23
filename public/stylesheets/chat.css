@@ -23,6 +23,16 @@
 .chat-box-message-profile-box , .card {
     border-bottom: 2px solid grey;
     border-radius: 10px;
+   
+}
+
+/* #messageUserProfile{
+ z-index: 2; 
+} */
+
+.messageProfile{
+  height:65px;
+  width:80px
 }
 
 .list-people{
@@ -40,6 +50,11 @@
   overflow-y: auto;
 }
 
+.message{
+  /* font-size: large; */
+  font-size: larger;
+}
+
 
  /*----------------------------->  chat css */
 
@@ -51,6 +66,8 @@
     border-radius: 5px;
     padding: 10px;
     margin: 10px 0;
+    height:95px;
+
   }
 
   #moreBtn{

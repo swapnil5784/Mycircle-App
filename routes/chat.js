@@ -172,10 +172,28 @@ router.get("/", async function (req, res, next) {
       },
     });
 
+    pipeline.push({
+      $lookup:{
+        from:'users',
+        let:{'user':'$_sender'},
+        pipeline:[
+          {
+            $match:{
+              $expr:{
+                $eq:['$_id','$$user']
+              }
+            }
+          }
+        ],
+        as:'senderDetails'
+      }
+    })
+
 
     pipeline.push({
       $project: {
         _sender: 1,
+        senderDetails:{$arrayElemAt:['$senderDetails',0]},
         _receiver: 1,
         message: 1,
         createdOn: 1,

@@ -86,18 +86,22 @@
 
               {{#compare this._sender '==' ../user._id}}
 
-              <div class="box">
-                <img src="/uploads/default/male.png" alt="Avatar" class="right" />
+              {{!-- <div class="box">
+                <img src="{{this.senderDetails.profileImagePath}}" alt="Avatar" class="right" />
                 <p>{{this.message}}</p>
                 <span class="time-right">{{moment this.createdOn}}</span>
+              </div> --}}
+              <div class="box">
+                <img src="{{this.senderDetails.profileImagePath}}" class=" messageProfile" />
+                <p class='message' >{{this.message}} <span class="time-right">{{moment this.createdOn}}</span></p>
+                
               </div>
 
               {{else}}
 
               <div class="box">
-                <img src="/uploads/default/female.png" alt="Avatar" />
-                <p>{{this.message}}</p>
-                <span class="time-right">{{moment this.createdOn}}</span>
+                <img src="{{this.senderDetails.profileImagePath}}" class=" messageProfile" />
+                <p class='message'>{{this.message}} <span class="time-right">{{moment this.createdOn}}</span></p>
               </div>
 
               {{/compare}}

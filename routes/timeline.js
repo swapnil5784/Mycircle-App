@@ -3,16 +3,13 @@ var router = express.Router();
 const usersModel = require("../models/users");
 const postsModel = require("../models/posts");
 const commentsModel = require("../models/comments");
-const notificationsModel = require("../models/notifications")
+const notificationsModel = require("../models/notifications");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const fs = require("fs");
-const toastr = require('toastr')
+const toastr = require("toastr");
 const moment = require("moment");
 // const app = require('../app')
-
-
-
 
 // import multer
 const multer = require("multer");
@@ -75,24 +72,31 @@ router.post(
 // get route to add comment on post
 router.get("/add-comment", async function (req, res, next) {
   try {
-    if(req.query.removeComment){
-      console.log('<---------------------------------> remove comments',req.query.commentId)
-      await commentsModel.updateOne({_id:new ObjectId(req.query.commentId)},{$set:{isDeleted:true}});
+    if (req.query.removeComment) {
+      console.log(
+        "<---------------------------------> remove comments",
+        req.query.commentId
+      );
+      await commentsModel.updateOne(
+        { _id: new ObjectId(req.query.commentId) },
+        { $set: { isDeleted: true } }
+      );
       res.redirect(`/timeline/view-post/${req.query.postId}`);
-    }else{
-      console.log('----------------------->',req.query._post);
-          let notificationTo = await postsModel.findOne({_id :req.query._post})
-      console.log(notificationTo._user)
+    } else {
+      console.log("----------------------->", req.query._post);
+      let notificationTo = await postsModel.findOne({ _id: req.query._post });
+      console.log(notificationTo._user);
       let notificationDetails = {
-        _from:req.user._id,
-        _to:(notificationTo._user).toString(),
-        title:`${req.user.firstName} ${req.user.lastName} added comment`,
-        type:'comment',
-        isSeen:false,
-
+        _from: req.user._id,
+        _to: notificationTo._user.toString(),
+        title: `${req.user.firstName} ${req.user.lastName} added comment`,
+        type: "comment",
+        isSeen: false,
+      };
+      console.log("------------>notificationDetails", notificationDetails);
+      if(req.user._id != notificationTo._user.toString()){
+        await notificationsModel.create(notificationDetails);
       }
-      console.log('------------>notificationDetails',notificationDetails)
-      await notificationsModel.create(notificationDetails);
       await commentsModel.create(req.query);
       res.redirect(`/timeline/view-post/${req.query._post}`);
     }
@@ -145,7 +149,7 @@ router.get("/view-post/:postId", async function (req, res, next) {
                 $expr: {
                   $eq: ["$_post", "$$comment"],
                 },
-                isDeleted:false
+                isDeleted: false,
               },
             },
             {
@@ -241,13 +245,7 @@ router.get("/view-post/:postId", async function (req, res, next) {
       }
     }
 
-    console.log(
-      "postOwner==>",
-      postOwner,
-      "savedByOwner==>",
-      savedByOwner,
-
-    );
+    console.log("postOwner==>", postOwner, "savedByOwner==>", savedByOwner);
     // console.log('==>>>',JSON.stringify(postDetails[0], null, 3));
     res.render("postView/index", {
       post: postDetails[0],
@@ -255,63 +253,85 @@ router.get("/view-post/:postId", async function (req, res, next) {
       userLogged: loginUser,
       postOwner: postOwner,
       savedByOwner: savedByOwner,
-  });
+    });
   } catch (error) {
     console.log(error);
     res.render("error", { message: error, status: 404 });
   }
 });
 
-
 // timeline rendering after login to My-circle
 router.get("/", async function (req, res, next) {
   try {
     // let loginUser = await usersModel.findOne({ _id: req.user._id }).lean(true);
-    console.log(req.user._id)
-    let userPipeline = []
+    console.log(req.user._id);
+    let userPipeline = [];
     userPipeline.push({
-      $match:{
-        _id:new ObjectId(req.user._id),
-      }
-    })
+      $match: {
+        _id: new ObjectId(req.user._id),
+      },
+    });
     userPipeline.push({
-      $lookup:{
-        from:'notifications',
-              let:{'id':'$_id'},
-              pipeline:[
-                {
-                  $sort:{
-                    createdOn:-01
-                  }
-                }
-                // ,
-                // {
-                //   $limit:6
-                // }
-                ,
-                {
-                $match:{
-                  $expr:{
-                    $eq:['$_to','$$id']
-                  },
-                  isSeen:false
-                }
-              }],
-              as:'notifications'
-            }
-          })
-     userPipeline.push({
-      $project:{
-          lastName:1,
-          firstName:1,
-          notifications:1,
-          totalNotifications:{$size:'$notifications'},
-          profileImagePath:1
-          }
-      })     
-    console.log(JSON.stringify(userPipeline,null,3))
-    let loginUser = await usersModel.aggregate(userPipeline)
-    
+      $lookup: {
+        from: "notifications",
+        let: { id: "$_id" },
+        pipeline: [
+          {
+            $sort: {
+              createdOn: -1,
+            },
+          },
+          // ,
+          // {
+          //   $limit:6
+          // }
+          {
+            $match: {
+              $expr: {
+                $eq: ["$_to", "$$id"],
+              },
+              isSeen: false,
+            },
+          },
+        ],
+        as: "notifications",
+      },
+    });
+    userPipeline.push({
+      $lookup: {
+        from: "savedposts",
+        let: { post: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$savedBy", "$$post"],
+              },
+            },
+          },
+
+          {
+            $project: {
+              _post: 1,
+            },
+          },
+        ],
+        as: "savedPosts",
+      },
+    });
+    userPipeline.push({
+      $project: {
+        lastName: 1,
+        firstName: 1,
+        notifications: 1,
+        totalNotifications: { $size: "$notifications" },
+        profileImagePath: 1,
+        savedPosts: 1,
+      },
+    });
+    console.log(JSON.stringify(userPipeline, null, 3));
+    let loginUser = await usersModel.aggregate(userPipeline);
+
     let pipeline = [];
     let match = {
       isArchived: false,
@@ -322,7 +342,7 @@ router.get("/", async function (req, res, next) {
     let limit = 4;
     let skip = 0;
 
-    io.emit('message',{data:'Event emitted from server'})
+    io.emit("message", { data: "Event emitted from server" });
 
     // first stage in aggregation
     pipeline.push({ $match: match });
@@ -398,7 +418,6 @@ router.get("/", async function (req, res, next) {
     console.log(pipeline);
     let postsInQuery = await postsModel.aggregate(pipeline);
     let totalPosts = postsInQuery.length;
-    
 
     pipeline.push({
       $lookup: {
@@ -434,15 +453,13 @@ router.get("/", async function (req, res, next) {
               $expr: {
                 $eq: ["$_post", "$$comment"],
               },
-              isDeleted:false,
+              isDeleted: false,
             },
           },
         ],
         as: "comments",
       },
     });
-
-
 
     pipeline.push({
       $project: {
@@ -482,26 +499,39 @@ router.get("/", async function (req, res, next) {
     pipeline.push({ $sort: sort });
     // console.log(JSON.stringify(pipeline, null, 3));
     let allPostsWithUsername = await postsModel.aggregate(pipeline);
-    // console.log(allPostsWithUsername);
+    console.log(allPostsWithUsername);
     let postArray = [];
     console.log("-----------------------------> totalPosts", totalPosts);
-    if(!totalPosts){
-      res.render('no-post-found/index',{
-        title: "user-home",
+    if (!totalPosts) {
+      res.render("no-post-found/index", {
+        title: "Timeline",
         layout: "users-layout",
         userLogged: loginUser[0],
-        whatNotFound:'No Post Found',
-        postOrUser:'post'
-      })
+        whatNotFound: "No Post Found",
+        postOrUser: "post",
+      });
     }
     for (let i = 1; i <= Math.ceil(totalPosts / 4); i++) {
       postArray.push(i);
     }
-    console.log(JSON.stringify(loginUser,null,3))
+    console.log(JSON.stringify(loginUser, null, 3));
+
+
+
+    let arrayOfSavedpostId = []
+      for (let object = 0; object < loginUser[0].savedPosts.length; object++) {
+        arrayOfSavedpostId.push(loginUser[0].savedPosts[object]._post.toString())
+      }
+      console.log(arrayOfSavedpostId);
+
+
+
+    console.log('----------------------------> timelin')
     res.render("timeline/index", {
-      title: "user-home",
+      title: "Timeline",
       layout: "users-layout",
       userLogged: loginUser[0],
+      userLoggedSavedpostsIds:arrayOfSavedpostId,
       posts: allPostsWithUsername,
       pageArray: postArray,
     });
@@ -511,16 +541,18 @@ router.get("/", async function (req, res, next) {
 });
 
 // route to mark notification seen
-router.get('/notification-mark-seen',async function(req,res,next){
-  try{
-    console.log(req.query)
-    await notificationsModel.updateOne({_id:new ObjectId(req.query.notificationId)},{$set:{isSeen:true}})
-    res.redirect('/timeline/')
-  }
-  catch(error){
-    console.log('error while marking notification seen',error)
+router.get("/notification-mark-seen", async function (req, res, next) {
+  try {
+    console.log(req.query);
+    await notificationsModel.updateOne(
+      { _id: new ObjectId(req.query.notificationId) },
+      { $set: { isSeen: true } }
+    );
+    res.redirect("/timeline/");
+  } catch (error) {
+    console.log("error while marking notification seen", error);
     res.render("error", { message: error, status: 404 });
   }
-})
+});
 
 module.exports = router;

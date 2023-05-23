@@ -20,6 +20,10 @@ const customHandlebarHelper = {
     // to reverse arrar
     revArray : function(data){
         return data.reverse(); 
+    } ,
+    // ObjectId to string
+    ObjectIdToString : function(data){
+        return data.toString()
     }
 
 

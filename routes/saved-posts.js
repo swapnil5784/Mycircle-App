@@ -161,7 +161,7 @@ router.post("/save", async function (req, res, next) {
     }
     await notificationsModel.create(notificationDetails)
     await SavedPostsModel.create(req.body);
-    res.send("ok");
+    res.redirect('/timeline/');
   } catch (error) {
     console.log(error);
     res.send({
@@ -176,7 +176,13 @@ router.post("/save", async function (req, res, next) {
 
 router.delete("/delete", async function (req, res, next) {
   try {
-    await SavedPostsModel.deleteOne({ savedBy: req.body.savedBy, _post: req.body._post });
+    let savedBy = req.body.savedBy;
+    let _post = req.body._post;
+    if(req.query.AtTimeline){
+       savedBy = req.query.savedBy;
+       _post = req.query._post;
+    } 
+    await SavedPostsModel.deleteOne({ savedBy:savedBy, _post: _post });
     res.send({
       type: "success",
       message: "post removed from save",

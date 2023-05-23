@@ -132,7 +132,7 @@ router.get('/',async function(req,res,next){
            
         ]);
       // console.log(allPosts);
-      res.render('report/index',{title:'report' , layout:'users-layout' , users:users, posts:allPosts , userLogged:loginUser[0]})
+      res.render('report/index',{title:'Report' , layout:'users-layout' , users:users, posts:allPosts , userLogged:loginUser[0]})
     }
     catch(error){
       console.log(error);

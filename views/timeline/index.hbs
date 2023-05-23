@@ -11,6 +11,7 @@
 </button> --}}
 <div class="renderPostView">
 
+<div class="renderPostView-1">
 
   <form>
     <header class="navbar-expand-md">
@@ -111,9 +112,21 @@
                       data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                     <div class="dropdown-menu dropdown-menu-end" style="">
                       {{#compare this.user._id '!=' ../user._id }}
-                      <button style="margin-right: 30px;" postOwner="{{this._user}}" id="{{this._id}}"
-                        data="{{../user._id}}" class="btn dropdown-item btn-outline-success savePost" isSaved='false'
-                        type="submit">Save</button>
+                      
+                          {{#inArray ../userLoggedSavedpostsIds (ObjectIdToString this._id)}}
+                          {{!-- {{log ../userLoggedSavedpostsIds}} --}}
+                              <button style="margin-right: 30px;" postOwner="{{this._user}}" id="{{this._id}}"
+                                data="{{../user._id}}" class="btn dropdown-item btn-outline-success unsavePostAtTimeline" 
+                                type="submit">Unsave</button>
+
+                          {{else}} 
+
+                                <button style="margin-right: 30px;" postOwner="{{this._user}}" id="{{this._id}}"
+                                data="{{../user._id}}" class="btn dropdown-item btn-outline-success savePost" 
+                                type="submit">Save</button>
+
+                          {{/inArray}}
+
                       {{/compare}}
 
                       {{#compare this.user._id '==' ../user._id }}
@@ -216,6 +229,8 @@
     </div>
     {{!-- ----------- pagination end below div --}}
   </div>
+
+</div>
 
 </div>
 
