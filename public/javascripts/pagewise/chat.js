@@ -13,12 +13,12 @@ const chatEvents = function () {
     $("#chatPage").on('click',"#moreBtn",function(){
       messagePagination++;
       console.log('more btn clicked !')
-      let url = `/chat?pagination=${messagePagination}`
+      let url = `/chat?pagination=${messagePagination}&moreReceiver=${$(this).attr('data-receiver')}`
       $('.chatbox-change').load(`${url} #chatBox`)
     })
   }
 
-  this.sendChatContainer = function () {
+  this.sendChatContainer = async function () {
     try {
       console.log('----> people change script loaded')
       $(".people").on("click",function () {
@@ -29,6 +29,7 @@ const chatEvents = function () {
         $('.chatbox-change').load(`${url} #chatBox`)
         $('#chatBox').attr('chatBoxOf',$(this).attr("data-userId"))
         $("#sendMessageBtn").attr('data-receiver',$(this).attr("data-userId"))
+        $("#moreBtn").attr('data-receiver',$(this).attr("data-userId"))
       });
     } catch (error) {
       console.log("error at chat event script in people card rendering", error);
@@ -42,7 +43,7 @@ const chatEvents = function () {
         if(!$("#chatboxMessage").val()){
          return toastr.error("Write message first !")
         }
-        socket.emit('sendMessage',{message:$("#chatboxMessage").val(),sender:$(this).attr("data-sender"),receiver:$(this).attr("data-receiver")})
+        // socket.emit('sendMessage',{message:$("#chatboxMessage").val(),sender:$(this).attr("data-sender"),receiver:$(this).attr("data-receiver")})
         
         $('.chatbox-change').load(`/chat/message?sender=${$(this).attr("data-sender")}&receiver=${$(this).attr("data-receiver")}&message=${encodeURIComponent($("#chatboxMessage").val())} div#chatBox`)
 

@@ -72,19 +72,27 @@ router.get("/", async function (req, res, next) {
 
     // for message pagination
 
-    
+    let sender =  new ObjectId(req.user._id);
+    let receiver = new ObjectId(firstUser._id);
+
+    if(req.query.moreReceiver){
+      receiver = new ObjectId(req.query.moreReceiver);
+      firstUser = await usersModel
+        .findOne({ _id: new ObjectId(req.query.moreReceiver) })
+        .lean(true);
+    }
 
     let pipeline = [];
     pipeline.push({
       $match: {
         $or: [
           {
-            _sender: new ObjectId(req.user._id),
-            _receiver: new ObjectId(firstUser._id),
+            _sender:sender,
+            _receiver: receiver ,
           },
           {
-            _sender: new ObjectId(firstUser._id),
-            _receiver: new ObjectId(req.user._id),
+            _sender: receiver,
+            _receiver: sender,
           },
         ],
       },
@@ -179,7 +187,7 @@ router.get("/", async function (req, res, next) {
     console.log(JSON.stringify(pipeline,null,3))
 
     let messages = await chatMessagesModel.aggregate(pipeline)
-    // console.log(JSON.stringify(messages,null,3))
+    console.log(JSON.stringify(messages,null,3))
 
     console.log(Users[0]);
     res.render("chat/index", {
@@ -205,6 +213,8 @@ router.get("/message", async function (req, res, next) {
       message: req.query.message,
     };
     await chatMessagesModel.create(messageInDb);
+    io.sockets.to(req.query.receiver).emit('responseToEventSendMessage',messageInDb)
+
     res.redirect(`/chat?fromMessage=${req.query.receiver}`);
   } catch (error) {
     console.log("error in chat messgage get route -------------->", error);

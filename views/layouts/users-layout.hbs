@@ -41,14 +41,14 @@
 
         socket.on('responseToEventSendMessage',function(data){
           console.log(data)
-          $("#sendMessageBtn").attr('data-receiver',data.sender)
-          if($("#chatBox").attr('chatBoxOf') != data.sender ){
+          $("#sendMessageBtn").attr('data-receiver',data._sender)
+          if($("#chatBox").attr('chatBoxOf') != data._sender ){
             messageNotificationNumber++;
              $("#messageNotificationNumber").attr('style','display:block;')
             return $("#messageNotificationNumber").html(messageNotificationNumber);
               
           }
-          $(".chatbox-change").load(`/chat?fromMessage=${data.sender} div#chatBox`)
+          $(".chatbox-change").load(`/chat?fromMessage=${data._sender} div#chatBox`)
           messageNotificationNumber=0;
         })
 
