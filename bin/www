@@ -32,10 +32,11 @@ io.on('connection',function(socket){
   socket.join(user._id)
   // console.log(user._id)  
 
-  socket.on('postSaved',function(data){
-    console.log("--------------------->PostOwner",data.postBy)
-    io.sockets.to(data.postBy).emit('backToPostsaved', 'saved by '+user.firstName+" "+user.lastName )
-  })
+  // -----> used at router simply ----->
+  // socket.on('postSaved',function(data){
+  //   console.log("--------------------->PostOwner",data.postBy)
+  //   io.sockets.to(data.postBy).emit('backToPostsaved', 'saved by '+user.firstName+" "+user.lastName )
+  // })
 
   socket.on('commentAdded',(data)=>{
     console.log('---------------------------->  socket listened in comment added!')
@@ -51,6 +52,7 @@ io.on('connection',function(socket){
     io.sockets.to(data.notificationTo).emit('removeNotificationFromList',data)
   })
 
+  // -----> used at router simply----->
   // socket.on('sendMessage',function(data){
   //   try{
   //     console.log('-----------------------> socket server send message',data)

@@ -4,7 +4,44 @@ const chatEvents = function () {
     _this.sendChatContainer();
     _this.sendMessage();
     _this.moreMessages();
+    _this.createGroup();
   };
+
+  // CREATE GROUP IN CHAT
+
+  this.createGroup = function(){
+
+    $("#createGroupBtn").on('click',function(){
+
+      let groupMembers = []
+
+      $.each($("input[name='members']:checked"),function(){
+        // console.log($(this).val())
+        groupMembers.push($(this).val())
+      })
+      console.log(`create group btn clicked GroupCreatedBy:${$(this).attr('data-groupCreatedBy')} GroupName : ${$("#groupNameInput").val()} members:${groupMembers}`)
+      $.ajax({
+        method:'post',
+        url:'/chat/create-group',
+        data:{
+          GroupCreatedBy : $(this).attr('data-groupCreatedBy'),
+          GroupName      : $("#groupNameInput").val(),
+          membersArray   : JSON.stringify(groupMembers)
+        }, 
+        success:function(res){
+          console.log('create form ajax submitted successfully')
+        },
+        error:function(error){
+          console.log('error in create form submission ajax ',error)
+        }
+      })
+
+    })
+
+
+  }
+
+
 
   let messagePagination = 1;
 

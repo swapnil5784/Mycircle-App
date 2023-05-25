@@ -7,8 +7,12 @@
           <div class="col">
             <h2 class="page-title">
               Chats
-            </h2>
+            </h2><br>
+            <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal-large">
+                     + Create group
+                  </a>
           </div>
+
           <!-- Page title actions -->
 
         </div>
@@ -144,6 +148,48 @@
 
   </div>
 </div>
+
+{{!-- ------------- create group modal ------- --}}
+<div class="modal modal-blur fade" id="modal-large" tabindex="-1" style="display: none;" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Create Group</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Group Name</label>
+              <input type="text" id="groupNameInput" class="form-control" name="example-text-input" placeholder="Your group name...">
+            </div>
+            <div class="mb-3">
+                            <div class="form-label">Checkboxes</div>
+                            <div style="height:150px; overflow-y: auto;">
+                              {{#each users}}
+                              <label class="form-check">
+                                <input class="form-check-input members" name="members" value="{{this._id}}" type="checkbox">
+                                <span class="form-check-label">{{this.firstName}} {{this.lastName}}</span>
+                              </label>
+                              {{/each}}
+                              
+                            </div>
+                          </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+            <button type="button" data-groupCreatedBy="{{user._id}}" id="createGroupBtn" class="btn btn-primary" data-bs-dismiss="modal"> Create </button>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+{{!-- --------------- create modal group ends ------ --}}
+
+
 <script>
   $(document).ready(function () {
     chatEvents();

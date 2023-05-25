@@ -11,6 +11,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const toastr = require("toastr");
 const moment = require("moment");
 
+// router to render chat page with first user chatwith login user
 router.get("/", async function (req, res, next) {
   try {
     let Users = await usersModel
@@ -74,7 +75,7 @@ router.get("/", async function (req, res, next) {
 
     let sender =  new ObjectId(req.user._id);
     let receiver = new ObjectId(firstUser._id);
-
+    console.log(req.query.moreReceiver)
     if(req.query.moreReceiver){
       receiver = new ObjectId(req.query.moreReceiver);
       firstUser = await usersModel
@@ -222,6 +223,7 @@ router.get("/", async function (req, res, next) {
   }
 });
 
+// router for send message add to db
 router.get("/message", async function (req, res, next) {
   try {
     console.log(req.query);
@@ -240,4 +242,14 @@ router.get("/message", async function (req, res, next) {
   }
 });
 
+// post route to add details to db of created group details
+router.post('/create-group',async function(req,res,next){
+  try{
+    console.log(JSON.parse(req.body.membersArray))
+    res.send('ok')
+  }
+  catch(error){
+    console.log('error in post route at chat router',error)
+  }
+})
 module.exports = router;

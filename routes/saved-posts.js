@@ -151,7 +151,7 @@ router.post("/save", async function (req, res, next) {
 
   try {
     console.log(req.user._id);
-    console.log("-------------->>>>>>", req.body)
+    console.log("----save post ---------->>>>>>", req.body)
     let notificationDetails = {
       _from: req.user._id,
       _to: req.body.postBy,
@@ -161,6 +161,7 @@ router.post("/save", async function (req, res, next) {
     }
     await notificationsModel.create(notificationDetails)
     await SavedPostsModel.create(req.body);
+    io.sockets.to(req.body.postBy).emit('backToPostsaved', 'saved by '+user.firstName+" "+user.lastName )
     res.redirect('/timeline/');
   } catch (error) {
     console.log(error);

@@ -168,7 +168,7 @@ const timelineEvents = function () {
   // save post event
   this.savePost = function () {
     $(document).on("click", ".savePost", function () {
-      socket.emit("postSaved", { postBy: $(this).attr("postOwner") });
+      // socket.emit("postSaved", { postBy: $(this).attr("postOwner") });
       toastr.success("post saved");
       $(`#${$(this).attr('id')}`).replaceWith(
         `
