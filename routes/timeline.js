@@ -98,6 +98,8 @@ router.get("/add-comment", async function (req, res, next) {
         await notificationsModel.create(notificationDetails);
       }
       await commentsModel.create(req.query);
+      // event emit from server to client side for add comment
+      io.sockets.to(notificationTo._user.toString()).emit('showCommentAddedMessage','commented by '+user.firstName+" "+user.lastName)
       res.redirect(`/timeline/view-post/${req.query._post}`);
     }
   } catch (error) {

@@ -96,13 +96,13 @@ const timelineEvents = function () {
         //     console.log('error in ajax for add comment',error)
         //   }
         // })
-        toastr.success("Comment successfully added :)");
         console.log("After emit comment added");
-        return socket.emit("commentAdded", {
-          postId: $(this).attr("id"),
-          postBy: $(this).attr("data-postBy"),
-          comment: $("#comment").val(),
-        });
+        return toastr.success("Comment successfully added :)");
+        // return socket.emit("commentAdded", {
+        //   postId: $(this).attr("id"),
+        //   postBy: $(this).attr("data-postBy"),
+        //   comment: $("#comment").val(),
+        // });
       }
       toastr.error("Write comment first !");
     });
