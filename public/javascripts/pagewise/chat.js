@@ -12,6 +12,11 @@ const chatEvents = function () {
   this.createGroup = function(){
 
     $("#createGroupBtn").on('click',function(){
+      
+      if(!$("input[name='members']:checked").length | !$("#groupNameInput").val()){
+        return alert('enter group details properly !')
+      }
+
 
       let groupMembers = []
 
@@ -20,13 +25,15 @@ const chatEvents = function () {
         groupMembers.push($(this).val())
       })
       console.log(`create group btn clicked GroupCreatedBy:${$(this).attr('data-groupCreatedBy')} GroupName : ${$("#groupNameInput").val()} members:${groupMembers}`)
+
+
       $.ajax({
         method:'post',
         url:'/chat/create-group',
         data:{
-          GroupCreatedBy : $(this).attr('data-groupCreatedBy'),
-          GroupName      : $("#groupNameInput").val(),
-          membersArray   : JSON.stringify(groupMembers)
+          _groupAdmin : $(this).attr('data-groupCreatedBy'),
+          groupTitle  : $("#groupNameInput").val(),
+          members     : JSON.stringify(groupMembers)
         }, 
         success:function(res){
           console.log('create form ajax submitted successfully')
@@ -35,6 +42,10 @@ const chatEvents = function () {
           console.log('error in create form submission ajax ',error)
         }
       })
+      $('input').val('')
+      $('input:checkbox').removeAttr('checked');
+      window.location.href = '/chat'
+
 
     })
 

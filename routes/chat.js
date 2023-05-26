@@ -6,6 +6,7 @@ const postsModel = require("../models/posts");
 const commentsModel = require("../models/comments");
 const notificationsModel = require("../models/notifications");
 const chatMessagesModel = require("../models/chatMessages");
+const groupsModel = require("../models/groups")
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const toastr = require("toastr");
@@ -245,7 +246,17 @@ router.get("/message", async function (req, res, next) {
 // post route to add details to db of created group details
 router.post('/create-group',async function(req,res,next){
   try{
-    console.log(JSON.parse(req.body.membersArray))
+    console.log(req.body)
+    let groupDetails = {
+      _groupAdmin:req.body._groupAdmin,
+      groupTitle:req.body.groupTitle,
+      members:JSON.parse(req.body.members)
+    }
+    await groupsModel.create(groupDetails)
+    let groupd = await groupsModel.findOne({groupTitle:'adqef'})
+    console.log("groupd.members-------------------->>",groupd.members)
+    
+
     res.send('ok')
   }
   catch(error){
